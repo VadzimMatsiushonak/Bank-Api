@@ -13,3 +13,6 @@ spring:
     # An embedded GUI console for browsing the contents of a database and running SQL queries.
     # GUI link: http://localhost:8080/h2-console
     console.enabled: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
