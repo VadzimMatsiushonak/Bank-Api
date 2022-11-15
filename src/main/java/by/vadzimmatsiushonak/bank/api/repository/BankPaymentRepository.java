@@ -1,9 +1,9 @@
 package by.vadzimmatsiushonak.bank.api.repository;
 
-import by.vadzimmatsiushonak.bank.api.model.entity.User;
+import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface BankPaymentRepository extends JpaRepository<BankPayment, Long> {
 }

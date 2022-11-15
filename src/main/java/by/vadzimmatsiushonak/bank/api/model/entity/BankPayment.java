@@ -1,17 +1,20 @@
-package by.vadzimmatsiushonak.bank.api.model;
+package by.vadzimmatsiushonak.bank.api.model.entity;
 
-import lombok.Data;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "BankPayments")
 public class BankPayment extends BaseEntity {
 
-    private BigInteger amount;
+    private BigDecimal amount;
     private String currency;
     private Long recipientBankAccountId;
 

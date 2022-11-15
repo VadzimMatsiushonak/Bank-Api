@@ -1,14 +1,17 @@
-package by.vadzimmatsiushonak.bank.api.model;
+package by.vadzimmatsiushonak.bank.api.model.entity;
 
-import lombok.Data;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "Customers")
 public class Customer extends BaseEntity {
 
@@ -18,8 +21,7 @@ public class Customer extends BaseEntity {
     private String phoneNumber;
     private String password;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<BankAccount> bankAccounts;
-
 
 }

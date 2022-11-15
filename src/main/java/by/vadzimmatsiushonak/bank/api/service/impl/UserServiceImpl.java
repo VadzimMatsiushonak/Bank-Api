@@ -1,6 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.service.impl;
 
-import by.vadzimmatsiushonak.bank.api.model.User;
+import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.repository.UserRepository;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import lombok.AllArgsConstructor;
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void create(@NotNull User user) {
         log.info("UserServiceImpl create {}", user);
-        
+
         repository.save(user);
     }
 
@@ -38,14 +38,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() {
         log.info("UserServiceImpl findAll");
-        
+
         return repository.findAll();
     }
 
     @Override
     public void update(@NotNull User user) {
         log.info("UserServiceImpl update {}", user);
-        
+
         Objects.requireNonNull(user.getId());
         repository.save(user);
     }

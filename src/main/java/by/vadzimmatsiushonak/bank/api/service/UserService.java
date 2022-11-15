@@ -1,6 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.service;
 
-import by.vadzimmatsiushonak.bank.api.model.User;
+import by.vadzimmatsiushonak.bank.api.model.entity.User;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;

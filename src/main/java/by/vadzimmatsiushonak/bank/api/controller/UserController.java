@@ -1,6 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.controller;
 
-import by.vadzimmatsiushonak.bank.api.model.User;
+import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

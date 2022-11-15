@@ -1,10 +1,13 @@
-package by.vadzimmatsiushonak.bank.api.model;
+package by.vadzimmatsiushonak.bank.api.model.entity;
 
-import lombok.Data;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "Users")
 public class User extends BaseEntity {
 
