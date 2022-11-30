@@ -22,10 +22,11 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository repository;
 
     @Override
-    public void create(@NotNull Customer customer) {
+    public Customer create(@NotNull Customer customer) {
         log.info("CustomerServiceImpl create {}", customer);
+        customer.setId(null);
 
-        repository.save(customer);
+        return repository.save(customer);
     }
 
     @Override

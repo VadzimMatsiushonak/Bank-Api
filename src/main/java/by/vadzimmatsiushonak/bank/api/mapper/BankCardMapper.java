@@ -1,9 +1,12 @@
 package by.vadzimmatsiushonak.bank.api.mapper;
 
-import by.vadzimmatsiushonak.bank.api.model.dto.BankCardDto;
-import by.vadzimmatsiushonak.bank.api.model.dto.relations.BankCardDtoRelations;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.BankCardRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.BankCardDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankCardDtoRelations;
+import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankCard;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -15,4 +18,13 @@ public interface BankCardMapper {
     BankCardDtoRelations toDtoRelations(BankCard entity);
 
     List<BankCardDtoRelations> toListDtoRelations(List<BankCard> entities);
+
+    @Mapping(target = "bankAccount", source = "bankAccountId")
+    BankCard toEntity(BankCardRequestDto dto);
+
+    default BankAccount fromIdToBankAccount(Long bankAccountId) {
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setId(bankAccountId);
+        return bankAccount;
+    }
 }

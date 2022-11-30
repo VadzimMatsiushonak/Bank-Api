@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import java.time.LocalDate;
 
@@ -18,6 +19,7 @@ public class BankCard extends BaseEntity {
     private LocalDate expirationDate;
 
     @OneToOne
+    @JoinColumn(name = "BANK_ACCOUNT_ID", nullable = false)
     private BankAccount bankAccount;
 
 }

@@ -1,6 +1,6 @@
-package by.vadzimmatsiushonak.bank.api.model.dto.relations;
+package by.vadzimmatsiushonak.bank.api.model.dto.response.relations;
 
-import by.vadzimmatsiushonak.bank.api.model.dto.*;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.*;
 
 import java.util.List;
 

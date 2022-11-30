@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    void create(@NotNull User user);
+    User create(@NotNull User user);
 
     Optional<User> findById(@NotNull Long id);
 

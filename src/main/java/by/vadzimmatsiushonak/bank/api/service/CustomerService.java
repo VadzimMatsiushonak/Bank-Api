@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CustomerService {
-    void create(@NotNull Customer customer);
+    Customer create(@NotNull Customer customer);
 
     Optional<Customer> findById(@NotNull Long id);
 

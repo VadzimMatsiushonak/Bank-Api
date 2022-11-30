@@ -22,10 +22,11 @@ public class BankServiceImpl implements BankService {
     private final BankRepository repository;
 
     @Override
-    public void create(@NotNull Bank bank) {
+    public Bank create(@NotNull Bank bank) {
         log.info("BankServiceImpl create {}", bank);
+        bank.setId(null);
 
-        repository.save(bank);
+        return repository.save(bank);
     }
 
     @Override
