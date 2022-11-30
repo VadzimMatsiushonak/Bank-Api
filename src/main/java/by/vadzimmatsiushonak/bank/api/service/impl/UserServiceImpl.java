@@ -22,10 +22,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
-    public void create(@NotNull User user) {
+    public User create(@NotNull User user) {
         log.info("UserServiceImpl create {}", user);
+        user.setId(null);
 
-        repository.save(user);
+        return repository.save(user);
     }
 
     @Override

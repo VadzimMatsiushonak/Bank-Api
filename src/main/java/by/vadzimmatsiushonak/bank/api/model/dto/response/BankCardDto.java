@@ -1,4 +1,4 @@
-package by.vadzimmatsiushonak.bank.api.model.dto;
+package by.vadzimmatsiushonak.bank.api.model.dto.response;
 
 import by.vadzimmatsiushonak.bank.api.model.dto.base.BaseEntityDto;
 

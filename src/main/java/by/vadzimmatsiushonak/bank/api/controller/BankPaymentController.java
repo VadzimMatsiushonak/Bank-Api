@@ -2,14 +2,12 @@ package by.vadzimmatsiushonak.bank.api.controller;
 
 
 import by.vadzimmatsiushonak.bank.api.mapper.BankPaymentMapper;
-import by.vadzimmatsiushonak.bank.api.model.dto.relations.BankPaymentDtoRelations;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.BankPaymentRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankPaymentDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +27,10 @@ public class BankPaymentController {
     @GetMapping
     public List<BankPaymentDtoRelations> findAll() {
         return bankPaymentMapper.toListDtoRelations(bankPaymentService.findAll());
+    }
+
+    @PostMapping
+    public BankPayment create(@RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
+        return bankPaymentService.create(bankPaymentMapper.toEntity(bankPaymentRequestDto));
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BankService {
-    void create(@NotNull Bank bank);
+    Bank create(@NotNull Bank bank);
 
     Optional<Bank> findById(@NotNull Long id);
 
