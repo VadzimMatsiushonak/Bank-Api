@@ -4,15 +4,14 @@ import by.vadzimmatsiushonak.bank.api.model.entity.BankCard;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.repository.BankCardRepository;
 import by.vadzimmatsiushonak.bank.api.service.BankCardService;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Validated

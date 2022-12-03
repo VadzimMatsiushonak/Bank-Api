@@ -1,10 +1,9 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
+import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.Entity;
 
 @Getter
 @Setter

@@ -3,15 +3,14 @@ package by.vadzimmatsiushonak.bank.api.service.impl;
 import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
 import by.vadzimmatsiushonak.bank.api.repository.BankRepository;
 import by.vadzimmatsiushonak.bank.api.service.BankService;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Validated

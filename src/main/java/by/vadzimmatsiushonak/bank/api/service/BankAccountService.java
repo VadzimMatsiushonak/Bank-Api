@@ -1,12 +1,12 @@
 package by.vadzimmatsiushonak.bank.api.service;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
-
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.constraints.NotNull;
 
 public interface BankAccountService {
+
     BankAccount create(@NotNull BankAccount bankAccount);
 
     Optional<BankAccount> findById(@NotNull Long id);
