@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BankCardRepository extends JpaRepository<BankCard, Long> {
+
 }

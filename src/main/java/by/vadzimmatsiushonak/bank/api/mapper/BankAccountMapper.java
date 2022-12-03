@@ -6,10 +6,9 @@ import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankAccountDt
 import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface BankAccountMapper {

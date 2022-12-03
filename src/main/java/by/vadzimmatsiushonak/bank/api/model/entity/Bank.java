@@ -1,14 +1,13 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
-import lombok.Getter;
-import lombok.Setter;
-
+import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

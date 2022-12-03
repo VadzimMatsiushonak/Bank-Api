@@ -1,13 +1,12 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
-import lombok.Getter;
-import lombok.Setter;
-
+import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
