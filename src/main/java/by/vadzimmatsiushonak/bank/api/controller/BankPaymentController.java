@@ -1,15 +1,25 @@
 package by.vadzimmatsiushonak.bank.api.controller;
 
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+
 import by.vadzimmatsiushonak.bank.api.mapper.BankPaymentMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankPaymentRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankPaymentDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import javax.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @AllArgsConstructor
 @RestController
@@ -20,8 +30,8 @@ public class BankPaymentController {
     private final BankPaymentMapper bankPaymentMapper;
 
     @GetMapping("/{id}")
-    public BankPayment findById(@PathVariable Long id) {
-        return bankPaymentService.findById(id).orElse(null);
+    public BankPaymentDtoRelations findById(@PathVariable Long id) {
+        return bankPaymentMapper.toDtoRelations(bankPaymentService.findById(id).orElse(null));
     }
 
     @GetMapping
@@ -32,5 +42,14 @@ public class BankPaymentController {
     @PostMapping
     public BankPayment create(@RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
         return bankPaymentService.create(bankPaymentMapper.toEntity(bankPaymentRequestDto));
+    }
+
+    @PostMapping("/initiatePayment")
+    public ResponseEntity<?> initiatePayment(@Valid @RequestBody InitiatePaymentRequest initiatePaymentRequest) {
+        try {
+            return ResponseEntity.status(CREATED).body(bankPaymentService.initiatePayment(initiatePaymentRequest));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

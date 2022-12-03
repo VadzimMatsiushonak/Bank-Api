@@ -20,8 +20,8 @@ public class CustomerController {
     private final CustomerMapper customerMapper;
 
     @GetMapping("/{id}")
-    public Customer findById(@PathVariable Long id) {
-        return customerService.findById(id).orElse(null);
+    public CustomerDtoRelations findById(@PathVariable Long id) {
+        return customerMapper.toDtoRelations(customerService.findById(id).orElse(null));
     }
 
     @GetMapping

@@ -20,8 +20,8 @@ public class BankCardController {
     private final BankCardMapper bankCardMapper;
 
     @GetMapping("/{id}")
-    public BankCard findById(@PathVariable Long id) {
-        return bankCardService.findById(id).orElse(null);
+    public BankCardDtoRelations findById(@PathVariable Long id) {
+        return bankCardMapper.toDtoRelations(bankCardService.findById(id).orElse(null));
     }
 
     @GetMapping

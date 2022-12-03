@@ -20,8 +20,8 @@ public class BankAccountController {
     private final BankAccountMapper bankAccountMapper;
 
     @GetMapping("/{id}")
-    public BankAccount findById(@PathVariable Long id) {
-        return bankAccountService.findById(id).orElse(null);
+    public BankAccountDtoRelations findById(@PathVariable Long id) {
+        return bankAccountMapper.toDtoRelations(bankAccountService.findById(id).orElse(null));
     }
 
     @GetMapping
