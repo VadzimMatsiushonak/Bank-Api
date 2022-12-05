@@ -3,6 +3,7 @@ package by.vadzimmatsiushonak.bank.api.controller;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 import by.vadzimmatsiushonak.bank.api.mapper.BankPaymentMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankPaymentRequestDto;
@@ -30,18 +31,21 @@ public class BankPaymentController {
     private final BankPaymentMapper bankPaymentMapper;
 
     @GetMapping("/{id}")
-    public BankPaymentDtoRelations findById(@PathVariable Long id) {
-        return bankPaymentMapper.toDtoRelations(bankPaymentService.findById(id).orElse(null));
+    public ResponseEntity<BankPaymentDtoRelations> findById(@PathVariable Long id) {
+        return ResponseEntity.status(OK)
+            .body(bankPaymentMapper.toDtoRelations(bankPaymentService.findById(id).orElse(null)));
     }
 
     @GetMapping
-    public List<BankPaymentDtoRelations> findAll() {
-        return bankPaymentMapper.toListDtoRelations(bankPaymentService.findAll());
+    public ResponseEntity<List<BankPaymentDtoRelations>> findAll() {
+        return ResponseEntity.status(OK)
+            .body(bankPaymentMapper.toListDtoRelations(bankPaymentService.findAll()));
     }
 
     @PostMapping
-    public BankPayment create(@RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
-        return bankPaymentService.create(bankPaymentMapper.toEntity(bankPaymentRequestDto));
+    public ResponseEntity<BankPayment> create(@RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
+        return ResponseEntity.status(CREATED)
+            .body(bankPaymentService.create(bankPaymentMapper.toEntity(bankPaymentRequestDto)));
     }
 
     @PostMapping("/initiatePayment")

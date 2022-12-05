@@ -1,6 +1,9 @@
 package by.vadzimmatsiushonak.bank.api.controller;
 
 
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+
 import by.vadzimmatsiushonak.bank.api.mapper.BankCardMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankCardRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankCardDtoRelations;
@@ -8,6 +11,7 @@ import by.vadzimmatsiushonak.bank.api.model.entity.BankCard;
 import by.vadzimmatsiushonak.bank.api.service.BankCardService;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,17 +28,20 @@ public class BankCardController {
     private final BankCardMapper bankCardMapper;
 
     @GetMapping("/{id}")
-    public BankCardDtoRelations findById(@PathVariable Long id) {
-        return bankCardMapper.toDtoRelations(bankCardService.findById(id).orElse(null));
+    public ResponseEntity<BankCardDtoRelations> findById(@PathVariable Long id) {
+        return ResponseEntity.status(OK)
+            .body(bankCardMapper.toDtoRelations(bankCardService.findById(id).orElse(null)));
     }
 
     @GetMapping
-    public List<BankCardDtoRelations> findAll() {
-        return bankCardMapper.toListDtoRelations(bankCardService.findAll());
+    public ResponseEntity<List<BankCardDtoRelations>> findAll() {
+        return ResponseEntity.status(OK)
+            .body(bankCardMapper.toListDtoRelations(bankCardService.findAll()));
     }
 
     @PostMapping
-    public BankCard create(@RequestBody BankCardRequestDto bankCardRequestDto) {
-        return bankCardService.create(bankCardMapper.toEntity(bankCardRequestDto));
+    public ResponseEntity<BankCard> create(@RequestBody BankCardRequestDto bankCardRequestDto) {
+        return ResponseEntity.status(CREATED)
+            .body(bankCardService.create(bankCardMapper.toEntity(bankCardRequestDto)));
     }
 }
