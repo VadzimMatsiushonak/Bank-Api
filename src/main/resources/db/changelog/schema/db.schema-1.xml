@@ -1,0 +1,134 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+  <changeSet author="Vadzim Matsiushonak" id="1">
+    <createTable tableName="BANKS">
+      <column autoIncrement="true" name="ID" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_BANKS"/>
+      </column>
+      <column name="AMOUNT" type="numeric(19, 2)"/>
+      <column name="TITLE" type="VARCHAR(255)"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="2">
+    <createTable tableName="BANK_ACCOUNTS">
+      <column autoIncrement="true" name="ID" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_BANK_ACCOUNTS"/>
+      </column>
+      <column name="AMOUNT" type="numeric(19, 2)"/>
+      <column name="CURRENCY" type="VARCHAR(255)"/>
+      <column name="IBAN" type="VARCHAR(255)"/>
+      <column name="TITLE" type="VARCHAR(255)"/>
+      <column name="TYPE" type="VARCHAR(255)"/>
+      <column name="BANK_ID" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="BANK_CARD_ID" type="BIGINT"/>
+      <column name="CUSTOMER_ID" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="3">
+    <createTable tableName="BANK_CARDS">
+      <column autoIncrement="true" name="ID" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_BANK_CARDS"/>
+      </column>
+      <column name="CVS" type="VARCHAR(255)"/>
+      <column name="EXPIRATION_DATE" type="date"/>
+      <column name="NUMBER" type="VARCHAR(255)"/>
+      <column name="BANK_ACCOUNT_ID" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="4">
+    <createTable tableName="BANK_PAYMENTS">
+      <column autoIncrement="true" name="ID" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_BANK_PAYMENTS"/>
+      </column>
+      <column name="AMOUNT" type="numeric(19, 2)"/>
+      <column name="CURRENCY" type="VARCHAR(255)"/>
+      <column name="RECIPIENT_BANK_ACCOUNT_ID" type="BIGINT"/>
+      <column name="BANK_ACCOUNT_ID" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="5">
+    <createTable tableName="CUSTOMERS">
+      <column autoIncrement="true" name="ID" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CUSTOMERS"/>
+      </column>
+      <column name="DATE_OF_BIRTH" type="date"/>
+      <column name="NAME" type="VARCHAR(255)"/>
+      <column name="PASSWORD" type="VARCHAR(255)"/>
+      <column name="PHONE_NUMBER" type="VARCHAR(255)"/>
+      <column name="SURNAME" type="VARCHAR(255)"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="6">
+    <createTable tableName="USERS">
+      <column autoIncrement="true" name="ID" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_USERS"/>
+      </column>
+      <column name="LOGIN" type="VARCHAR(255)"/>
+      <column name="PASSWORD" type="VARCHAR(255)"/>
+      <column name="ROLE" type="VARCHAR(255)"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="Vadzim Matsiushonak" id="7">
+    <createIndex indexName="IX_BANK_CARDS_BANK_ACCOUNT_ID" tableName="BANK_CARDS">
+      <column name="BANK_ACCOUNT_ID"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="8">
+    <createIndex indexName="IX_BANK_ACCOUNTS_BANK_ID" tableName="BANK_ACCOUNTS">
+      <column name="BANK_ID"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="9">
+    <createIndex indexName="IX_BANK_PAYMENTS_BANK_ACCOUNT_ID" tableName="BANK_PAYMENTS">
+      <column name="BANK_ACCOUNT_ID"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="10">
+    <createIndex indexName="IX_BANK_ACCOUNTS_BANK_CARD_ID" tableName="BANK_ACCOUNTS">
+      <column name="BANK_CARD_ID"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="11">
+    <createIndex indexName="IX_BANK_ACCOUNTS_CUSTOMER_ID" tableName="BANK_ACCOUNTS">
+      <column name="CUSTOMER_ID"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet author="Vadzim Matsiushonak" id="12">
+    <addForeignKeyConstraint baseColumnNames="BANK_ACCOUNT_ID" baseTableName="BANK_CARDS"
+      constraintName="FK_BANK_CARDS_BANK_ACCOUNT_ID" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+      onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="BANK_ACCOUNTS" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="13">
+    <addForeignKeyConstraint baseColumnNames="BANK_ID" baseTableName="BANK_ACCOUNTS"
+      constraintName="FK_BANK_ACCOUNTS_BANK_ID" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+      onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="BANKS" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="14">
+    <addForeignKeyConstraint baseColumnNames="BANK_ACCOUNT_ID" baseTableName="BANK_PAYMENTS"
+      constraintName="FK_BANK_PAYMENTS_BANK_ACCOUNT_ID" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+      onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="BANK_ACCOUNTS" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="15">
+    <addForeignKeyConstraint baseColumnNames="BANK_CARD_ID" baseTableName="BANK_ACCOUNTS"
+      constraintName="FK_BANK_ACCOUNTS_BANK_CARD_ID" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+      onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="BANK_CARDS" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="16">
+    <addForeignKeyConstraint baseColumnNames="CUSTOMER_ID" baseTableName="BANK_ACCOUNTS"
+      constraintName="FK_BANK_ACCOUNTS_CUSTOMER_ID" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+      onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CUSTOMERS" validate="true"/>
+  </changeSet>
+</databaseChangeLog>
