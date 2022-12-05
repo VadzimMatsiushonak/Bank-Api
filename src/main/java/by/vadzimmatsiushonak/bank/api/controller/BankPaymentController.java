@@ -38,7 +38,8 @@ public class BankPaymentController {
 
     @GetMapping
     public ResponseEntity<List<BankPaymentDtoRelations>> findAll() {
-        return ResponseEntity.status(OK).body(bankPaymentMapper.toListDtoRelations(bankPaymentService.findAll()));
+        return ResponseEntity.status(OK)
+            .body(bankPaymentMapper.toListDtoRelations(bankPaymentService.findAll()));
     }
 
     @PostMapping
