@@ -20,3 +20,8 @@ spring:
     # drop-first parameter is used in case the database schema should be dropped before running Liquibase operations.
     drop-first: true
     change-log: classpath:db/changelog/db.changelog-root.xml
+server:
+  error:
+    include-message: always
+
+nameqwe: Hello

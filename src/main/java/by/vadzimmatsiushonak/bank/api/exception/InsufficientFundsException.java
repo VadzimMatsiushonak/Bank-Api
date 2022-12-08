@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class EntityNotFoundException extends RuntimeException {
+public class InsufficientFundsException extends RuntimeException {
 
-    public EntityNotFoundException(String message) {
+    public InsufficientFundsException(String message) {
         super(message);
     }
 }
