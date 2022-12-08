@@ -23,5 +23,3 @@ spring:
 server:
   error:
     include-message: always
-
-nameqwe: Hello
