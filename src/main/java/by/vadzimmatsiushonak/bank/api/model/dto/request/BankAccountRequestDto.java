@@ -3,7 +3,6 @@ package by.vadzimmatsiushonak.bank.api.model.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class BankAccountRequestDto {

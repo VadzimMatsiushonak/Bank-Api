@@ -8,5 +8,6 @@ public class BankPaymentDto extends BaseEntityDto {
     public BigDecimal amount;
     public String currency;
     public Long recipientBankAccountId;
+    public String status;
 
 }

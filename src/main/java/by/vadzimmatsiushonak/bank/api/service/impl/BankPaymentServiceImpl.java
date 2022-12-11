@@ -7,6 +7,7 @@ import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_WrongDataEx
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.PaymentStatus;
 import by.vadzimmatsiushonak.bank.api.repository.BankAccountRepository;
 import by.vadzimmatsiushonak.bank.api.repository.BankPaymentRepository;
 import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
@@ -103,6 +104,7 @@ public class BankPaymentServiceImpl implements BankPaymentService {
             bankPayment.setCurrency(request.currency);
             bankPayment.setBankAccount(bankAccount);
             bankPayment.setRecipientBankAccountId(request.recipientBankAccountId);
+            bankPayment.setStatus(PaymentStatus.ACCEPTED);
 
             return repository.save(bankPayment);
         } else {
