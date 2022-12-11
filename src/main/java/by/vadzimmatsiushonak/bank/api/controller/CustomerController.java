@@ -13,6 +13,7 @@ import by.vadzimmatsiushonak.bank.api.service.CustomerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +50,7 @@ public class CustomerController {
     @ApiOperation("Add the Customer to the Api database")
     @ResponseStatus(CREATED)
     @PostMapping
-    public ResponseEntity<Customer> create(@RequestBody CustomerRequestDto customerRequestDto) {
+    public ResponseEntity<Customer> create(@Valid @RequestBody CustomerRequestDto customerRequestDto) {
         return ResponseEntity.status(CREATED)
             .body(customerService.create(customerMapper.toEntity(customerRequestDto)));
     }

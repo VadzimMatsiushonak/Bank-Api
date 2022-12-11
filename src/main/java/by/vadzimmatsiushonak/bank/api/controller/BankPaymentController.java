@@ -55,7 +55,7 @@ public class BankPaymentController {
     @ApiOperation("Add the Payment to the Api database")
     @ResponseStatus(CREATED)
     @PostMapping
-    public ResponseEntity<BankPayment> create(@RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
+    public ResponseEntity<BankPayment> create(@Valid @RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
         return ResponseEntity.status(CREATED)
             .body(bankPaymentService.create(bankPaymentMapper.toEntity(bankPaymentRequestDto)));
     }
