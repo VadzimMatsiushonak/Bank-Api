@@ -13,8 +13,10 @@ import by.vadzimmatsiushonak.bank.api.service.BankAccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +51,7 @@ public class BankAccountController {
     @ApiOperation("Add the Account to the Api database")
     @ResponseStatus(CREATED)
     @PostMapping
-    public ResponseEntity<BankAccount> create(@RequestBody BankAccountRequestDto bankAccountRequestDto) {
+    public ResponseEntity<BankAccount> create(@Valid @RequestBody BankAccountRequestDto bankAccountRequestDto) {
         return ResponseEntity.status(CREATED)
             .body(bankAccountService.create(bankAccountMapper.toEntity(bankAccountRequestDto)));
     }

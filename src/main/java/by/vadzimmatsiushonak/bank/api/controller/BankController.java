@@ -13,6 +13,7 @@ import by.vadzimmatsiushonak.bank.api.service.BankService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +50,7 @@ public class BankController {
     @ApiOperation("Add the Bank to the Api database")
     @ResponseStatus(CREATED)
     @PostMapping
-    public ResponseEntity<Bank> create(@RequestBody BankRequestDto bankRequestDto) {
+    public ResponseEntity<Bank> create(@Valid @RequestBody BankRequestDto bankRequestDto) {
         return ResponseEntity.status(CREATED)
             .body(bankService.create(bankMapper.toEntity(bankRequestDto)));
     }
