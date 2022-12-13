@@ -1,5 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.model.dto.request;
 
+import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import javax.validation.constraints.DecimalMin;
@@ -12,9 +13,9 @@ public class InitiatePaymentRequest {
     @NotNull
     public BigDecimal amount;
 
-    @ApiModelProperty(notes = "<h4><i>Available currencies:</i></h4>[USD, EUR, BYN]", example = "USD", required = true)
+    @ApiModelProperty(example = "USD", required = true)
     @NotNull
-    public String currency;
+    public Currency currency;
 
     @ApiModelProperty(notes = "'senderBankAccountId' >= 1 value must be higher or equal to 1\n'senderBankAccountId' != 'recipientBankAccountId' ids must not be the same", example = "1", required = true)
     @NotNull

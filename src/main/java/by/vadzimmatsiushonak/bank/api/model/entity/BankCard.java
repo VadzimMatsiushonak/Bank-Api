@@ -14,7 +14,9 @@ import lombok.Setter;
 public class BankCard extends BaseEntity {
 
     private String number;
+
     private String cvs;
+
     private LocalDate expirationDate;
 
     @OneToOne

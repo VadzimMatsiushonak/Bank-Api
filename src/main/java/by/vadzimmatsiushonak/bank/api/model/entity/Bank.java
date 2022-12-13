@@ -15,6 +15,7 @@ import lombok.Setter;
 public class Bank extends BaseEntity {
 
     private String title;
+
     private BigDecimal amount;
 
     @OneToMany(mappedBy = "bank", fetch = FetchType.EAGER)
