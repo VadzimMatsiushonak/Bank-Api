@@ -59,12 +59,12 @@ to work with it.
 
 ### CRUD
 
-1. CRUD request available on [Swagger](http://localhost:8080/swagger-ui/) with Admin role privileges
+- CRUD request available on [Swagger](http://localhost:8080/swagger-ui/) with Admin role privileges
 
 ### Auth
 
 ### Payment
 
-1. Payment initiation _**/api/v1/payments/initiatePayment**_
+- Payment initiation _**/api/v1/payments/initiatePayment**_
 
 ### Account
