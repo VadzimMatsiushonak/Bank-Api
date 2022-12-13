@@ -2,6 +2,7 @@ package by.vadzimmatsiushonak.bank.api.model.entity;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.OperationType;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Entity;
@@ -29,7 +30,8 @@ public class BankAccount extends BaseEntity {
 
     private BigDecimal amount;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private OperationType type;
 
     @ManyToOne
     @JoinColumn(name = "bank_id", nullable = false)
