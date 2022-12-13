@@ -54,3 +54,17 @@ to work with it.
     - current task types: BA - Backend, FE - Frontend, AD - Android
 - Tags
     - feature, bug, tests, docs
+
+## Api flows
+
+### CRUD
+
+- CRUD request available on [Swagger](http://localhost:8080/swagger-ui/) with Admin role privileges
+
+### Auth
+
+### Payment
+
+- Payment initiation _**/api/v1/payments/initiatePayment**_
+
+### Account
