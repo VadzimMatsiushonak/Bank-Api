@@ -48,7 +48,7 @@ VALUES ('1982-11-24', 'Bradley', 'Cameron', '1 773 8009725', 'pass');
 
 ------------------------------------------------------------------------------------------------------------------------
 INSERT INTO BANK_ACCOUNTS (AMOUNT, CURRENCY, IBAN, TITLE, TYPE, BANK_ID, CUSTOMER_ID)
-VALUES (150000, 'BLR', 'BY44VM1452003', 'VADZIM MATSIUSHONAK', 'DEBIT', 2, 2);
+VALUES (150000, 'BYN', 'BY44VM1452003', 'VADZIM MATSIUSHONAK', 'DEBIT', 2, 2);
 
 INSERT INTO BANK_ACCOUNTS (AMOUNT, CURRENCY, IBAN, TITLE, TYPE, BANK_ID, CUSTOMER_ID)
 VALUES (4136.6, 'EUR', 'SE0739WR5066448', 'Walter Rodriguez', 'DEBIT', 3, 3);
@@ -80,7 +80,7 @@ WHERE ID = 4;
 
 ------------------------------------------------------------------------------------------------------------------------
 INSERT INTO BANK_PAYMENTS (AMOUNT, CURRENCY, RECIPIENT_BANK_ACCOUNT_ID, BANK_ACCOUNT_ID)
-VALUES (-150000, 'BLR', 2, 1);
+VALUES (-150000, 'BYN', 2, 1);
 
 INSERT INTO BANK_PAYMENTS (AMOUNT, CURRENCY, RECIPIENT_BANK_ACCOUNT_ID, BANK_ACCOUNT_ID)
 VALUES (-4136.6, 'EUR', 3, 1);

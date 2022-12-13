@@ -15,9 +15,13 @@ import lombok.Setter;
 public class Customer extends BaseEntity {
 
     private String name;
+
     private String surname;
+
     private LocalDate dateOfBirth;
+
     private String phoneNumber;
+
     private String password;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)

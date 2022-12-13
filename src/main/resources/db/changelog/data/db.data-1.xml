@@ -79,7 +79,7 @@
     </insert>
     <insert tableName="BANK_ACCOUNTS">
       <column name="AMOUNT" valueNumeric="150000.00"/>
-      <column name="CURRENCY" value="BLR"/>
+      <column name="CURRENCY" value="BYN"/>
       <column name="IBAN" value="BY44VM1452003"/>
       <column name="TITLE" value="VADZIM MATSIUSHONAK"/>
       <column name="TYPE" value="DEBIT"/>
@@ -155,7 +155,7 @@
   <changeSet author="Vadzim Matsiushonak" id="7">
     <insert tableName="BANK_PAYMENTS">
       <column name="AMOUNT" valueNumeric="-150000.00"/>
-      <column name="CURRENCY" value="BLR"/>
+      <column name="CURRENCY" value="BYN"/>
       <column name="RECIPIENT_BANK_ACCOUNT_ID" valueNumeric="2"/>
       <column name="BANK_ACCOUNT_ID" valueNumeric="1"/>
     </insert>

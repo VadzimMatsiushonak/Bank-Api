@@ -1,6 +1,7 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.PaymentStatus;
 import java.math.BigDecimal;
 import javax.persistence.Entity;
@@ -17,7 +18,10 @@ import lombok.Setter;
 public class BankPayment extends BaseEntity {
 
     private BigDecimal amount;
-    private String currency;
+
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
     private Long recipientBankAccountId;
 
     @Enumerated(EnumType.STRING)

@@ -1,9 +1,12 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,9 +21,14 @@ import lombok.Setter;
 public class BankAccount extends BaseEntity {
 
     private String title;
+
     private String iban;
-    private String currency;
+
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
     private BigDecimal amount;
+
     private String type;
 
     @ManyToOne

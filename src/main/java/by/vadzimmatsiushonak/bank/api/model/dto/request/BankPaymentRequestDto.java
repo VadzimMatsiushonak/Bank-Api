@@ -1,5 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.model.dto.request;
 
+import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.PaymentStatus;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -13,9 +14,9 @@ public class BankPaymentRequestDto {
     @NotNull
     public BigDecimal amount;
 
-    @ApiModelProperty(notes = "<h4><i>Available currencies:</i></h4>[USD, EUR, BYN]", example = "USD", required = true)
+    @ApiModelProperty(example = "USD", required = true)
     @NotNull
-    public String currency;
+    public Currency currency;
 
     @ApiModelProperty(notes = "'recipientBankAccountId' >= 1 value must be higher or equal to 1\n'recipientBankAccountId' != 'senderBankAccountId' ids must not be the same", example = "2", required = true)
     @NotNull

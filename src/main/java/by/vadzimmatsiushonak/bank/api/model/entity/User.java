@@ -11,7 +11,9 @@ import lombok.Setter;
 public class User extends BaseEntity {
 
     private String login;
+
     private String password;
+
     private String role;
 
 }
