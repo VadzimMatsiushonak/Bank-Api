@@ -1,5 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.model.dto.request;
 
+import by.vadzimmatsiushonak.bank.api.model.entity.base.PaymentStatus;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import javax.validation.constraints.DecimalMin;
@@ -20,9 +21,9 @@ public class BankPaymentRequestDto {
     @NotNull
     public Long recipientBankAccountId;
 
-    @ApiModelProperty(notes = "<h4><i>Available currencies:</i></h4>[ACCEPTED, PENDING, REJECTED]", example = "ACCEPTED", required = true)
+    @ApiModelProperty(example = "ACCEPTED", required = true)
     @NotNull
-    public String status;
+    public PaymentStatus status;
 
     @ApiModelProperty(notes = "'senderBankAccountId' >= 1 value must be higher or equal to 1\n'senderBankAccountId' != 'recipientBankAccountId' ids must not be the same", example = "1", required = true)
     @NotNull
