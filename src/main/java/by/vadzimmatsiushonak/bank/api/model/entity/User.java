@@ -1,12 +1,13 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
+import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
 import javax.persistence.Entity;
-import lombok.Getter;
-import lombok.Setter;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity(name = "Users")
 public class User extends BaseEntity {
 
@@ -14,6 +15,7 @@ public class User extends BaseEntity {
 
     private String password;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 }

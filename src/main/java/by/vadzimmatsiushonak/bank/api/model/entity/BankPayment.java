@@ -9,11 +9,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity(name = "BankPayments")
 public class BankPayment extends BaseEntity {
 

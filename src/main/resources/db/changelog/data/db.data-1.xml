@@ -13,7 +13,7 @@
     <insert tableName="USERS">
       <column name="LOGIN" value="Vadzim"/>
       <column name="PASSWORD" value="pass"/>
-      <column name="ROLE" value="STAFF"/>
+      <column name="ROLE" value="USER"/>
     </insert>
   </changeSet>
 
