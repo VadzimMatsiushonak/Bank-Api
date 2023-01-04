@@ -20,6 +20,18 @@ spring:
     # drop-first parameter is used in case the database schema should be dropped before running Liquibase operations.
     drop-first: true
     change-log: classpath:db/changelog/db.changelog-root.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/oauth2/jwks
+
 server:
   error:
     include-message: always
+
+bank-api:
+  security:
+    client-id: client
+    client-secret: secret
+    redirect-uris: http://127.0.0.1/auth, https://oidcdebugger.com/debug
