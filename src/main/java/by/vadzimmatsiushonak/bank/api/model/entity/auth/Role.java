@@ -4,7 +4,7 @@ import java.util.Set;
 
 public enum Role {
     ADMIN("ADMIN", Set.of(Scope.READ, Scope.WRITE)),
-    USER("USER", Set.of(Scope.READ));
+    TECHNICAL_USER("TECHNICAL_USER", Set.of(Scope.READ));
 
     private static final String ROLE_PREFIX = "ROLE_";
     public final String role;
