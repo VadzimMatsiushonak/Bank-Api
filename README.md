@@ -8,12 +8,23 @@ to work with it.
 ## Installation
 
 1. Download the source project from [GitHub](https://github.com/VadzimMatsiushonak/Bank-Api.git)
-2. Run command to build the project ```./gradlew build clean```
+2. Run command to build the project ```./gradlew clean build```
 
 ## Usage
 
+### Locally
 1. Start the project by running BankApiApplication main method or using ```./gradlew bootRun```
 2. Open [Swagger](http://localhost:8080/swagger-ui/) to access Api GUI
+
+### Docker
+**Image to run build files**
+1. Run ```./gradlew clean build``` to build jar file
+2. Run ```docker build -t asimx/bank-api -f docker/Dockerfile .``` to build docker image
+3. Run ```docker run -p 8080:8080 asimx/bank-api``` to launch docker container
+
+**Image to build and run source files**
+1. Run ```docker build -t asimx/bank-api -f docker/source/Dockerfile .``` to build docker image
+2. Run ```docker run -p 8080:8080 asimx/bank-api-latest``` to launch docker container
 
 ## Useful links
 
