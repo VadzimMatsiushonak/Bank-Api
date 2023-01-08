@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/bank-api-liquibase?allowPublicKeyRetrieval=true&useSSL=false
+    username: admin
+    password: pass
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.MySQL8Dialect

@@ -8,7 +8,7 @@ import javax.persistence.OneToOne;
 import lombok.Data;
 
 @Data
-@Entity(name = "BankCards")
+@Entity(name = "bank_cards")
 public class BankCard extends BaseEntity {
 
     private String number;
@@ -18,7 +18,7 @@ public class BankCard extends BaseEntity {
     private LocalDate expirationDate;
 
     @OneToOne
-    @JoinColumn(name = "BANK_ACCOUNT_ID", nullable = false)
+    @JoinColumn(name = "bank_account_id", nullable = false)
     private BankAccount bankAccount;
 
 }

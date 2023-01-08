@@ -10,6 +10,7 @@ COPY gradlew build.gradle settings.gradle ./
 COPY src ./src
 
 # Install all the dependencies
+# Not required since dependencies will be downloaded twice
 RUN ./gradlew
 
 CMD ["./gradlew", "bootRun"]

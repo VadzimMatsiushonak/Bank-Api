@@ -9,7 +9,7 @@ import javax.persistence.OneToMany;
 import lombok.Data;
 
 @Data
-@Entity(name = "Banks")
+@Entity(name = "banks")
 public class Bank extends BaseEntity {
 
     private String title;

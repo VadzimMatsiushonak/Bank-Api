@@ -16,7 +16,7 @@ import javax.persistence.OneToOne;
 import lombok.Data;
 
 @Data
-@Entity(name = "BankAccounts")
+@Entity(name = "bank_accounts")
 public class BankAccount extends BaseEntity {
 
     private String title;
