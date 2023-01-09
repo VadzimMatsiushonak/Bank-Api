@@ -52,6 +52,31 @@ to work with it.
 
 #### Docker
 
+##### Docker compose
+
+1. Open docker-compose.yaml file and use MySql values 
+```
+  environment:
+    - SPRING_PROFILES_ACTIVE=docker-mysql
+
+  depends_on:
+    - mysqlserver
+      
+  mysql:
+    container_name: mysqlserver
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=pass
+      - MYSQL_ROOT_PASSWORD=pass
+      - MYSQL_DATABASE=bank-api-liquibase
+    ports:
+      - '3306:3306'
+    image: 'mysql:8.0'
+```
+2. Run ```docker-compose -f docker-compose.yml up -d --build```
+
+##### Docker run
+
 1. Create docker network ```docker network create mysqlnet```
 2. Run your mysql instance
     ```
@@ -78,6 +103,30 @@ to work with it.
     - in Gradle ./gradlew bootRun -Dspring.profiles.active=local-psql
 
 #### Docker
+
+##### Docker compose
+
+1. Open docker-compose.yaml file and use PostgreSQL values
+```
+  environment:
+    - SPRING_PROFILES_ACTIVE=docker-psql
+
+  depends_on:
+    - psqlserver
+      
+  psqlserver:
+    container_name: psqlserver
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=bank-api-liquibase
+    ports:
+      - '5432:5432'
+    image: 'postgres:13.1-alpine'
+```
+2. Run ```docker-compose -f docker-compose.yml up -d --build```
+
+##### Docker run
 
 1. Create docker network ```docker network create psqlnet```
 2. Run your mysql instance
