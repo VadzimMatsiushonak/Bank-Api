@@ -8,7 +8,7 @@ import javax.persistence.Enumerated;
 import lombok.Data;
 
 @Data
-@Entity(name = "Users")
+@Entity(name = "users")
 public class User extends BaseEntity {
 
     private String login;

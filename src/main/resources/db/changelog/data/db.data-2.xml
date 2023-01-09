@@ -4,16 +4,16 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
   <changeSet author="Vadzim Matsiushonak" id="1">
-    <update tableName="BANK_PAYMENTS">
-      <column name="STATUS" value="ACCEPTED"/>
+    <update tableName="bank_payments">
+      <column name="status" value="ACCEPTED"/>
       <where>ID='1'</where>
     </update>
-    <update tableName="BANK_PAYMENTS">
-      <column name="STATUS" value="ACCEPTED"/>
+    <update tableName="bank_payments">
+      <column name="status" value="ACCEPTED"/>
       <where>ID='2'</where>
     </update>
-    <update tableName="BANK_PAYMENTS">
-      <column name="STATUS" value="ACCEPTED"/>
+    <update tableName="bank_payments">
+      <column name="status" value="ACCEPTED"/>
       <where>ID='3'</where>
     </update>
   </changeSet>

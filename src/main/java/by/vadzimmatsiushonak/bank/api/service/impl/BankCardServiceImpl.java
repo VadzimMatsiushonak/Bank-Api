@@ -40,13 +40,7 @@ public class BankCardServiceImpl implements BankCardService {
     public List<BankCard> findAll() {
         log.info("BankCardServiceImpl findAll");
 
-        List<BankCard> all = repository.findAll();
-        for (BankCard bankCard : all) {
-            for (BankPayment bankPayment : bankCard.getBankAccount().getBankPayments()) {
-                bankPayment.hashCode();
-            }
-        }
-        return all;
+        return repository.findAll();
     }
 
     @Override

@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
-@Entity(name = "BankPayments")
+@Entity(name = "bank_payments")
 public class BankPayment extends BaseEntity {
 
     private BigDecimal amount;
@@ -26,7 +26,7 @@ public class BankPayment extends BaseEntity {
     private PaymentStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "bankAccount_id", nullable = false)
+    @JoinColumn(name = "bank_account_id", nullable = false)
     private BankAccount bankAccount;
 
 }
