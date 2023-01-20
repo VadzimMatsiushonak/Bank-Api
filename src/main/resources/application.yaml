@@ -25,6 +25,12 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/oauth2/jwks
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: bankapi
+    topic:
+      logging: logging
 
 server:
   error:
