@@ -29,7 +29,7 @@ public class StatusRestController {
     }
 
     @PostMapping("/api/v1/kafka/log")
-    public ResponseEntity<String> status(@RequestBody String msg) {
+    public ResponseEntity<String> kafkaLogStatus(@RequestBody String msg) {
         kafkaTemplate.send(loggingTopic, msg);
         return ResponseEntity.status(CREATED).body(msg);
     }
