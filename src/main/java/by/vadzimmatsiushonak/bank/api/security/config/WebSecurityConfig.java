@@ -27,6 +27,10 @@ public class WebSecurityConfig {
         enableOauth2ResourceServer(http);
         protectApiEndpoints(http);
 
+        // Temporary disabled CSRF
+        // TODO fix the issue with CSRF
+        http.csrf().disable();
+
         return http.formLogin().and().build();
     }
 
