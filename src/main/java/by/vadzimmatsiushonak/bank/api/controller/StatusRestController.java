@@ -20,7 +20,7 @@ public class StatusRestController {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    @Value(value = "${kafka.topic.logging}")
+    @Value(value = "${spring.kafka.topic.logging}")
     private String loggingTopic;
 
     @GetMapping("/api/v1/status")

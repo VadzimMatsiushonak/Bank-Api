@@ -1,5 +1,33 @@
 version: '3.8'
 services:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,DOCKER_INTERNAL:PLAINTEXT
+      # PLAINTEXT is used for local environment when we have local application and local/deployed kafka broker
+      # DOCKER_INTERNAL is used for container environment when we have deployed application and local/deployed kafka broker
+      # for more information check link below
+      # https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,DOCKER_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
   bank-api-latest:
     build:
       context: .
@@ -8,10 +36,11 @@ services:
     ports:
       - '8080:8080'
     environment:
-      - SPRING_PROFILES_ACTIVE=docker-psql
+      - SPRING_PROFILES_ACTIVE=docker-psql,docker-kafka
 #      - SPRING_PROFILES_ACTIVE=docker-mysql
     image: asimx/bank-api-latest
     depends_on:
+      - broker
       - psqlserver
 #      - mysqlserver
 

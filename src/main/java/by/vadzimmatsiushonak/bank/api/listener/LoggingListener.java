@@ -18,13 +18,13 @@ public class LoggingListener {
     private final static String DEBUG_PATTERN = "DEBUG";
 
     @KafkaListener(id = "loggerFirstPartition",
-        topicPartitions = @TopicPartition(topic = "${kafka.topic.logging}", partitions = {"0", "1"}))
+        topicPartitions = @TopicPartition(topic = "${spring.kafka.topic.logging}", partitions = {"0", "1"}))
     public void loggerFirstPartition(@Payload String msg, @Header(KafkaHeaders.RECEIVED_PARTITION) String partition) {
         log.info(FIRST_PARTITION_PATTERN, partition, INFO_PATTERN, msg);
     }
 
     @KafkaListener(id = "loggerSecondPartition",
-        topicPartitions = @TopicPartition(topic = "${kafka.topic.logging}", partitions = {"2", "3"}))
+        topicPartitions = @TopicPartition(topic = "${spring.kafka.topic.logging}", partitions = {"2", "3"}))
     public void loggerSecondPartition(@Payload String msg, @Header(KafkaHeaders.RECEIVED_PARTITION) String partition) {
         log.info(SECOND_PARTITION_PATTERN, partition, INFO_PATTERN, msg);
     }
