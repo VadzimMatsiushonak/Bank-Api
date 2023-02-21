@@ -21,6 +21,14 @@ to work with it.
 
 ## Startup
 
+### Note
+
+Before running the application, you need to make sure that the services used by the application are running on the
+machine:
+
+- Database: **[Startup->PostgreSQL](#StartupPostgreSQL)** or **[Startup->MySQL](#StartupMySQL)**
+- Message broker: **[Startup->Kafka](#StartupKafka)**
+
 ### Locally
 
 1. Start the project by running BankApiApplication main method or using ```./gradlew bootRun```
@@ -39,9 +47,9 @@ to work with it.
 1. Run ```docker build -t asimx/bank-api -f docker/source/Dockerfile .``` to build docker image
 2. Run ```docker run -p 8080:8080 asimx/bank-api-latest``` to launch docker container
 
-## Usage of different Databases
+## Databases
 
-### MySQL
+### <a id="StartupMySQL"></a> MySQL
 
 #### Locally
 
@@ -54,7 +62,8 @@ to work with it.
 
 ##### Docker compose
 
-1. Open docker-compose.yaml file and use MySql values 
+1. Open docker-compose.yaml file and use MySql values
+
 ```
   environment:
     - SPRING_PROFILES_ACTIVE=docker-mysql
@@ -73,6 +82,7 @@ to work with it.
       - '3306:3306'
     image: 'mysql:8.0'
 ```
+
 2. Run ```docker-compose -f docker-compose.yml up -d --build```
 
 ##### Docker run
@@ -93,7 +103,7 @@ to work with it.
     docker run --network mysqlnet -d -p 8080:8080 -e "SPRING_PROFILES_ACTIVE=docker-mysql" {bank-api-image}
     ```
 
-### PostgreSQL
+### <a id="StartupPostgreSQL"></a> PostgreSQL
 
 #### Locally
 
@@ -107,6 +117,7 @@ to work with it.
 ##### Docker compose
 
 1. Open docker-compose.yaml file and use PostgreSQL values
+
 ```
   environment:
     - SPRING_PROFILES_ACTIVE=docker-psql
@@ -124,7 +135,13 @@ to work with it.
       - '5432:5432'
     image: 'postgres:13.1-alpine'
 ```
+
 2. Run ```docker-compose -f docker-compose.yml up -d --build```
+
+``` 
+--build     Build images before starting containers
+-f          To specify name and path of one or more Compose files
+```
 
 ##### Docker run
 
@@ -150,15 +167,27 @@ to work with it.
 
 ##### default - application.yaml
 
-Runs default environment
+- Runs default environment
+
+##### local-psql - application-local-psql.yaml
+
+- Runs environment with PostgreSQL installed on your OS
 
 ##### local-mysql - application-local-mysql.yaml
 
-Runs environment with MySql installed on your OS
+- Runs environment with MySql installed on your OS
+
+##### docker-psql - application-docker-psql.yaml
+
+- Runs environment with PostgreSQL running in Docker
 
 ##### docker-mysql - application-docker-mysql.yaml
 
-Runs environment with MySql running in Docker
+- Runs environment with MySql running in Docker
+
+##### docker-kafka - application-docker-kafka.yaml
+
+- Runs environment with Kafka running in Docker
 
 ### Properties
 
@@ -176,6 +205,46 @@ Runs environment with MySql running in Docker
 
 **docker/Dockerfile** - Image to run build files
 **docker/source/Dockerfile** - Image to build and run source files
+
+## Kafka
+
+Before working with kafka it's required to check **[Quickstart documentation](https://kafka.apache.org/quickstart)**
+
+### Available topics
+
+- **logging** - used for test purposes to log messages
+
+### Produce messages to kafka topic
+
+```
+bin/kafka-console-producer.sh --topic logging --bootstrap-server localhost:9092
+```
+
+### Consume messages from kafka topic
+
+```
+bin/kafka-console-consumer.sh --topic logging --bootstrap-server localhost:9092
+```
+
+### Testing
+
+1. You need to make a POST request to the StatusRestController
+
+```
+curl -X POST "http://localhost:8080/api/v1/kafka/log" -H "accept: */*" -H "Content-Type: application/json" -d "string"
+```
+
+2. You will then receive messages in the LoggingListener in the format below
+
+```
+[{1}L|{2}p] : {3} : {4}
+
+# Where:
+# 1 - Listener number
+# 2 - Partition number
+# 3 - Log type (INFO|DEBUG)
+# 4 - Message
+```
 
 ## Available Requests flow
 
