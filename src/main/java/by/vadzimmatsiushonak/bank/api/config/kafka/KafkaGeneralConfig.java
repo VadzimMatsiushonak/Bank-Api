@@ -1,6 +1,7 @@
 package by.vadzimmatsiushonak.bank.api.config.kafka;
 
 
+import by.vadzimmatsiushonak.bank.api.model.payload.LoggingPayload;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -19,6 +20,8 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @EnableKafka
 @Configuration
@@ -48,10 +51,28 @@ public class KafkaGeneralConfig {
     }
 
     @Bean
+    public ConsumerFactory<String, LoggingPayload> loggingConsumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        JsonDeserializer<LoggingPayload> deserializer = new JsonDeserializer<>(LoggingPayload.class);
+        deserializer.addTrustedPackages("by.vadzimmatsiushonak.bank.api.model.payload.LoggingPayload");
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
+    }
+
+    @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, LoggingPayload> loggingKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, LoggingPayload> factory =
+            new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(loggingConsumerFactory());
         return factory;
     }
     // KAFKA CONSUMER REGION
@@ -67,8 +88,22 @@ public class KafkaGeneralConfig {
     }
 
     @Bean
+    public ProducerFactory<String, LoggingPayload> loggingProducerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public KafkaTemplate<String, LoggingPayload> loggingKafkaTemplate() {
+        return new KafkaTemplate<>(loggingProducerFactory());
     }
     // KAFKA PRODUCER REGION
 

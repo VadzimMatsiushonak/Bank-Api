@@ -1,5 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.listener;
 
+import by.vadzimmatsiushonak.bank.api.model.payload.LoggingPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
@@ -14,19 +15,38 @@ public class LoggingListener {
 
     private final static String FIRST_PARTITION_PATTERN = "[1L|{}p] : {} : {}";
     private final static String SECOND_PARTITION_PATTERN = "[2L|{}p] : {} : {}";
-    private final static String INFO_PATTERN = "INFO";
-    private final static String DEBUG_PATTERN = "DEBUG";
 
     @KafkaListener(id = "loggerFirstPartition",
-        topicPartitions = @TopicPartition(topic = "${spring.kafka.topic.logging}", partitions = {"0", "1"}))
-    public void loggerFirstPartition(@Payload String msg, @Header(KafkaHeaders.RECEIVED_PARTITION) String partition) {
-        log.info(FIRST_PARTITION_PATTERN, partition, INFO_PATTERN, msg);
+        topicPartitions = @TopicPartition(topic = "${spring.kafka.topic.logging}", partitions = {"0", "1"}),
+        containerFactory = "loggingKafkaListenerContainerFactory")
+    public void loggerFirstPartition(@Payload LoggingPayload payload,
+        @Header(KafkaHeaders.RECEIVED_PARTITION) String partition) {
+        proceedLog(payload, FIRST_PARTITION_PATTERN, partition);
     }
 
     @KafkaListener(id = "loggerSecondPartition",
-        topicPartitions = @TopicPartition(topic = "${spring.kafka.topic.logging}", partitions = {"2", "3"}))
-    public void loggerSecondPartition(@Payload String msg, @Header(KafkaHeaders.RECEIVED_PARTITION) String partition) {
-        log.info(SECOND_PARTITION_PATTERN, partition, INFO_PATTERN, msg);
+        topicPartitions = @TopicPartition(topic = "${spring.kafka.topic.logging}", partitions = {"2", "3"}),
+        containerFactory = "loggingKafkaListenerContainerFactory")
+    public void loggerSecondPartition(@Payload LoggingPayload payload,
+        @Header(KafkaHeaders.RECEIVED_PARTITION) String partition) {
+        proceedLog(payload, SECOND_PARTITION_PATTERN, partition);
+    }
+
+    private void proceedLog(LoggingPayload payload, String pattern, String partition) {
+        switch (payload.getType()) {
+            case INFO:
+                log.info(pattern, partition, payload.getType().toString(), payload.getMessage());
+                break;
+            case DEBUG:
+                log.debug(pattern, partition, payload.getType().toString(), payload.getMessage());
+                break;
+            case ERROR:
+                log.error(pattern, partition, payload.getType().toString(), payload.getMessage());
+                break;
+            default:
+                log.info(pattern, partition, payload.getType().toString(), payload.getMessage());
+                break;
+        }
     }
 
 }
