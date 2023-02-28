@@ -5,7 +5,21 @@
 The project is an example of a banking API that contains all the functions related to storing data and providing an API
 to work with it.
 
-## Useful links
+README documentation consists of the following sections:
+- **[Useful links](#UsefulLinks)**
+- **[Installation](#Installation)**
+- **[Startup](#Startup)**
+- **[Docker](#Docker)**
+- **[Databases](#Databases)**
+- **[Environment](#Environment)**
+- **[Kafka](#Kafka)**
+- **[Available Requests flow](#AvailableRequestsFlow)**
+- **[Task Flow](#TaskFlow)**
+- **[Git Flow](#GitFlow)**
+- **[Naming](#Naming)**
+- **[Api flows](#ApiFlows)**
+
+## <a id="UsefulLinks"></a> Useful links
 
 - [Notion](https://www.notion.so/BankApi-4cd52d55c7204482a6f364f1b7687c5e)
 - [Github](https://github.com/VadzimMatsiushonak/Bank-Api)
@@ -14,12 +28,12 @@ to work with it.
 - [Toggl timer](https://track.toggl.com/timer)
 - [BankApi model](https://app.sqldbm.com/MySQL/Edit/p237658/)
 
-## Installation
+## <a id="Installation"></a> Installation
 
 1. Download the source project from [GitHub](https://github.com/VadzimMatsiushonak/Bank-Api.git)
 2. Run command to build the project ```./gradlew clean build```
 
-## Startup
+## <a id="Startup"></a> Startup
 
 ### Note
 
@@ -39,15 +53,23 @@ machine:
 **Image to run build files**
 
 1. Run ```./gradlew clean build``` to build jar file
-2. Run ```docker build -t asimx/bank-api -f docker/Dockerfile .``` to build docker image
+2. Run ```docker build --target build -t asimx/bank-api -f Dockerfile .``` to build docker image
 3. Run ```docker run -p 8080:8080 asimx/bank-api``` to launch docker container
 
 **Image to build and run source files**
 
-1. Run ```docker build -t asimx/bank-api -f docker/source/Dockerfile .``` to build docker image
+1. Run ```docker build --target standalone -t asimx/bank-api -f Dockerfile .``` to build docker image
 2. Run ```docker run -p 8080:8080 asimx/bank-api-latest``` to launch docker container
 
-## Databases
+## <a id="Docker"></a> Docker
+
+### Dockerfile's
+
+**Dockerfile** - Image to build and application
+**docker-compose.yml** - Compose file to start standalone application in docker environment 
+**docker/kafka-compose.yml** -  Compose file to start kafka as standalone service in docker environment
+
+## <a id="Databases"></a>  Databases
 
 ### <a id="StartupMySQL"></a> MySQL
 
@@ -97,8 +119,10 @@ machine:
     -e MYSQL_ROOT_PASSWORD=pass -e MYSQL_DATABASE=bank-api-liquibase \
     -p 3306:3306 mysql:8.0
     ```
-3. Build your Docker image **[Startup->Docker](#StartupDocker)**
-4. Run your container and set 'docker-mysql' as active profile
+
+- Run your application locally **[Startup](#Startup)** with '_local-mysql_' as active profile
+- Or Build your Docker image **[Startup->Docker](#StartupDocker)** and run your container with '_docker-mysql_' as
+  active profile
     ```
     docker run --network mysqlnet -d -p 8080:8080 -e "SPRING_PROFILES_ACTIVE=docker-mysql" {bank-api-image}
     ```
@@ -155,13 +179,15 @@ machine:
     -e POSTGRES_DB=bank-api-liquibase \
     -p 5432:5432 postgres:13.1-alpine
     ```
-3. Build your Docker image **[Startup->Docker](#StartupDocker)**
-4. Run your container and set 'docker-psql' as active profile
+
+- Run your application locally **[Startup](#Startup)** with '_local-psql_' as active profile
+- Or Build your Docker image **[Startup->Docker](#StartupDocker)** and run your container with '_docker-psql_' as active
+  profile
     ```
     docker run --network psqlnet -d -p 8080:8080 -e "SPRING_PROFILES_ACTIVE=docker-psql" {bank-api-image}
     ```
 
-## Environment
+## <a id="Environment"></a> Environment
 
 ### Profiles
 
@@ -199,16 +225,26 @@ machine:
 **client-secret** - client secret for grant_type=client_credentials flow \
 **redirect-uris** - allowed redirect URLs for grant_type=authorization_code flow
 
-## Docker
-
-### Dockerfile's
-
-**docker/Dockerfile** - Image to run build files
-**docker/source/Dockerfile** - Image to build and run source files
-
-## Kafka
+## <a id="Kafka"></a> Kafka
 
 Before working with kafka it's required to check **[Quickstart documentation](https://kafka.apache.org/quickstart)**
+
+### <a id="StartupKafka"></a> Startup
+
+Kafka is already configured in the docker compose file, but you can also run it as a standalone service with the
+examples below.
+
+#### Locally
+
+- **[Quickstart documentation](https://kafka.apache.org/quickstart)** can be used to run Kafka locally
+
+#### Docker
+
+- ./docker/kafka-compose.yml file can be used to run Kafka in Docker environment using below command
+
+```
+docker-compose -f docker/kafka-compose.yml up -d
+```
 
 ### Available topics
 
@@ -231,7 +267,13 @@ bin/kafka-console-consumer.sh --topic logging --bootstrap-server localhost:9092
 1. You need to make a POST request to the StatusRestController
 
 ```
-curl -X POST "http://localhost:8080/api/v1/kafka/log" -H "accept: */*" -H "Content-Type: application/json" -d "string"
+curl -X POST "http://localhost:8080/api/v1/kafka/log/qwe" -H "accept: */*" -d ""
+```
+
+**OR**
+
+```
+curl -X POST "http://localhost:8080/api/v1/kafka/log" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"message\": \"string\", \"type\": \"ERROR\"}"
 ```
 
 2. You will then receive messages in the LoggingListener in the format below
@@ -242,15 +284,15 @@ curl -X POST "http://localhost:8080/api/v1/kafka/log" -H "accept: */*" -H "Conte
 # Where:
 # 1 - Listener number
 # 2 - Partition number
-# 3 - Log type (INFO|DEBUG)
+# 3 - Log type (INFO|DEBUG|etc...)
 # 4 - Message
 ```
 
-## Available Requests flow
+## <a id="AvailableRequestsFlow"></a> Available Requests flow
 
 1. Initiate payment
 
-## Task Flow
+## <a id="TaskFlow"></a> Task Flow
 
 1. Create/Get task in ClickUp
 2. Assign it to yourself
@@ -259,12 +301,12 @@ curl -X POST "http://localhost:8080/api/v1/kafka/log" -H "accept: */*" -H "Conte
 5. Connect GitHub PR to ClickUp task
 6. Merge the PR and change status to 'In Test' or 'Solved' (if tests are provided in the task)
 
-## Git Flow
+## <a id="GitFlow"></a> Git Flow
 
 1. PR should have at least 1 reviewer
 2. Use only squash and merge
 
-## Naming
+## <a id="Naming"></a> Naming
 
 - PR
     - Title should have (tag) [task ID] task title
@@ -277,7 +319,7 @@ curl -X POST "http://localhost:8080/api/v1/kafka/log" -H "accept: */*" -H "Conte
 - Tags
     - feature, bug, tests, docs
 
-## Api flows
+## <a id="ApiFlows"></a> Api flows
 
 ### CRUD
 
