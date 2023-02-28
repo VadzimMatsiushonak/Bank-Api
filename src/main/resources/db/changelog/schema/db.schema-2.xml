@@ -5,7 +5,7 @@
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
   <changeSet author="Vadzim Matsiushonak" id="1">
     <addColumn tableName="bank_payments">
-      <column name="status" type="VARCHAR(255)" />
+      <column name="status" type="VARCHAR(255)"/>
     </addColumn>
   </changeSet>
 </databaseChangeLog>
