@@ -1,7 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.service.impl;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.BankCard;
-import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.repository.BankCardRepository;
 import by.vadzimmatsiushonak.bank.api.service.BankCardService;
 import java.util.List;
