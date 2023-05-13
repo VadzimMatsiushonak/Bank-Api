@@ -7,11 +7,13 @@ import javax.validation.constraints.Size;
 
 public class CustomerRequestDto {
 
-    @ApiModelProperty(notes = "'name' must start with capital letter", required = true)
+    @ApiModelProperty(notes = "'name' must start with capital letter",
+        required = true)
     @NotNull
     public String name;
 
-    @ApiModelProperty(notes = "'name' must start with capital letter", required = true)
+    @ApiModelProperty(notes = "'name' must start with capital letter",
+        required = true)
     @NotNull
     public String surname;
 
@@ -19,12 +21,21 @@ public class CustomerRequestDto {
     @NotNull
     public LocalDate dateOfBirth;
 
-    @ApiModelProperty(notes = "'phoneNumber' must be separated with spaces, countryCode operatorCode number", example = "1 23 1234567", required = true)
+    @ApiModelProperty(notes = "'phoneNumber' must be separated with spaces, countryCode operatorCode number",
+        example = "1 23 1234567",
+        required = true)
     @NotNull
     public String phoneNumber;
 
-    @ApiModelProperty(required = true)
-    @Size(min = 8)
+    @ApiModelProperty(notes = "'password' must be between 8 and 50 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+        example = "MyP@ssw0rd123",
+        required = true)
+    @Size(min = 8, max = 50)
+    // TODO: Add password pattern
+//    @Pattern(
+//        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
+//        message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
+//    )
     @NotNull
     public String password;
 

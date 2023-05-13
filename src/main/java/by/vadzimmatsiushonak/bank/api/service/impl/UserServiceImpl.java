@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,11 +20,13 @@ import org.springframework.validation.annotation.Validated;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
+    private final PasswordEncoder encoder;
 
     @Override
     public User create(@NotNull User user) {
         log.info("UserServiceImpl create {}", user);
         user.setId(null);
+        user.setPassword(encoder.encode(user.getPassword()));
 
         return repository.save(user);
     }
