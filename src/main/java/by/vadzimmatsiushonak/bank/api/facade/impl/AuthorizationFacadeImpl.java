@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
     @Override
     @Transactional
-    public String registerCustomer(Customer customer) {
+    public String registerCustomer(@NotNull Customer customer) {
         customerService.create(customer);
         User user = new User(customer);
         user.setRole(Role.TECHNICAL_USER);
@@ -45,7 +46,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         String key = UUID.randomUUID().toString();
         String code = String.valueOf(getRandom(VERIFICATION_MIN_VALUE, VERIFICATION_MAX_VALUE));
         confirmations.put(key, new UserConfirmation(user.getId(), code));
-        log.info("{} confirmation code prepared for the user  : {}", code, key);
+        log.info("Confirmation code '{}' has been prepared for user with key '{}' and id '{}'", code, key, user.getId());
 
         return key;
     }
@@ -63,6 +64,9 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             User user = userServices.findById(confirmation.getId())
                 .orElseThrow(() -> new_EntityNotFoundException("User", confirmation.getId()));
             user.setStatus(UserStatus.ACTIVE);
+            log.info("User with key {} has been successfully confirmed", key);
+        } else {
+            log.info("Confirmation code {} provided for key {} does not match the expected code", code, key);
         }
         return codesMatch;
     }

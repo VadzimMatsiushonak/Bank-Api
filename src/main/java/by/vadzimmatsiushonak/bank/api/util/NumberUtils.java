@@ -1,6 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.util;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class NumberUtils {
 
@@ -8,8 +8,7 @@ public class NumberUtils {
     public static final int VERIFICATION_MAX_VALUE = 9999;
 
     public static int getRandom(int min, int max) {
-        Random random = new Random();
-        return random.nextInt(max - min + 1) + min;
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
 }
