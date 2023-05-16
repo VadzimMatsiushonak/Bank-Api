@@ -1,7 +1,9 @@
 package by.vadzimmatsiushonak.bank.api.util;
 
+import by.vadzimmatsiushonak.bank.api.exception.ConfirmationNotFoundException;
 import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
 import by.vadzimmatsiushonak.bank.api.exception.InsufficientFundsException;
+import by.vadzimmatsiushonak.bank.api.exception.InvalidConfirmationException;
 import by.vadzimmatsiushonak.bank.api.exception.WrongDataException;
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -49,6 +51,22 @@ public class ExceptionUtils {
 
     public static WrongDataException new_WrongDataException(Object... values) {
         return new WrongDataException(format("WrongDataException", values));
+    }
+
+    public static void throw_ConfirmationNotFoundException(Object... values) {
+        throw new_ConfirmationNotFoundException(values);
+    }
+
+    public static ConfirmationNotFoundException new_ConfirmationNotFoundException(Object... values) {
+        return new ConfirmationNotFoundException(format("ConfirmationNotFoundException", values));
+    }
+
+    public static void throw_InvalidConfirmationException(Object... values) {
+        throw new_InvalidConfirmationException(values);
+    }
+
+    public static InvalidConfirmationException new_InvalidConfirmationException(Object... values) {
+        return new InvalidConfirmationException(format("InvalidConfirmationException", values));
     }
 
 
