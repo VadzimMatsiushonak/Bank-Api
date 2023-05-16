@@ -7,7 +7,7 @@
     <addUniqueConstraint constraintName="uk_login_users_constraint"
       tableName="users"
       columnNames="login"/>
-    <addUniqueConstraint constraintName="uk_phoneNumber_customers_constraint"
+    <addUniqueConstraint constraintName="uk_phone_number_customers_constraint"
       tableName="customers"
       columnNames="phone_number"/>
   </changeSet>
