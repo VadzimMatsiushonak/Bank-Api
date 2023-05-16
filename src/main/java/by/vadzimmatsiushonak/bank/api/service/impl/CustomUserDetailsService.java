@@ -1,5 +1,7 @@
 package by.vadzimmatsiushonak.bank.api.service.impl;
 
+import static by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus.ACTIVE;
+
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.repository.UserRepository;
 import java.util.Collection;
@@ -26,6 +28,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = repository.findByLogin(username)
             .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
+        if (!ACTIVE.equals(user.getStatus())) {
+            throw new UsernameNotFoundException("User " + username + " is not active");
+        }
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(),
             getAuthorities(user));
     }

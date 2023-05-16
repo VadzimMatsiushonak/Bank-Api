@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+  <changeSet author="Vadzim Matsiushonak" id="1">
+    <addUniqueConstraint constraintName="uk_login_users_constraint"
+      tableName="users"
+      columnNames="login"/>
+    <addUniqueConstraint constraintName="uk_phone_number_customers_constraint"
+      tableName="customers"
+      columnNames="phone_number"/>
+  </changeSet>
+</databaseChangeLog>

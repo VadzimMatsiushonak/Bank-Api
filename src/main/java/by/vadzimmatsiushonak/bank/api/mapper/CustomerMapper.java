@@ -6,10 +6,12 @@ import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.CustomerDtoRe
 import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
 
+    @Mapping(target = "password", ignore = true)
     CustomerDto toDto(Customer entity);
 
     CustomerDtoRelations toDtoRelations(Customer entity);
