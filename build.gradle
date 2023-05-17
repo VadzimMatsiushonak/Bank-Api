@@ -28,6 +28,7 @@ ext {
             validation  : "org.springframework.boot:spring-boot-starter-validation",
             web         : "org.springframework.boot:spring-boot-starter-web",
             security    : "org.springframework.boot:spring-boot-starter-security",
+            cache       : "org.springframework.boot:spring-boot-starter-cache",
             kafka       : "org.springframework.kafka:spring-kafka:$springKafkaVersion",
             test        : "org.springframework.boot:spring-boot-starter-test",
             securityTest: "org.springframework.security:spring-security-test"
@@ -57,12 +58,13 @@ ext {
             lombok                : "org.projectlombok:lombok",
             mapstructProcessor    : "org.mapstruct:mapstruct-processor:$mapstructVersion",
             lombokProcessor       : "org.projectlombok:lombok",
-            lombokMapstructBinding: "org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBindingVersion"
+            lombokMapstructBinding: "org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBindingVersion",
+            caffeine              : "com.github.ben-manes.caffeine:caffeine"
     ]
 }
 
 dependencies {
-    implementation spring.dataJpa, spring.validation, spring.web, spring.security, spring.kafka
+    implementation spring.dataJpa, spring.validation, spring.web, spring.security, spring.kafka, spring.cache
 
     implementation database.liquibaseCore
     runtimeOnly database.h2, database.mysql, database.psql
@@ -71,7 +73,7 @@ dependencies {
 
     implementation swagger.core, swagger.starter, swagger.ui
 
-    implementation misc.gson, misc.mapstruct
+    implementation misc.gson, misc.mapstruct, misc.caffeine
     compileOnly misc.lombok
     annotationProcessor misc.mapstructProcessor, misc.lombokProcessor, misc.lombokMapstructBinding
 
