@@ -15,8 +15,6 @@ import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
 import by.vadzimmatsiushonak.bank.api.service.CustomerService;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import javax.validation.constraints.Max;
@@ -25,6 +23,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -36,13 +35,13 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
     private final CustomerService customerService;
     private final UserService userServices;
-
-    private final Map<String, UserConfirmation> confirmations = new HashMap<>();
+    private final Cache confirmations;
 
     @Override
     @Transactional
     public String registerCustomer(@NotNull Customer customer) {
         customerService.create(customer);
+
         User user = new User(customer);
         user.setRole(Role.TECHNICAL_USER);
         userServices.create(user);
@@ -60,21 +59,24 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Transactional
     public Boolean confirmCustomer(@NotBlank String key,
         @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserConfirmation confirmation = confirmations.get(key);
+        UserConfirmation confirmation = confirmations.get(key, UserConfirmation.class);
+
         if (confirmation == null) {
             log.info("Confirmation {} not found or expired", key);
             throw new_ConfirmationNotFoundException(key);
         }
+
         if (!confirmation.getCode().equals(code)) {
             log.info("Invalid verification code {} for key {}", code, key);
             throw new_InvalidConfirmationException(String.valueOf(code), key);
         }
 
-        confirmations.remove(key);
         User user = userServices.findById(confirmation.getId())
             .orElseThrow(() -> new_EntityNotFoundException("User", confirmation.getId()));
         user.setStatus(UserStatus.ACTIVE);
+        confirmations.evictIfPresent(key);
         log.info("User with key {} has been successfully confirmed", key);
+
         return true;
     }
 }
