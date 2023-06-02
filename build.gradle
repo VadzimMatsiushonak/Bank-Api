@@ -18,7 +18,7 @@ ext {
     springBootVersion = "2.7.5"
     springDependencyManagementVersion = "1.0.15.RELEASE"
     springKafkaVersion = "2.9.2"
-    springSecurityAuthorizationServerVersion = "0.3.1"
+    springSecurityAuthorizationServerVersion = "0.4.2"
     gsonVersion = "2.10"
     mapstructVersion = "1.5.3.Final"
     lombokMapstructBindingVersion = "0.2.0"
@@ -42,7 +42,10 @@ ext {
     ]
 
     security = [
+//            authorizationServer: "org.springframework.security:spring-security-oauth2-authorization-server:1.1.0",
             authorizationServer: "org.springframework.security:spring-security-oauth2-authorization-server:$springSecurityAuthorizationServerVersion",
+
+
             resourceServer     : "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     ]
 
