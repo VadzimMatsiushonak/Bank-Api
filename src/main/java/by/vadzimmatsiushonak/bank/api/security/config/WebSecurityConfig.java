@@ -76,11 +76,12 @@ public class WebSecurityConfig {
                 // Protected API modification endpoints
                 .antMatchers(HttpMethod.POST, "/api/**").hasAuthority(ADMIN.authority)
                 .antMatchers(HttpMethod.PUT, "/api/**").hasAuthority(ADMIN.authority)
-                .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ADMIN.authority)
-                .anyRequest().authenticated();
+                .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ADMIN.authority);
 
         protectSwaggerEndpoints(http);
         protectH2ConsoleEndpoints(http);
+
+        http.authorizeRequests().anyRequest().authenticated();
     }
 
     public void protectH2ConsoleEndpoints(HttpSecurity http) throws Exception {
