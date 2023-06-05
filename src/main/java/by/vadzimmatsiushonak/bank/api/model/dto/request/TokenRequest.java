@@ -4,14 +4,14 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
 
-public class LoginRequestDto {
+public class TokenRequest {
 
     @ApiModelProperty(required = true, position = 10)
     @NotNull
-    public String username;
+    public String key;
 
     @ApiModelProperty(required = true, position = 1)
     @NotNull
-    public String password;
+    public Integer code;
 
 }

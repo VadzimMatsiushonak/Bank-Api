@@ -65,12 +65,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
         UserConfirmation confirmation = confirmCode(key, code);
 
-        UserDetails user;
-        try {
-            user = userDetailsService.loadUserByUsername(confirmation.getUsername());
-        } catch (UsernameNotFoundException exception) {
-            throw new_UserNotFoundException(confirmation.getUsername());
-        }
+        UserDetails user = userDetailsService.loadUserByUsername(confirmation.getUsername());
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 new UserPrincipal(user.getUsername()), null, user.getAuthorities());

@@ -3,12 +3,12 @@ package by.vadzimmatsiushonak.bank.api.controller;
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
 import by.vadzimmatsiushonak.bank.api.mapper.CustomerMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.CustomerRequestDto;
-import by.vadzimmatsiushonak.bank.api.model.dto.request.LoginRequestDto;
-import by.vadzimmatsiushonak.bank.api.model.dto.request.TokenRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.AuthRequest;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.TokenRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.ConfirmationResponse;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.LoginResponse;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.AuthResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.RegistrationResponse;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.TokenResponseDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.TokenResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -25,8 +25,7 @@ import javax.validation.constraints.NotBlank;
 import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
 import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MAX_VALUE;
 import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_VALUE;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_CREATED;
+import static java.net.HttpURLConnection.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -39,22 +38,48 @@ public class AuthorizationController {
     private final CustomerMapper customerMapper;
     private final AuthorizationFacade authorizationFacade;
 
+
+    /**
+     * Perform authentication for active users, generates a confirmation code, sends it to the
+     * user, and returns a unique identifier for confirming the token retrieval request.
+     *
+     * @param authRequest the user data to be verified to authenticate.
+     * @return the auth response containing the UUID key for the token retrieval request
+     */
+    @ApiOperation("Authenticate a user account and returns a unique key for confirming the token retrieval request..")
+    @ApiResponses({
+            @ApiResponse(code = HTTP_OK, message = "User authenticated successfully.", response = AuthResponse.class),
+            @ApiResponse(code = HTTP_UNAUTHORIZED, message = "Invalid credentials provided."),
+            @ApiResponse(code = HTTP_NOT_FOUND, message = "User key not found.")})
     @ResponseStatus(OK)
     @PostMapping("/auth")
-    public ResponseEntity<LoginResponse> authenticate(
-            @RequestBody @Validated LoginRequestDto loginRequestDto) {
-        String confirmationKey = authorizationFacade.authenticate(loginRequestDto.username,
-                loginRequestDto.password);
-        return ResponseEntity.status(OK).body(new LoginResponse(confirmationKey));
+    public ResponseEntity<AuthResponse> authenticate(
+            @RequestBody @Validated AuthRequest authRequest) {
+        String confirmationKey = authorizationFacade.authenticate(authRequest.username,
+                authRequest.password);
+
+        return ResponseEntity.status(OK).body(new AuthResponse(confirmationKey));
     }
 
+
+    /**.
+     * Provides access token after successful key and code validation.
+     *
+     * @param tokenRequest the confirmation key and code to retrieve access token.
+     * @return the token response containing the accessToken for secured endpoints
+     */
+    @ApiOperation("Provides access token using the confirmation key and code.")
+    @ApiResponses({
+            @ApiResponse(code = HTTP_OK, message = "User authorized successful, token provided.", response = RegistrationResponse.class),
+            @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid confirmation code."),
+            @ApiResponse(code = HTTP_NOT_FOUND, message = "User key not found.")})
     @ResponseStatus(OK)
     @PostMapping("/token")
-    public ResponseEntity<TokenResponseDto> token(
-            @RequestBody @Validated TokenRequestDto tokenRequestDto) {
-        String token = authorizationFacade.getToken(tokenRequestDto.key, tokenRequestDto.code);
+    public ResponseEntity<TokenResponse> token(
+            @RequestBody @Validated TokenRequest tokenRequest) {
+        String token = authorizationFacade.getToken(tokenRequest.key, tokenRequest.code);
 
-        return ResponseEntity.status(OK).body(new TokenResponseDto(token));
+        return ResponseEntity.status(OK).body(new TokenResponse(token));
     }
 
     /**
@@ -76,7 +101,7 @@ public class AuthorizationController {
         return ResponseEntity.status(CREATED).body(new RegistrationResponse(confirmationKey));
     }
 
-    /**
+    /**This endpoint is used to confirm the user's token retrieval request by providing the confirmation key received from the /authenticate endpoint. Upon successful confirmation, an access token is returned, which can be used to access protected resources in the application.
      * Confirms the registration of a customer in the application using a confirmation key and code.
      *
      * @param key  the user key.
@@ -85,9 +110,9 @@ public class AuthorizationController {
      */
     @ApiOperation("Confirms the registration of a customer in the application using a confirmation key and code.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Confirmation successful.", response = ConfirmationResponse.class),
-            @ApiResponse(code = 400, message = "Invalid confirmation code."),
-            @ApiResponse(code = 404, message = "User key not found."),})
+            @ApiResponse(code = HTTP_OK, message = "Confirmation successful.", response = ConfirmationResponse.class),
+            @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid confirmation code."),
+            @ApiResponse(code = HTTP_NOT_FOUND, message = "User key not found."),})
     @PostMapping("/confirm/{key}/{code}")
     public ResponseEntity<ConfirmationResponse> confirmCustomer(@PathVariable @NotBlank String key,
                                                                 @PathVariable @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
