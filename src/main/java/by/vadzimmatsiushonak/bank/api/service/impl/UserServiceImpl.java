@@ -3,15 +3,16 @@ package by.vadzimmatsiushonak.bank.api.service.impl;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.repository.UserRepository;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Validated
@@ -36,6 +37,13 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl findById {}", id);
 
         return repository.findById(id);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        log.info("UserServiceImpl findByUsername {}", username);
+
+        return repository.findByLogin(username);
     }
 
     @Override

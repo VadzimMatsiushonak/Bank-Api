@@ -8,6 +8,7 @@ import lombok.Getter;
 public class UserConfirmation {
 
     private final Long id;
+    private final String username;
     private final Integer code;
 
 }

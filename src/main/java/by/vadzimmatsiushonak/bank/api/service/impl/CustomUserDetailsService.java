@@ -1,11 +1,7 @@
 package by.vadzimmatsiushonak.bank.api.service.impl;
 
-import static by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus.ACTIVE;
-
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.repository.UserRepository;
-import java.util.Collection;
-import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +11,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.Collection;
+import java.util.Collections;
+
+import static by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus.ACTIVE;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InactiveUserException;
 
 @AllArgsConstructor
 @Validated
@@ -27,12 +29,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = repository.findByLogin(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
+                .orElseThrow(
+                        () -> new UsernameNotFoundException("User " + username + " not found"));
         if (!ACTIVE.equals(user.getStatus())) {
-            throw new UsernameNotFoundException("User " + username + " is not active");
+            throw new_InactiveUserException(username);
         }
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(),
-            getAuthorities(user));
+        return new org.springframework.security.core.userdetails.User(user.getLogin(),
+                user.getPassword(),
+                getAuthorities(user));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(User user) {
