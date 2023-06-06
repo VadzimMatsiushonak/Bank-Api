@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableCaching
 public class CacheConfig {
 
-    public final static String CONFIRMATION_CODES = "CONFIRMATION_CODES";
+    public final static String VERIFICATION_CODES = "VERIFICATION_CODES";
     public final static Long CACHE_TTL = 5L;
 
     @Bean
@@ -26,15 +26,15 @@ public class CacheConfig {
 
     @Bean
     public CacheManager cacheManager(Caffeine caffeine) {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager(CONFIRMATION_CODES);
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager(VERIFICATION_CODES);
         cacheManager.setCaffeine(caffeine);
         cacheManager.setAllowNullValues(false);
         return cacheManager;
     }
 
     @Bean
-    public Cache confirmations(CacheManager cacheManager) {
-        return cacheManager.getCache(CONFIRMATION_CODES);
+    public Cache verifications(CacheManager cacheManager) {
+        return cacheManager.getCache(VERIFICATION_CODES);
     }
 
 }

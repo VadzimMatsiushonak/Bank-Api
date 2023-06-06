@@ -1,6 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.facade;
 
-import by.vadzimmatsiushonak.bank.api.model.UserConfirmation;
+import by.vadzimmatsiushonak.bank.api.model.UserVerification;
 import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 
@@ -21,12 +21,12 @@ public interface AuthorizationFacade {
 
     String register(@NotNull Customer customer);
 
-    Boolean confirmRegistration(@NotBlank String key,
-                                @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code);
+    Boolean verifyRegistration(@NotBlank String key,
+                               @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code);
 
     String generateCode(@NotNull User user, String prefix);
 
-    UserConfirmation confirmCode(@NotBlank String key,
-                                 @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code);
+    UserVerification verifyCode(@NotBlank String key,
+                                @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code);
 
 }

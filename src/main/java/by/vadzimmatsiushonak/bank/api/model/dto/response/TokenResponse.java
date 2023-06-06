@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class TokenResponse {
 
-    @ApiModelProperty(value = "The UUID confirmation key", example = "7c2a6f90-6d5b-11eb-8c03-0242ac130003")
+    @ApiModelProperty(value = "The UUID verification key", example = "7c2a6f90-6d5b-11eb-8c03-0242ac130003")
     public String token;
 
 }

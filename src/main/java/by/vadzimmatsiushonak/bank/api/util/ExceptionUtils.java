@@ -39,13 +39,13 @@ public class ExceptionUtils {
         return new WrongDataException(format("WrongDataException", values));
     }
 
-    public static ConfirmationNotFoundException new_ConfirmationNotFoundException(
+    public static VerificationNotFoundException new_VerificationNotFoundException(
             Object... values) {
-        return new ConfirmationNotFoundException(format("ConfirmationNotFoundException", values));
+        return new VerificationNotFoundException(format("VerificationNotFoundException", values));
     }
 
-    public static InvalidConfirmationException new_InvalidConfirmationException(Object... values) {
-        return new InvalidConfirmationException(format("InvalidConfirmationException", values));
+    public static InvalidVerificationException new_InvalidVerificationException(Object... values) {
+        return new InvalidVerificationException(format("InvalidVerificationException", values));
     }
 
     public static InvalidCredentialsException new_InvalidCredentialsException(Object... values) {

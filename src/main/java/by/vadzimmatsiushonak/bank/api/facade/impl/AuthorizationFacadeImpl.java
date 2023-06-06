@@ -1,7 +1,7 @@
 package by.vadzimmatsiushonak.bank.api.facade.impl;
 
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
-import by.vadzimmatsiushonak.bank.api.model.UserConfirmation;
+import by.vadzimmatsiushonak.bank.api.model.UserVerification;
 import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
@@ -16,7 +16,6 @@ import org.springframework.cache.Cache;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -44,10 +43,18 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     private final CustomerService customerService;
     private final UserService userServices;
     private final UserDetailsService userDetailsService;
-    private final Cache confirmations;
+    private final Cache verificationCache;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
 
+    /**
+     * Provides key and sends code after verifying
+     * provided parameters are equals to the database entity
+     *
+     * @param username the users username
+     * @param password the users password
+     * @return the String response containing the UUID key for the token retrieval request
+     */
     @Override
     public String authenticate(String username, String password) {
         User user = userServices.findByUsername(username)
@@ -60,12 +67,20 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         return generateCode(user, LOGIN_KEY);
     }
 
+    /**
+     * Provides token after verifying
+     * provided parameters are equals to the cache value
+     *
+     * @param key  the verification key
+     * @param code the verification code
+     * @return the String response containing the JWT accessToken
+     */
     @Override
     public String getToken(String key, Integer code) {
 
-        UserConfirmation confirmation = confirmCode(key, code);
+        UserVerification verification = verifyCode(key, code);
 
-        UserDetails user = userDetailsService.loadUserByUsername(confirmation.getUsername());
+        UserDetails user = userDetailsService.loadUserByUsername(verification.getUsername());
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 new UserPrincipal(user.getUsername()), null, user.getAuthorities());
@@ -74,6 +89,14 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         return jwt.getTokenValue();
     }
 
+
+    /**
+     * Provides key and sends code after saving customer and inactive user entities
+     * with provided parameters to the database
+     *
+     * @param customer the customer entity
+     * @return the String response containing the UUID key for the verification request
+     */
     @Override
     @Transactional
     public String register(@NotNull Customer customer) {
@@ -86,20 +109,35 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         return generateCode(user, REGISTRATION_KEY);
     }
 
+    /**
+     * Verifies provided key and code and set the user status to the ACTIVE
+     *
+     * @param key  the verification key
+     * @param code the verification code
+     * @return the Boolean response containing the true if verification was successful
+     */
     @Override
     @Transactional
-    public Boolean confirmRegistration(@NotBlank String key,
-                                       @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserConfirmation confirmation = confirmCode(key, code);
+    public Boolean verifyRegistration(@NotBlank String key,
+                                      @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
+        UserVerification verification = verifyCode(key, code);
 
-        User user = userServices.findById(confirmation.getId())
-                .orElseThrow(() -> new_EntityNotFoundException("User", confirmation.getId()));
+        User user = userServices.findById(verification.getId())
+                .orElseThrow(() -> new_EntityNotFoundException("User", verification.getId()));
         user.setStatus(UserStatus.ACTIVE);
         log.info("User with key {} has been successfully confirmed", key);
 
         return true;
     }
 
+    /**
+     * Provides key and saves code
+     * Sends code to the user device/mail
+     *
+     * @param user   user entity data that will be stored in the cache
+     * @param prefix the prefix used for the generated key value
+     * @return the String response containing the UUID key stored in cache
+     */
     @Override
     public String generateCode(User user, String prefix) {
         String key = UUID.randomUUID().toString();
@@ -107,30 +145,37 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             key = prefix.concat(key);
         }
         Integer code = getRandom(VERIFICATION_MIN_VALUE, VERIFICATION_MAX_VALUE);
-        confirmations.put(key, new UserConfirmation(user.getId(), user.getLogin(), code));
+        verificationCache.put(key, new UserVerification(user.getId(), user.getLogin(), code));
         log.info(
-                "Confirmation code '{}' has been prepared for user with key '{}' and id '{}'",
+                "Verification code '{}' has been prepared for user with key '{}' and id '{}'",
                 code, key, user.getId());
 
         return key;
     }
 
+    /**
+     * Verifies provided key and code with the data in the cache
+     *
+     * @param key  the verification key
+     * @param code the verification code
+     * @return the UserVerification response containing information about the verified user
+     */
     @Override
-    public UserConfirmation confirmCode(String key, Integer code) {
-        UserConfirmation confirmation = confirmations.get(key, UserConfirmation.class);
+    public UserVerification verifyCode(String key, Integer code) {
+        UserVerification verification = this.verificationCache.get(key, UserVerification.class);
 
-        if (confirmation == null) {
-            log.info("Confirmation {} not found or expired", key);
-            throw new_ConfirmationNotFoundException(key);
+        if (verification == null) {
+            log.info("Verification {} not found or expired", key);
+            throw new_VerificationNotFoundException(key);
         }
 
-        if (!confirmation.getCode().equals(code)) {
+        if (!verification.getCode().equals(code)) {
             log.info("Invalid verification code {} for key {}", code, key);
-            throw new_InvalidConfirmationException(String.valueOf(code), key);
+            throw new_InvalidVerificationException(String.valueOf(code), key);
         }
 
-        confirmations.evictIfPresent(key);
+        this.verificationCache.evictIfPresent(key);
 
-        return confirmation;
+        return verification;
     }
 }
