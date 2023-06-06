@@ -125,7 +125,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         User user = userServices.findById(verification.getId())
                 .orElseThrow(() -> new_EntityNotFoundException("User", verification.getId()));
         user.setStatus(UserStatus.ACTIVE);
-        log.info("User with key {} has been successfully confirmed", key);
+        log.info("User with key {} has been successfully verified", key);
 
         return true;
     }
