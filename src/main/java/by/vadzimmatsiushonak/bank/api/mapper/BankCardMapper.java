@@ -18,7 +18,8 @@ public interface BankCardMapper {
 
     List<BankCardDtoRelations> toListDtoRelations(List<BankCard> entities);
 
-    @Mapping(target = "bankAccount", source = "bankAccountId")
+    @Mapping(target = "bankAccount", source = "bankAccountId", ignore = true)
+    @Mapping(target = "id", ignore = true)
     BankCard toEntity(BankCardRequestDto dto);
 
     default BankAccount fromIdToBankAccount(Long bankAccountId) {

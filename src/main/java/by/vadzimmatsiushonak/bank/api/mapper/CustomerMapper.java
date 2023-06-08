@@ -18,6 +18,8 @@ public interface CustomerMapper {
 
     List<CustomerDtoRelations> toListDtoRelations(List<Customer> entities);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "bankAccounts", ignore = true)
     Customer toEntity(CustomerRequestDto dto);
 
 }

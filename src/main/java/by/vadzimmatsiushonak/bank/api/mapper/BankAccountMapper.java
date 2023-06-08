@@ -21,6 +21,9 @@ public interface BankAccountMapper {
 
     @Mapping(target = "bank", source = "bankId")
     @Mapping(target = "customer", source = "customerId")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "bankCard", ignore = true)
+    @Mapping(target = "bankPayments", ignore = true)
     BankAccount toEntity(BankAccountRequestDto dto);
 
     default Bank fromIdToBank(Long bankId) {

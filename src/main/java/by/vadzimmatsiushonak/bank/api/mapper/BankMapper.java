@@ -6,6 +6,7 @@ import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankDtoRelati
 import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface BankMapper {
@@ -16,5 +17,7 @@ public interface BankMapper {
 
     List<BankDtoRelations> toListDtoRelations(List<Bank> entities);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "bankAccounts", ignore = true)
     Bank toEntity(BankRequestDto dto);
 }
