@@ -7,6 +7,7 @@ import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
 import by.vadzimmatsiushonak.bank.api.service.CustomerService;
+import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
 import com.sun.security.auth.UserPrincipal;
@@ -46,6 +47,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     private final Cache verificationCache;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
+    private final Oauth2TokenStore tokenService;
 
     /**
      * Provides key and sends code after verifying
@@ -56,7 +58,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      * @return the String response containing the UUID key for the token retrieval request
      */
     @Override
-    public String authenticate(String username, String password) {
+    public String authenticate(@NotBlank String username, @NotBlank String password) {
         User user = userServices.findByUsername(username)
                 .orElseThrow(() -> new_UserNotFoundException(username));
 
@@ -76,7 +78,8 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      * @return the String response containing the JWT accessToken
      */
     @Override
-    public String getToken(String key, Integer code) {
+    public String getToken(@NotBlank String key,
+                           @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
 
         UserVerification verification = verifyCode(key, code);
 
@@ -85,6 +88,8 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 new UserPrincipal(user.getUsername()), null, user.getAuthorities());
         Jwt jwt = jwtTokenUtil.generateJwtToken(auth);
+
+        tokenService.save(jwt);
 
         return jwt.getTokenValue();
     }
@@ -139,7 +144,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      * @return the String response containing the UUID key stored in cache
      */
     @Override
-    public String generateCode(User user, String prefix) {
+    public String generateCode(@NotNull User user, String prefix) {
         String key = UUID.randomUUID().toString();
         if (prefix != null) {
             key = prefix.concat(key);
@@ -161,7 +166,8 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      * @return the UserVerification response containing information about the verified user
      */
     @Override
-    public UserVerification verifyCode(String key, Integer code) {
+    public UserVerification verifyCode(@NotBlank String key,
+                                       @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
         UserVerification verification = this.verificationCache.get(key, UserVerification.class);
 
         if (verification == null) {

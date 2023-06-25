@@ -14,9 +14,9 @@ import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_V
 
 public interface AuthorizationFacade {
 
-    String authenticate(@NotNull String username, @NotNull String password);
+    String authenticate(@NotBlank String username, @NotBlank String password);
 
-    String getToken(@NotNull String key,
+    String getToken(@NotBlank String key,
                     @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code);
 
     String register(@NotNull Customer customer);
