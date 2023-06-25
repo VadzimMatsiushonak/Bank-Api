@@ -1,5 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.security.filter;
 
+import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
@@ -27,9 +28,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
     private final Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter = new JwtAuthenticationConverter();
     private final BearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
+    private final Oauth2TokenStore tokenService;
 
-    public JwtTokenFilter(JwtTokenUtil jwtTokenUtil) {
+    public JwtTokenFilter(JwtTokenUtil jwtTokenUtil, Oauth2TokenStore tokenService) {
         this.jwtTokenUtil = jwtTokenUtil;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -50,7 +53,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        AbstractAuthenticationToken authenticationResult = authenticate(token);
+        AbstractAuthenticationToken authenticationResult = null;
+
+        try {
+            authenticationResult = authenticate(token);
+        } catch (OAuth2AuthenticationException invalid) {
+            log.trace("Sending to authentication entry point since failed to find token in store");
+//            this.authenticationEntryPoint.commence(request, response, invalid);
+            return;
+        }
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authenticationResult);
@@ -62,6 +73,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     public AbstractAuthenticationToken authenticate(String token) {
         Jwt jwt = jwtTokenUtil.getJwt(token);
+
+        if (!tokenService.containsToken(jwt.getId())) {
+            throw new OAuth2AuthenticationException("Unable to find the token in store");
+        }
+
         AbstractAuthenticationToken authenticationToken = this.jwtAuthenticationConverter.convert(
                 jwt);
         this.logger.debug("Authenticated token");
