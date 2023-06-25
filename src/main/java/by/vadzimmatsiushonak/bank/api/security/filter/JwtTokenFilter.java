@@ -2,6 +2,7 @@ package by.vadzimmatsiushonak.bank.api.security.filter;
 
 import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -23,17 +24,14 @@ import java.io.IOException;
 
 @Component
 @Slf4j
+@AllArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private final JwtTokenUtil jwtTokenUtil;
     private final Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter = new JwtAuthenticationConverter();
     private final BearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
-    private final Oauth2TokenStore tokenService;
 
-    public JwtTokenFilter(JwtTokenUtil jwtTokenUtil, Oauth2TokenStore tokenService) {
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.tokenService = tokenService;
-    }
+    private final JwtTokenUtil jwtTokenUtil;
+    private final Oauth2TokenStore tokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
