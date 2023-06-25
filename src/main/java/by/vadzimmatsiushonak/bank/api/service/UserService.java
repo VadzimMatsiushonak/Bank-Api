@@ -1,15 +1,18 @@
 package by.vadzimmatsiushonak.bank.api.service;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
+
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
-import javax.validation.constraints.NotNull;
 
 public interface UserService {
 
     User create(@NotNull User user);
 
     Optional<User> findById(@NotNull Long id);
+
+    Optional<User> findByUsername(@NotNull String username);
 
     List<User> findAll();
 

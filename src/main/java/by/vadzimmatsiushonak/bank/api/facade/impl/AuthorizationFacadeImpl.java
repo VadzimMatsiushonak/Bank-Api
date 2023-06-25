@@ -1,31 +1,35 @@
 package by.vadzimmatsiushonak.bank.api.facade.impl;
 
-import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_ConfirmationNotFoundException;
-import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_EntityNotFoundException;
-import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InvalidConfirmationException;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MAX_VALUE;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_VALUE;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.getRandom;
-
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
-import by.vadzimmatsiushonak.bank.api.model.UserConfirmation;
+import by.vadzimmatsiushonak.bank.api.model.UserVerification;
 import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
 import by.vadzimmatsiushonak.bank.api.service.CustomerService;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
-import java.util.UUID;
+import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
+import com.sun.security.auth.UserPrincipal;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
 import javax.transaction.Transactional;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
+import java.util.UUID;
+
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.*;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.*;
 
 @AllArgsConstructor
 @Validated
@@ -33,50 +37,145 @@ import org.springframework.validation.annotation.Validated;
 @Service
 public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
+    private final static String LOGIN_KEY = "L_";
+    private final static String REGISTRATION_KEY = "R_";
+
     private final CustomerService customerService;
     private final UserService userServices;
-    private final Cache confirmations;
+    private final UserDetailsService userDetailsService;
+    private final Cache verificationCache;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenUtil jwtTokenUtil;
 
+    /**
+     * Provides key and sends code after verifying
+     * provided parameters are equals to the database entity
+     *
+     * @param username the users username
+     * @param password the users password
+     * @return the String response containing the UUID key for the token retrieval request
+     */
+    @Override
+    public String authenticate(String username, String password) {
+        User user = userServices.findByUsername(username)
+                .orElseThrow(() -> new_UserNotFoundException(username));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new_InvalidCredentialsException();
+        }
+
+        return generateCode(user, LOGIN_KEY);
+    }
+
+    /**
+     * Provides token after verifying
+     * provided parameters are equals to the cache value
+     *
+     * @param key  the verification key
+     * @param code the verification code
+     * @return the String response containing the JWT accessToken
+     */
+    @Override
+    public String getToken(String key, Integer code) {
+
+        UserVerification verification = verifyCode(key, code);
+
+        UserDetails user = userDetailsService.loadUserByUsername(verification.getUsername());
+
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                new UserPrincipal(user.getUsername()), null, user.getAuthorities());
+        Jwt jwt = jwtTokenUtil.generateJwtToken(auth);
+
+        return jwt.getTokenValue();
+    }
+
+
+    /**
+     * Provides key and sends code after saving customer and inactive user entities
+     * with provided parameters to the database
+     *
+     * @param customer the customer entity
+     * @return the String response containing the UUID key for the verification request
+     */
     @Override
     @Transactional
-    public String registerCustomer(@NotNull Customer customer) {
+    public String register(@NotNull Customer customer) {
         customerService.create(customer);
 
         User user = new User(customer);
         user.setRole(Role.TECHNICAL_USER);
         userServices.create(user);
 
+        return generateCode(user, REGISTRATION_KEY);
+    }
+
+    /**
+     * Verifies provided key and code and set the user status to the ACTIVE
+     *
+     * @param key  the verification key
+     * @param code the verification code
+     * @return the Boolean response containing the true if verification was successful
+     */
+    @Override
+    @Transactional
+    public Boolean verifyRegistration(@NotBlank String key,
+                                      @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
+        UserVerification verification = verifyCode(key, code);
+
+        User user = userServices.findById(verification.getId())
+                .orElseThrow(() -> new_EntityNotFoundException("User", verification.getId()));
+        user.setStatus(UserStatus.ACTIVE);
+        log.info("User with key {} has been successfully verified", key);
+
+        return true;
+    }
+
+    /**
+     * Provides key and saves code
+     * Sends code to the user device/mail
+     *
+     * @param user   user entity data that will be stored in the cache
+     * @param prefix the prefix used for the generated key value
+     * @return the String response containing the UUID key stored in cache
+     */
+    @Override
+    public String generateCode(User user, String prefix) {
         String key = UUID.randomUUID().toString();
+        if (prefix != null) {
+            key = prefix.concat(key);
+        }
         Integer code = getRandom(VERIFICATION_MIN_VALUE, VERIFICATION_MAX_VALUE);
-        confirmations.put(key, new UserConfirmation(user.getId(), code));
-        log.info("Confirmation code '{}' has been prepared for user with key '{}' and id '{}'", code, key,
-            user.getId());
+        verificationCache.put(key, new UserVerification(user.getId(), user.getLogin(), code));
+        log.info(
+                "Verification code '{}' has been prepared for user with key '{}' and id '{}'",
+                code, key, user.getId());
 
         return key;
     }
 
+    /**
+     * Verifies provided key and code with the data in the cache
+     *
+     * @param key  the verification key
+     * @param code the verification code
+     * @return the UserVerification response containing information about the verified user
+     */
     @Override
-    @Transactional
-    public Boolean confirmCustomer(@NotBlank String key,
-        @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserConfirmation confirmation = confirmations.get(key, UserConfirmation.class);
+    public UserVerification verifyCode(String key, Integer code) {
+        UserVerification verification = this.verificationCache.get(key, UserVerification.class);
 
-        if (confirmation == null) {
-            log.info("Confirmation {} not found or expired", key);
-            throw new_ConfirmationNotFoundException(key);
+        if (verification == null) {
+            log.info("Verification {} not found or expired", key);
+            throw new_VerificationNotFoundException(key);
         }
 
-        if (!confirmation.getCode().equals(code)) {
+        if (!verification.getCode().equals(code)) {
             log.info("Invalid verification code {} for key {}", code, key);
-            throw new_InvalidConfirmationException(String.valueOf(code), key);
+            throw new_InvalidVerificationException(String.valueOf(code), key);
         }
 
-        User user = userServices.findById(confirmation.getId())
-            .orElseThrow(() -> new_EntityNotFoundException("User", confirmation.getId()));
-        user.setStatus(UserStatus.ACTIVE);
-        confirmations.evictIfPresent(key);
-        log.info("User with key {} has been successfully confirmed", key);
+        this.verificationCache.evictIfPresent(key);
 
-        return true;
+        return verification;
     }
 }

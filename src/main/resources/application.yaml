@@ -38,6 +38,11 @@ server:
 
 bank-api:
   security:
-    client-id: client
-    client-secret: secret
-    redirect-uris: http://127.0.0.1/auth, https://oidcdebugger.com/debug
+    issuer: self
+    expiry-minutes: 30
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

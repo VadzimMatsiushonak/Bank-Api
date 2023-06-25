@@ -5,9 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserConfirmation {
+public class UserVerification {
 
     private final Long id;
+    private final String username;
     private final Integer code;
 
 }
