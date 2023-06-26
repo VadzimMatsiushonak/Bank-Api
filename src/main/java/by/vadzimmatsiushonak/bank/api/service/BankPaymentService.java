@@ -1,10 +1,10 @@
 package by.vadzimmatsiushonak.bank.api.service;
 
-import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
+
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
-import javax.validation.constraints.NotNull;
 
 public interface BankPaymentService {
 
@@ -19,6 +19,4 @@ public interface BankPaymentService {
     void delete(@NotNull BankPayment bankPayment);
 
     void deleteById(@NotNull Long id);
-
-    BankPayment initiatePayment(@NotNull InitiatePaymentRequest request);
 }

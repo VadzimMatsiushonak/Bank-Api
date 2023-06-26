@@ -1,5 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.facade.impl;
 
+import by.vadzimmatsiushonak.bank.api.exception.*;
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
 import by.vadzimmatsiushonak.bank.api.model.UserVerification;
 import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
@@ -50,12 +51,16 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     private final Oauth2TokenStore tokenService;
 
     /**
+     * Authenticates a user by their username and password.
+     * <p>
      * Provides key and sends code after verifying
      * provided parameters are equals to the database entity
      *
-     * @param username the users username
-     * @param password the users password
+     * @param username The username of the user to authenticate.
+     * @param password The password of the user to authenticate.
      * @return the String response containing the UUID key for the token retrieval request
+     * @throws UserNotFoundException       If the user cannot be found using the provided username.
+     * @throws InvalidCredentialsException If the provided credentials are invalid.
      */
     @Override
     public String authenticate(@NotBlank String username, @NotBlank String password) {
@@ -80,7 +85,6 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Override
     public String getToken(@NotBlank String key,
                            @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-
         UserVerification verification = verifyCode(key, code);
 
         UserDetails user = userDetailsService.loadUserByUsername(verification.getUsername());
@@ -95,10 +99,11 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     }
 
     /**
-     * Revokes the token from the store
+     * Revokes a JWT token by removing it from the token store.
      *
-     * @param token the revocation token
-     * @return the boolean response indicates successful token revocation ('true') or token not found ('false')
+     * @param token the token to revoke
+     * @return A boolean indicating whether the token was successfully removed ('true') or token not found ('false').
+     * @throws BadRequestException If the provided token is invalid.
      */
     @Override
     public boolean revokeToken(String token) {
@@ -109,7 +114,6 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             throw new_BadRequestException("Invalid token provided");
         }
     }
-
 
     /**
      * Provides key and sends code after saving customer and inactive user entities
@@ -135,7 +139,8 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      *
      * @param key  the verification key
      * @param code the verification code
-     * @return the Boolean response containing the true if verification was successful
+     * @return the Boolean response indicating whether the verification was successful.
+     * @throws EntityNotFoundException If the user cannot be found using the ID associated with the verification key.
      */
     @Override
     @Transactional
@@ -180,6 +185,8 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      * @param key  the verification key
      * @param code the verification code
      * @return the UserVerification response containing information about the verified user
+     * @throws VerificationNotFoundException If the verification key cannot be found or has expired.
+     * @throws InvalidVerificationException  If the provided verification code is invalid.
      */
     @Override
     public UserVerification verifyCode(@NotBlank String key,
