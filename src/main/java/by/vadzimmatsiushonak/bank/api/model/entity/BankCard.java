@@ -18,7 +18,7 @@ public class BankCard extends BaseEntity {
     private LocalDate expirationDate;
 
     @OneToOne
-    @JoinColumn(name = "bank_account_id", nullable = false)
+    @JoinColumn(name = "bank_account_iban", nullable = false)
     private BankAccount bankAccount;
 
 }

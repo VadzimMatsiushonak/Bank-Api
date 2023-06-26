@@ -5,6 +5,7 @@ import by.vadzimmatsiushonak.bank.api.mapper.BankPaymentMapper;
 import by.vadzimmatsiushonak.bank.api.mapper.BankPaymentStatusMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankPaymentRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentStatusResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankPaymentDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
@@ -58,10 +59,11 @@ public class BankPaymentController {
     @ApiOperation("Add the Payment to the Api database")
     @ResponseStatus(CREATED)
     @PostMapping
-    public ResponseEntity<BankPayment> create(
+    public ResponseEntity<BankPaymentDto> create(
             @Valid @RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
-        return ResponseEntity.status(CREATED)
-                .body(bankPaymentService.create(bankPaymentMapper.toEntity(bankPaymentRequestDto)));
+        BankPayment bankPayment = bankPaymentService.create(
+                bankPaymentMapper.toEntity(bankPaymentRequestDto));
+        return ResponseEntity.status(CREATED).body(bankPaymentMapper.toDto(bankPayment));
     }
 
     @ApiOperation("Initiates a payment between 2 accounts")

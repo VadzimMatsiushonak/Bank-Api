@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import by.vadzimmatsiushonak.bank.api.mapper.BankMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.BankDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
 import by.vadzimmatsiushonak.bank.api.service.BankService;
@@ -50,8 +51,8 @@ public class BankController {
     @ApiOperation("Add the Bank to the Api database")
     @ResponseStatus(CREATED)
     @PostMapping
-    public ResponseEntity<Bank> create(@Valid @RequestBody BankRequestDto bankRequestDto) {
-        return ResponseEntity.status(CREATED)
-            .body(bankService.create(bankMapper.toEntity(bankRequestDto)));
+    public ResponseEntity<BankDto> create(@Valid @RequestBody BankRequestDto bankRequestDto) {
+        Bank bank = bankService.create(bankMapper.toEntity(bankRequestDto));
+        return ResponseEntity.status(CREATED).body(bankMapper.toDto(bank));
     }
 }

@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import by.vadzimmatsiushonak.bank.api.mapper.BankAccountMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankAccountRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.BankAccountDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankAccountDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.service.BankAccountService;
@@ -34,10 +35,10 @@ public class BankAccountController {
     private final BankAccountMapper bankAccountMapper;
 
     @ApiOperation("Get Account with property relations")
-    @GetMapping("/{id}")
-    public ResponseEntity<BankAccountDtoRelations> findById(@PathVariable Long id) {
+    @GetMapping("/{iban}")
+    public ResponseEntity<BankAccountDtoRelations> findById(@PathVariable String iban) {
         return ResponseEntity.status(OK)
-            .body(bankAccountMapper.toDtoRelations(bankAccountService.findById(id).orElse(null)));
+            .body(bankAccountMapper.toDtoRelations(bankAccountService.findById(iban).orElse(null)));
     }
 
     @ApiOperation("Get List of Accounts with property relations")
@@ -50,8 +51,9 @@ public class BankAccountController {
     @ApiOperation("Add the Account to the Api database")
     @ResponseStatus(CREATED)
     @PostMapping
-    public ResponseEntity<BankAccount> create(@Valid @RequestBody BankAccountRequestDto bankAccountRequestDto) {
-        return ResponseEntity.status(CREATED)
-            .body(bankAccountService.create(bankAccountMapper.toEntity(bankAccountRequestDto)));
+    public ResponseEntity<BankAccountDto> create(@Valid @RequestBody BankAccountRequestDto bankAccountRequestDto) {
+        BankAccount bankAccount = bankAccountService.create(
+                bankAccountMapper.toEntity(bankAccountRequestDto));
+        return ResponseEntity.status(CREATED).body(bankAccountMapper.toDto(bankAccount));
     }
 }

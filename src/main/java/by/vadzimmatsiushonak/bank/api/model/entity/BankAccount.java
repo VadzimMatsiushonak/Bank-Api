@@ -1,26 +1,20 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
-import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.OperationType;
 import java.math.BigDecimal;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+
 import lombok.Data;
 
 @Data
 @Entity(name = "bank_accounts")
-public class BankAccount extends BaseEntity {
+public class BankAccount {
 
     private String title;
 
+    @Id
     private String iban;
 
     @Enumerated(EnumType.STRING)

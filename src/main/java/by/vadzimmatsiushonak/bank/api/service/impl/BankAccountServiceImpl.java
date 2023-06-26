@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_DuplicateException;
+
 @AllArgsConstructor
 @Validated
 @Slf4j
@@ -23,16 +25,19 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public BankAccount create(@NotNull BankAccount bankAccount) {
         log.info("BankAccountServiceImpl create {}", bankAccount);
-        bankAccount.setId(null);
+
+        repository.findById(bankAccount.getIban()).ifPresent(existing -> {
+            throw new_DuplicateException(existing.getIban());
+        });
 
         return repository.save(bankAccount);
     }
 
     @Override
-    public Optional<BankAccount> findById(@NotNull Long id) {
-        log.info("BankAccountServiceImpl findById {}", id);
+    public Optional<BankAccount> findById(@NotNull String iban) {
+        log.info("BankAccountServiceImpl findById {}", iban);
 
-        return repository.findById(id);
+        return repository.findById(iban);
     }
 
     @Override
@@ -46,7 +51,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     public void update(@NotNull BankAccount bankAccount) {
         log.info("BankAccountServiceImpl update {}", bankAccount);
 
-        Objects.requireNonNull(bankAccount.getId());
+        Objects.requireNonNull(bankAccount.getIban());
         repository.save(bankAccount);
     }
 
@@ -58,10 +63,10 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public void deleteById(@NotNull Long id) {
-        log.info("BankAccountServiceImpl deleteById {}", id);
+    public void deleteById(@NotNull String iban) {
+        log.info("BankAccountServiceImpl deleteById {}", iban);
 
-        repository.deleteById(id);
+        repository.deleteById(iban);
     }
 
 }

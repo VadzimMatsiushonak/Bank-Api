@@ -18,12 +18,12 @@ public interface BankCardMapper {
 
     List<BankCardDtoRelations> toListDtoRelations(List<BankCard> entities);
 
-    @Mapping(target = "bankAccount", source = "bankAccountId")
+    @Mapping(target = "bankAccount", source = "bankAccountIban")
     BankCard toEntity(BankCardRequestDto dto);
 
-    default BankAccount fromIdToBankAccount(Long bankAccountId) {
+    default BankAccount fromIdToBankAccount(String bankAccountIban) {
         BankAccount bankAccount = new BankAccount();
-        bankAccount.setId(bankAccountId);
+        bankAccount.setIban(bankAccountIban);
         return bankAccount;
     }
 }

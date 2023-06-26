@@ -26,15 +26,13 @@ public class UserController {
     @ApiOperation("Get User")
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
-        return ResponseEntity.status(OK)
-            .body(userService.findById(id).orElse(null));
+        return ResponseEntity.status(OK).body(userService.findById(id).orElse(null));
     }
 
     @ApiOperation("Get List of Users")
     @GetMapping
     public ResponseEntity<List<User>> findAll() {
-        return ResponseEntity.status(OK)
-            .body(userService.findAll());
+        return ResponseEntity.status(OK).body(userService.findAll());
     }
 
 }

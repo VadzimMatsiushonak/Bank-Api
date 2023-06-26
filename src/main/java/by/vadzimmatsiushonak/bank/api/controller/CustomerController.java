@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import by.vadzimmatsiushonak.bank.api.mapper.CustomerMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.CustomerRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.CustomerDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.CustomerDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
 import by.vadzimmatsiushonak.bank.api.service.CustomerService;
@@ -50,8 +51,8 @@ public class CustomerController {
     @ApiOperation("Add the Customer to the Api database")
     @ResponseStatus(CREATED)
     @PostMapping
-    public ResponseEntity<Customer> create(@Valid @RequestBody CustomerRequestDto customerRequestDto) {
-        return ResponseEntity.status(CREATED)
-            .body(customerService.create(customerMapper.toEntity(customerRequestDto)));
+    public ResponseEntity<CustomerDto> create(@Valid @RequestBody CustomerRequestDto customerRequestDto) {
+        Customer customer = customerService.create(customerMapper.toEntity(customerRequestDto));
+        return ResponseEntity.status(CREATED).body(customerMapper.toDto(customer));
     }
 }
