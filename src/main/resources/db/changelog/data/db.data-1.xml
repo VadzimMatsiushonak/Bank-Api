@@ -41,7 +41,7 @@
       <column name="date_of_birth" valueDate="2000-02-20"/>
       <column name="name" value="ADMIN"/>
       <column name="password" value="pass"/>
-      <column name="phone_number" value="1 23 1234567"/>
+      <column name="phone_number" value="admin"/>
       <column name="surname" value="ADMIN"/>
     </insert>
     <insert tableName="customers">

@@ -7,9 +7,12 @@ import static java.net.HttpURLConnection.HTTP_CREATED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+import by.vadzimmatsiushonak.bank.api.facade.PaymentFacade;
 import by.vadzimmatsiushonak.bank.api.mapper.BankPaymentMapper;
+import by.vadzimmatsiushonak.bank.api.mapper.BankPaymentStatusMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankPaymentRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentStatusResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankPaymentDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
@@ -17,10 +20,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
+import java.security.Principal;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +43,9 @@ public class BankPaymentController {
 
     private final BankPaymentService bankPaymentService;
     private final BankPaymentMapper bankPaymentMapper;
+    private final BankPaymentStatusMapper bankPaymentStatusMapper;
+
+    private final PaymentFacade paymentFacade;
 
     @ApiOperation("Get Payment with property relations")
     @GetMapping("/{id}")
@@ -65,8 +74,10 @@ public class BankPaymentController {
         @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid arguments provided")})
     @ResponseStatus(CREATED)
     @PostMapping("/initiatePayment")
-    public ResponseEntity<BankPayment> initiatePayment(
-        @Valid @RequestBody InitiatePaymentRequest initiatePaymentRequest) {
-        return ResponseEntity.status(CREATED).body(bankPaymentService.initiatePayment(initiatePaymentRequest));
+    public ResponseEntity<BankPaymentStatusResponse> initiatePayment(
+            @Valid @RequestBody InitiatePaymentRequest initiatePaymentRequest, Authentication authentication) {
+        BankPayment result = paymentFacade.initiatePayment(authentication.getName(),
+                initiatePaymentRequest);
+        return ResponseEntity.status(CREATED).body(bankPaymentStatusMapper.toDto(result));
     }
 }

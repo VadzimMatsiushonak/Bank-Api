@@ -35,8 +35,8 @@ public class ExceptionUtils {
         return new InsufficientFundsException(format("InsufficientFundsExceptions", values));
     }
 
-    public static WrongDataException new_WrongDataException(Object... values) {
-        return new WrongDataException(format("WrongDataException", values));
+    public static DuplicateException new_DuplicateException(Object... values) {
+        return new DuplicateException(format("DuplicateException", values));
     }
 
     public static VerificationNotFoundException new_VerificationNotFoundException(
