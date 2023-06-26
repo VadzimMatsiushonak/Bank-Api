@@ -10,7 +10,7 @@ public interface Oauth2TokenStore {
 
     void save(@NotNull Jwt jwt);
 
-    void removeById(@NotBlank String id);
+    boolean removeById(@NotBlank String id);
 
     void removeByToken(@NotBlank String token);
 

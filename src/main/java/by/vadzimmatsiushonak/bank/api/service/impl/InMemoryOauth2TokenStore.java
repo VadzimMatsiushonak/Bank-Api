@@ -24,8 +24,9 @@ public class InMemoryOauth2TokenStore implements Oauth2TokenStore {
     }
 
     @Override
-    public void removeById(@NotBlank String id) {
-        this.store.remove(id);
+    public boolean removeById(@NotBlank String id) {
+        Jwt previous = this.store.remove(id);
+        return previous != null;
     }
 
     @Override

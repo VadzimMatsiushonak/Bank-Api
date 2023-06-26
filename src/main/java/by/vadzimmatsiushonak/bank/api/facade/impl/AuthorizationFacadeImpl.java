@@ -94,6 +94,22 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         return jwt.getTokenValue();
     }
 
+    /**
+     * Revokes the token from the store
+     *
+     * @param token the revocation token
+     * @return the boolean response indicates successful token revocation ('true') or token not found ('false')
+     */
+    @Override
+    public boolean revokeToken(String token) {
+        try {
+            Jwt jwt = jwtTokenUtil.getJwt(token);
+            return tokenService.removeById(jwt.getId());
+        } catch (Exception invalid) {
+            throw new_BadRequestException("Invalid token provided");
+        }
+    }
+
 
     /**
      * Provides key and sends code after saving customer and inactive user entities

@@ -60,4 +60,8 @@ public class ExceptionUtils {
         return new InactiveUserException(format("InactiveUserException", values));
     }
 
+    public static BadRequestException new_BadRequestException(Object... values) {
+        return new BadRequestException(format("BadRequestException", values));
+    }
+
 }

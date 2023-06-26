@@ -2,13 +2,13 @@ package by.vadzimmatsiushonak.bank.api.controller;
 
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
 import by.vadzimmatsiushonak.bank.api.mapper.CustomerMapper;
-import by.vadzimmatsiushonak.bank.api.model.dto.request.CustomerRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.AuthRequest;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.CustomerRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.TokenRequest;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.VerificationResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.AuthResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.RegistrationResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.TokenResponse;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.VerificationResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -31,13 +31,13 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Api(tags = "Auth", description = EMPTY_DESCRIPTION)
 @AllArgsConstructor
+@Validated
 @RestController
 @RequestMapping("/oauth2/v1")
 public class AuthorizationController {
 
     private final CustomerMapper customerMapper;
     private final AuthorizationFacade authorizationFacade;
-
 
     /**
      * Perform authentication for active users, generate a verification code, send it to the
@@ -61,7 +61,6 @@ public class AuthorizationController {
         return ResponseEntity.status(OK).body(new AuthResponse(verificationKey));
     }
 
-
     /**
      * Provide access token after successful key and code validation.
      *
@@ -80,6 +79,23 @@ public class AuthorizationController {
         String token = authorizationFacade.getToken(tokenRequest.key, tokenRequest.code);
 
         return ResponseEntity.status(OK).body(new TokenResponse(token));
+    }
+
+    /**
+     * Revokes the provided token from the token store
+     *
+     * @param token the token authorization string
+     * @return the Boolean response indicates successful token revocation ('true') or token not found ('false')
+     */
+    @ApiOperation("Revokes the provided token from the token store.")
+    @ApiResponses({
+            @ApiResponse(code = HTTP_OK, message = "The Boolean response indicates successful token revocation ('true') or token not found ('false').", response = Boolean.class),
+            @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid token code.")})
+    @ResponseStatus(OK)
+    @PostMapping("/revoke")
+    public ResponseEntity<Boolean> revokeToken(@RequestBody @NotBlank String token) {
+        boolean isSuccess = authorizationFacade.revokeToken(token);
+        return ResponseEntity.status(OK).body(isSuccess);
     }
 
     /**
@@ -114,8 +130,9 @@ public class AuthorizationController {
             @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid verification code."),
             @ApiResponse(code = HTTP_NOT_FOUND, message = "User key not found."),})
     @PostMapping("/verify/{key}/{code}")
-    public ResponseEntity<VerificationResponse> verifyRegistration(@PathVariable @NotBlank String key,
-                                                                   @PathVariable @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
+    public ResponseEntity<VerificationResponse> verifyRegistration(
+            @PathVariable @NotBlank String key,
+            @PathVariable @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
         Boolean isVerified = authorizationFacade.verifyRegistration(key, code);
         return ResponseEntity.status(OK).body(new VerificationResponse(isVerified));
     }

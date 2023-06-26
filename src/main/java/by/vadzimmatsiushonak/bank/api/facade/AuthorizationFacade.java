@@ -19,6 +19,8 @@ public interface AuthorizationFacade {
     String getToken(@NotBlank String key,
                     @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code);
 
+    boolean revokeToken(@NotBlank String token);
+
     String register(@NotNull Customer customer);
 
     Boolean verifyRegistration(@NotBlank String key,
