@@ -111,44 +111,44 @@
       <column name="cvs" value="111"/>
       <column name="expiration_date" valueDate="2111-11-11"/>
       <column name="number" value="1234567890987654"/>
-      <column name="bank_account_id" valueNumeric="1"/>
+      <column name="bank_account_iban" value="US23AA1234567"/>
     </insert>
     <insert tableName="bank_cards">
       <column name="cvs" value="123"/>
       <column name="expiration_date" valueDate="2026-10-01"/>
       <column name="number" value="4585227889907279"/>
-      <column name="bank_account_id" valueNumeric="2"/>
+      <column name="bank_account_iban" value="BY44VM1452003"/>
     </insert>
     <insert tableName="bank_cards">
       <column name="cvs" value="620"/>
       <column name="expiration_date" valueDate="2023-06-01"/>
       <column name="number" value="4253453975037505"/>
-      <column name="bank_account_id" valueNumeric="3"/>
+      <column name="bank_account_iban" value="SE0739WR5066448"/>
     </insert>
     <insert tableName="bank_cards">
       <column name="cvs" value="255"/>
       <column name="expiration_date" valueDate="2028-11-01"/>
       <column name="number" value="5445896103585199"/>
-      <column name="bank_account_id" valueNumeric="4"/>
+      <column name="bank_account_iban" value="US773BC8009725"/>
     </insert>
   </changeSet>
 
   <changeSet author="Vadzim Matsiushonak " id="6">
     <update tableName="bank_accounts">
       <column name="bank_card_id" value="1"/>
-      <where>id='1'</where>
+      <where>iban='US23AA1234567'</where>
     </update>
     <update tableName="bank_accounts">
       <column name="bank_card_id" value="2"/>
-      <where>id='2'</where>
+      <where>iban='BY44VM1452003'</where>
     </update>
     <update tableName="bank_accounts">
       <column name="bank_card_id" value="3"/>
-      <where>id='3'</where>
+      <where>iban='SE0739WR5066448'</where>
     </update>
     <update tableName="bank_accounts">
       <column name="bank_card_id" value="4"/>
-      <where>id='4'</where>
+      <where>iban='US773BC8009725'</where>
     </update>
   </changeSet>
 
@@ -156,20 +156,20 @@
     <insert tableName="bank_payments">
       <column name="amount" valueNumeric="-150000.00"/>
       <column name="currency" value="BYN"/>
-      <column name="recipient_bank_account_id" valueNumeric="2"/>
-      <column name="bank_account_id" valueNumeric="1"/>
+      <column name="recipient_bank_account_iban" value="BY44VM1452003"/>
+      <column name="bank_account_iban" value="US23AA1234567"/>
     </insert>
     <insert tableName="bank_payments">
       <column name="amount" valueNumeric="-4136.60"/>
       <column name="currency" value="EUR"/>
-      <column name="recipient_bank_account_id" valueNumeric="3"/>
-      <column name="bank_account_id" valueNumeric="1"/>
+      <column name="recipient_bank_account_iban" value="SE0739WR5066448"/>
+      <column name="bank_account_iban" value="US23AA1234567"/>
     </insert>
     <insert tableName="bank_payments">
       <column name="amount" valueNumeric="-137474.91"/>
       <column name="currency" value="USD"/>
-      <column name="recipient_bank_account_id" valueNumeric="4"/>
-      <column name="bank_account_id" valueNumeric="1"/>
+      <column name="recipient_bank_account_iban" value="US773BC8009725"/>
+      <column name="bank_account_iban" value="US23AA1234567"/>
     </insert>
   </changeSet>
 </databaseChangeLog>

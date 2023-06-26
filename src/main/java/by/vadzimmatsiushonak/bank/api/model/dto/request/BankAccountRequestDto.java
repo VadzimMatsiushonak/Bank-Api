@@ -14,7 +14,7 @@ public class BankAccountRequestDto {
     @NotNull
     public String title;
 
-    @ApiModelProperty(notes = "IBAN structure: 2 Letter Country Code + Mobile Operator Code + First Letter Of Name + First Letter Of Surname + Mobile Number", example = "BY29VM123456", required = true)
+    @ApiModelProperty(notes = "IBAN structure: 2 Letter Country Code + Mobile Operator Code + First Letter Of Name + First Letter Of Surname + Mobile Number", example = "BY29VM1234567", required = true)
     @NotNull
     public String iban;
 

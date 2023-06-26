@@ -9,7 +9,7 @@ public interface BankAccountService {
 
     BankAccount create(@NotNull BankAccount bankAccount);
 
-    Optional<BankAccount> findById(@NotNull Long id);
+    Optional<BankAccount> findById(@NotNull String iban);
 
     List<BankAccount> findAll();
 
@@ -17,6 +17,6 @@ public interface BankAccountService {
 
     void delete(@NotNull BankAccount bankAccount);
 
-    void deleteById(@NotNull Long id);
+    void deleteById(@NotNull String iban);
 
 }

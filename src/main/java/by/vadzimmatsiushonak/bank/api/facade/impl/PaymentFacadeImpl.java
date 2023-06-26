@@ -63,7 +63,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
                 .findFirst()
                 .orElseThrow(() -> new_EntityNotFoundException("BankAccount", request.senderIban));
 
-        BankAccount recipient = accountRepository.findByIban(request.recipientIban)
+        BankAccount recipient = accountRepository.findById(request.recipientIban)
                 .orElseThrow(
                         () -> new_EntityNotFoundException("Recipient", request.recipientIban));
 
@@ -78,18 +78,18 @@ public class PaymentFacadeImpl implements PaymentFacade {
             accountRepository.save(recipient);
 
             BankAccount account = new BankAccount();
-            account.setId(sender.getId());
+            account.setIban(sender.getIban());
 
             BankPayment payment = new BankPayment();
             payment.setAmount(request.amount);
             payment.setCurrency(request.currency);
             payment.setBankAccount(account);
-            payment.setRecipientBankAccountId(recipient.getId());
+            payment.setRecipientBankAccountIban(recipient.getIban());
             payment.setStatus(PaymentStatus.ACCEPTED);
 
             return paymentRepository.save(payment);
         } else {
-            throw new_InsufficientFundsException(sender.getId());
+            throw new_InsufficientFundsException(sender.getIban());
         }
     }
 }

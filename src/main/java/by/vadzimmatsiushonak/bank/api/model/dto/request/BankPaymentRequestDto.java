@@ -26,8 +26,8 @@ public class BankPaymentRequestDto {
     @NotNull
     public PaymentStatus status;
 
-    @ApiModelProperty(notes = "'senderBankAccountId' >= 1 value must be higher or equal to 1\n'senderBankAccountId' != 'recipientBankAccountId' ids must not be the same", example = "1", required = true)
+    @ApiModelProperty(notes = "IBAN structure: 2 Letter Country Code + Mobile Operator Code + First Letter Of Name + First Letter Of Surname + Mobile Number", example = "BY29VM1234567", required = true)
     @NotNull
-    public Long bankAccountId;
+    public String bankAccountIban;
 
 }

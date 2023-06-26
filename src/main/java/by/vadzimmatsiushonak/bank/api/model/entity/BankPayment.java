@@ -20,13 +20,13 @@ public class BankPayment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    private Long recipientBankAccountId;
+    private String recipientBankAccountIban;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "bank_account_id", nullable = false)
+    @JoinColumn(name = "bank_account_iban", nullable = false)
     private BankAccount bankAccount;
 
 }
