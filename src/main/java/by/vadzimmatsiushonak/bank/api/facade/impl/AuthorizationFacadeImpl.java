@@ -85,7 +85,6 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Override
     public String getToken(@NotBlank String key,
                            @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-
         UserVerification verification = verifyCode(key, code);
 
         UserDetails user = userDetailsService.loadUserByUsername(verification.getUsername());
@@ -115,7 +114,6 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             throw new_BadRequestException("Invalid token provided");
         }
     }
-
 
     /**
      * Provides key and sends code after saving customer and inactive user entities
