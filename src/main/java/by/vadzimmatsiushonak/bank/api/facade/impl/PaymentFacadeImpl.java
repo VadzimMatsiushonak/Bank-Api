@@ -1,5 +1,9 @@
 package by.vadzimmatsiushonak.bank.api.facade.impl;
 
+import by.vadzimmatsiushonak.bank.api.exception.DuplicateException;
+import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
+import by.vadzimmatsiushonak.bank.api.exception.InsufficientFundsException;
+import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import by.vadzimmatsiushonak.bank.api.facade.PaymentFacade;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
@@ -30,15 +34,29 @@ public class PaymentFacadeImpl implements PaymentFacade {
     private final BankAccountRepository accountRepository;
     private final CustomerRepository customerRepository;
 
+    /**
+     * Initiates a payment between two bank accounts.
+     * The customer initiating the payment is identified by their phone number,
+     * and their account is identified using the provided sender IBAN.
+     * The recipient account is identified using the provided recipient IBAN.
+     *
+     * @param phoneNumber initiator phoneNumber
+     * @param request     InitiatePaymentRequest containing all information payment the payment
+     * @return saved BankPayment entity representing the payment that was initiated.
+     * @throws DuplicateException         If the sender and recipient have the same IBAN.
+     * @throws UserNotFoundException      If the customer cannot be found using the provided phone number.
+     * @throws EntityNotFoundException    If the sender or recipient account cannot be found using the provided IBAN.
+     * @throws InsufficientFundsException If the sender account does not have sufficient funds to complete the payment.
+     */
     @Override
-    public BankPayment initiatePayment(@NotBlank String initiator,
+    public BankPayment initiatePayment(@NotBlank String phoneNumber,
                                        @NotNull InitiatePaymentRequest request) {
         if (request.senderIban.equals(request.recipientIban)) {
             throw new_DuplicateException(request.senderIban);
         }
 
-        Customer customer = customerRepository.findByPhoneNumber(initiator)
-                .orElseThrow(() -> new_UserNotFoundException(initiator));
+        Customer customer = customerRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new_UserNotFoundException(phoneNumber));
 
         BankAccount sender = customer.getBankAccounts().stream()
                 .filter(i -> request.senderIban.equals(i.getIban()))

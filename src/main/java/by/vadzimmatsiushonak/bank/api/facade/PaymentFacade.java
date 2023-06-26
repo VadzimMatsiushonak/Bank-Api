@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 public interface PaymentFacade {
 
-    BankPayment initiatePayment(@NotBlank String initiator,
+    BankPayment initiatePayment(@NotBlank String phoneNumber,
                                 @NotNull InitiatePaymentRequest request);
 
 }

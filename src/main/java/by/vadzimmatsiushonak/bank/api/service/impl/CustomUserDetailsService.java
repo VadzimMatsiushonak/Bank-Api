@@ -1,5 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.service.impl;
 
+import by.vadzimmatsiushonak.bank.api.exception.InactiveUserException;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private UserRepository repository;
 
+    /**
+     * Finds a User object using the provided username.
+     *
+     * @param username The username of the user to load.
+     * @return A UserDetails object representing the loaded user.
+     * @throws UsernameNotFoundException If the user cannot be found using the provided username.
+     * @throws InactiveUserException If the user account is not activated.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = repository.findByLogin(username)
