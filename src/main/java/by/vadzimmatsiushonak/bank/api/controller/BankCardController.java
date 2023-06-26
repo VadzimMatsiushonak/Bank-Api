@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import by.vadzimmatsiushonak.bank.api.mapper.BankCardMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankCardRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.BankCardDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankCardDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankCard;
 import by.vadzimmatsiushonak.bank.api.service.BankCardService;
@@ -50,8 +51,8 @@ public class BankCardController {
     @ApiOperation("Add the Card to the Api database")
     @ResponseStatus(CREATED)
     @PostMapping
-    public ResponseEntity<BankCard> create(@Valid @RequestBody BankCardRequestDto bankCardRequestDto) {
-        return ResponseEntity.status(CREATED)
-            .body(bankCardService.create(bankCardMapper.toEntity(bankCardRequestDto)));
+    public ResponseEntity<BankCardDto> create(@Valid @RequestBody BankCardRequestDto bankCardRequestDto) {
+        BankCard bankCard = bankCardService.create(bankCardMapper.toEntity(bankCardRequestDto));
+        return ResponseEntity.status(CREATED).body(bankCardMapper.toDto(bankCard));
     }
 }
