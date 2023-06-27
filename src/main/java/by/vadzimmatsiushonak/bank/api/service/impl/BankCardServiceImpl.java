@@ -21,7 +21,7 @@ public class BankCardServiceImpl implements BankCardService {
     private final BankCardRepository repository;
 
     @Override
-    public BankCard create(@NotNull BankCard bankCard) {
+    public BankCard save(@NotNull BankCard bankCard) {
         log.info("BankCardServiceImpl create {}", bankCard);
         bankCard.setId(null);
 

@@ -61,7 +61,7 @@ public class BankPaymentController {
     @PostMapping
     public ResponseEntity<BankPaymentDto> create(
             @Valid @RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
-        BankPayment bankPayment = bankPaymentService.create(
+        BankPayment bankPayment = bankPaymentService.save(
                 bankPaymentMapper.toEntity(bankPaymentRequestDto));
         return ResponseEntity.status(CREATED).body(bankPaymentMapper.toDto(bankPayment));
     }

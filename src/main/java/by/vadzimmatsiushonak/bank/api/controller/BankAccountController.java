@@ -52,7 +52,7 @@ public class BankAccountController {
     @ResponseStatus(CREATED)
     @PostMapping
     public ResponseEntity<BankAccountDto> create(@Valid @RequestBody BankAccountRequestDto bankAccountRequestDto) {
-        BankAccount bankAccount = bankAccountService.create(
+        BankAccount bankAccount = bankAccountService.save(
                 bankAccountMapper.toEntity(bankAccountRequestDto));
         return ResponseEntity.status(CREATED).body(bankAccountMapper.toDto(bankAccount));
     }

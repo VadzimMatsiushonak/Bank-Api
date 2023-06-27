@@ -22,7 +22,7 @@ public class BankPaymentServiceImpl implements BankPaymentService {
     private final BankPaymentRepository repository;
 
     @Override
-    public BankPayment create(@NotNull BankPayment bankPayment) {
+    public BankPayment save(@NotNull BankPayment bankPayment) {
         log.info("BankPaymentServiceImpl create {}", bankPayment);
         bankPayment.setId(null);
 

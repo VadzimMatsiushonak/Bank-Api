@@ -22,6 +22,8 @@ ext {
     gsonVersion = "2.10"
     mapstructVersion = "1.5.3.Final"
     lombokMapstructBindingVersion = "0.2.0"
+    junitVersion = "5.7.1"
+    mockitoVersion = "5.3.1"
 
     spring = [
             dataJpa     : "org.springframework.boot:spring-boot-starter-data-jpa",
@@ -59,7 +61,13 @@ ext {
             mapstructProcessor    : "org.mapstruct:mapstruct-processor:$mapstructVersion",
             lombokProcessor       : "org.projectlombok:lombok",
             lombokMapstructBinding: "org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBindingVersion",
-            caffeine              : "com.github.ben-manes.caffeine:caffeine"
+            caffeine              : "com.github.ben-manes.caffeine:caffeine",
+    ]
+
+    tests = [
+            junitJupiter          : "org.junit.jupiter:junit-jupiter:$junitVersion",
+            junitJupiterEngine    : "org.junit.jupiter:junit-jupiter-engine:$junitVersion",
+            mockitoCore           : "org.mockito:mockito-core:$mockitoVersion"
     ]
 }
 
@@ -77,7 +85,8 @@ dependencies {
     compileOnly misc.lombok
     annotationProcessor misc.mapstructProcessor, misc.lombokProcessor, misc.lombokMapstructBinding
 
-    testImplementation spring.test, spring.securityTest
+    testImplementation spring.test, spring.securityTest, tests.junitJupiter, tests.mockitoCore
+    testRuntimeOnly tests.junitJupiterEngine
 }
 
 tasks.named("test") {

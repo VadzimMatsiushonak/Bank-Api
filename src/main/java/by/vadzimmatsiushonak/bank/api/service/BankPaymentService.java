@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface BankPaymentService {
 
-    BankPayment create(@NotNull BankPayment bankPayment);
+    BankPayment save(@NotNull BankPayment bankPayment);
 
     Optional<BankPayment> findById(@NotNull Long id);
 

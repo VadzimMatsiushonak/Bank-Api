@@ -3,13 +3,14 @@ package by.vadzimmatsiushonak.bank.api.service;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public interface BankAccountService {
 
-    BankAccount create(@NotNull BankAccount bankAccount);
+    BankAccount save(@NotNull BankAccount bankAccount);
 
-    Optional<BankAccount> findById(@NotNull String iban);
+    Optional<BankAccount> findById(@NotBlank String iban);
 
     List<BankAccount> findAll();
 
@@ -17,6 +18,6 @@ public interface BankAccountService {
 
     void delete(@NotNull BankAccount bankAccount);
 
-    void deleteById(@NotNull String iban);
+    void deleteById(@NotBlank String iban);
 
 }
