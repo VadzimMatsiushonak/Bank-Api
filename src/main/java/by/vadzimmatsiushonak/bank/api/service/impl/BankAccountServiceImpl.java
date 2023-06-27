@@ -6,6 +6,7 @@ import by.vadzimmatsiushonak.bank.api.service.BankAccountService;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     private final BankAccountRepository repository;
 
     @Override
-    public BankAccount create(@NotNull BankAccount bankAccount) {
+    public BankAccount save(@NotNull BankAccount bankAccount) {
         log.info("BankAccountServiceImpl create {}", bankAccount);
 
         repository.findById(bankAccount.getIban()).ifPresent(existing -> {
@@ -34,7 +35,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public Optional<BankAccount> findById(@NotNull String iban) {
+    public Optional<BankAccount> findById(@NotBlank String iban) {
         log.info("BankAccountServiceImpl findById {}", iban);
 
         return repository.findById(iban);
@@ -63,7 +64,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public void deleteById(@NotNull String iban) {
+    public void deleteById(@NotBlank String iban) {
         log.info("BankAccountServiceImpl deleteById {}", iban);
 
         repository.deleteById(iban);

@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public interface CustomerService {
 
-    Customer create(@NotNull Customer customer);
+    Customer save(@NotNull Customer customer);
 
     Optional<Customer> findById(@NotNull Long id);
 

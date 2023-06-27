@@ -52,7 +52,7 @@ public class CustomerController {
     @ResponseStatus(CREATED)
     @PostMapping
     public ResponseEntity<CustomerDto> create(@Valid @RequestBody CustomerRequestDto customerRequestDto) {
-        Customer customer = customerService.create(customerMapper.toEntity(customerRequestDto));
+        Customer customer = customerService.save(customerMapper.toEntity(customerRequestDto));
         return ResponseEntity.status(CREATED).body(customerMapper.toDto(customer));
     }
 }

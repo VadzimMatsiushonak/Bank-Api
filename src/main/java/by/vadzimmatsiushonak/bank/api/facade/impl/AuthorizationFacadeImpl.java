@@ -125,11 +125,11 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Override
     @Transactional
     public String register(@NotNull Customer customer) {
-        customerService.create(customer);
+        customerService.save(customer);
 
         User user = new User(customer);
         user.setRole(Role.TECHNICAL_USER);
-        userServices.create(user);
+        userServices.save(user);
 
         return generateCode(user, REGISTRATION_KEY);
     }

@@ -9,13 +9,18 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
 public class InMemoryOauth2TokenStore implements Oauth2TokenStore {
 
-    private final Map<String, Jwt> store = new ConcurrentHashMap<>();
+    private final Map<String, Jwt> store;
+
+    public InMemoryOauth2TokenStore(Optional<Map<String, Jwt>> store) {
+        this.store = store.orElse(new ConcurrentHashMap<>());
+    }
 
     @Override
     public void save(@NotNull Jwt jwt) {

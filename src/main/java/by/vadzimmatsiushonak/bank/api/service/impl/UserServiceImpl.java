@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
 
     @Override
-    public User create(@NotNull User user) {
+    public User save(@NotNull User user) {
         log.info("UserServiceImpl create {}", user);
         user.setId(null);
         user.setPassword(encoder.encode(user.getPassword()));

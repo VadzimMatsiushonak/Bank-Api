@@ -21,7 +21,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository repository;
 
     @Override
-    public Customer create(@NotNull Customer customer) {
+    public Customer save(@NotNull Customer customer) {
         log.info("CustomerServiceImpl create {}", customer);
         customer.setId(null);
 

@@ -52,7 +52,7 @@ public class BankController {
     @ResponseStatus(CREATED)
     @PostMapping
     public ResponseEntity<BankDto> create(@Valid @RequestBody BankRequestDto bankRequestDto) {
-        Bank bank = bankService.create(bankMapper.toEntity(bankRequestDto));
+        Bank bank = bankService.save(bankMapper.toEntity(bankRequestDto));
         return ResponseEntity.status(CREATED).body(bankMapper.toDto(bank));
     }
 }

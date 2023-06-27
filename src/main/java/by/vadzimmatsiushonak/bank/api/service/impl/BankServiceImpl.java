@@ -21,7 +21,7 @@ public class BankServiceImpl implements BankService {
     private final BankRepository repository;
 
     @Override
-    public Bank create(@NotNull Bank bank) {
+    public Bank save(@NotNull Bank bank) {
         log.info("BankServiceImpl create {}", bank);
         bank.setId(null);
 

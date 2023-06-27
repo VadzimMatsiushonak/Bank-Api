@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public interface BankService {
 
-    Bank create(@NotNull Bank bank);
+    Bank save(@NotNull Bank bank);
 
     Optional<Bank> findById(@NotNull Long id);
 
