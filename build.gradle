@@ -3,6 +3,7 @@ plugins {
     id "io.spring.dependency-management" version "1.0.15.RELEASE"
     id "java"
     id "idea"
+    id "jacoco"
 }
 
 group = "by.vadzimmatsiushonak"
@@ -87,6 +88,32 @@ dependencies {
 
     testImplementation spring.test, spring.securityTest, tests.junitJupiter, tests.mockitoCore
     testRuntimeOnly tests.junitJupiterEngine
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+    reportsDir = file("$buildDir/jacoco")
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/generated/**",
+                    "**/config/**",
+                    "**/api/BankApiApplication.class",
+                    "**/api/annotation/**",
+                    "**/api/constant/**",
+                    "**/api/exception/**",
+                    "**/api/mapper/**",
+                    "**/api/model/**",
+                    "**/api/repository/**",
+                    "**/api/util/**"
+            ])
+        }))
+    }
 }
 
 tasks.named("test") {
