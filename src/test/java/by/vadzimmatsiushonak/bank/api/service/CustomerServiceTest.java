@@ -17,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.TestConstants.TEST_ID_LONG;
+import static utils.TestConstants.ID_LONG;
+import static utils.TestConstants.PHONENUMBER;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {
@@ -33,7 +34,7 @@ public class CustomerServiceTest {
         @Test
         public void save() {
             Customer expected = new Customer();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
 
             Customer customer = new Customer();
             when(repository.save(customer)).thenReturn(expected);
@@ -47,13 +48,13 @@ public class CustomerServiceTest {
         @Test
         public void saveWithId() {
             Customer expected = new Customer();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
 
             Customer customer = new Customer();
             when(repository.save(customer)).thenReturn(expected);
 
             Customer customerWithId = new Customer();
-            customerWithId.setId(TEST_ID_LONG);
+            customerWithId.setId(ID_LONG);
 
             Customer actual = service.save(customerWithId);
             assertEquals(expected, actual);
@@ -66,13 +67,28 @@ public class CustomerServiceTest {
         @Test
         public void findById() {
             Customer customer = new Customer();
-            customer.setId(TEST_ID_LONG);
-            when(repository.findById(TEST_ID_LONG)).thenReturn(Optional.of(customer));
+            customer.setId(ID_LONG);
+            when(repository.findById(ID_LONG)).thenReturn(Optional.of(customer));
 
 
-            Customer actual = service.findById(TEST_ID_LONG).orElse(null);
+            Customer actual = service.findById(ID_LONG).orElse(null);
             assertEquals(customer, actual);
-            verify(repository).findById(TEST_ID_LONG);
+            verify(repository).findById(ID_LONG);
+        }
+    }
+
+    @Nested
+    public class CustomerServiceTestFindByPhoneNumber {
+        @Test
+        public void findByPhoneNumber() {
+            Customer customer = new Customer();
+            customer.setPhoneNumber(PHONENUMBER);
+            when(repository.findByPhoneNumber(PHONENUMBER)).thenReturn(Optional.of(customer));
+
+
+            Customer actual = service.findByPhoneNumber(PHONENUMBER).orElse(null);
+            assertEquals(customer, actual);
+            verify(repository).findByPhoneNumber(PHONENUMBER);
         }
     }
 
@@ -81,7 +97,7 @@ public class CustomerServiceTest {
         @Test
         public void findAll() {
             Customer customer = new Customer();
-            customer.setId(TEST_ID_LONG);
+            customer.setId(ID_LONG);
             List<Customer> expected = List.of(customer);
             when(repository.findAll()).thenReturn(expected);
 
@@ -97,7 +113,7 @@ public class CustomerServiceTest {
         @Test
         public void update() {
             Customer expected = new Customer();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
             when(repository.save(expected)).thenReturn(expected);
 
 
@@ -131,8 +147,8 @@ public class CustomerServiceTest {
     public class CustomerServiceTestDeleteById {
         @Test
         public void deleteById() {
-            service.deleteById(TEST_ID_LONG);
-            verify(repository).deleteById(TEST_ID_LONG);
+            service.deleteById(ID_LONG);
+            verify(repository).deleteById(ID_LONG);
         }
     }
 }

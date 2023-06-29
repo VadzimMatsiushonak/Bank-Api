@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
+import static by.vadzimmatsiushonak.bank.api.util.SecurityUtils.getCurrentUserPhoneNumber;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -74,9 +75,7 @@ public class BankPaymentController {
     @PostMapping("/initiatePayment")
     public ResponseEntity<BankPaymentStatusResponse> initiatePayment(
             @Valid @RequestBody InitiatePaymentRequest initiatePaymentRequest) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String phoneNumber = auth.getName();
-        BankPayment result = paymentFacade.initiatePayment(phoneNumber,
+        BankPayment result = paymentFacade.initiatePayment(getCurrentUserPhoneNumber(),
                 initiatePaymentRequest);
         return ResponseEntity.status(CREATED).body(bankPaymentStatusMapper.toDto(result));
     }

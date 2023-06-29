@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.TestConstants.TEST_ID_LONG;
+import static utils.TestConstants.ID_LONG;
 
 @ExtendWith(MockitoExtension.class)
 public class BankPaymentServiceTest {
@@ -33,7 +33,7 @@ public class BankPaymentServiceTest {
         @Test
         public void save() {
             BankPayment expected = new BankPayment();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
 
             BankPayment BankPayment = new BankPayment();
             when(repository.save(BankPayment)).thenReturn(expected);
@@ -47,13 +47,13 @@ public class BankPaymentServiceTest {
         @Test
         public void saveWithId() {
             BankPayment expected = new BankPayment();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
 
             BankPayment bankPayment = new BankPayment();
             when(repository.save(bankPayment)).thenReturn(expected);
 
             BankPayment bankPaymentWithId = new BankPayment();
-            bankPaymentWithId.setId(TEST_ID_LONG);
+            bankPaymentWithId.setId(ID_LONG);
 
             BankPayment actual = service.save(bankPaymentWithId);
             assertEquals(expected, actual);
@@ -66,13 +66,13 @@ public class BankPaymentServiceTest {
         @Test
         public void findById() {
             BankPayment bankPayment = new BankPayment();
-            bankPayment.setId(TEST_ID_LONG);
-            when(repository.findById(TEST_ID_LONG)).thenReturn(Optional.of(bankPayment));
+            bankPayment.setId(ID_LONG);
+            when(repository.findById(ID_LONG)).thenReturn(Optional.of(bankPayment));
 
 
-            BankPayment actual = service.findById(TEST_ID_LONG).orElse(null);
+            BankPayment actual = service.findById(ID_LONG).orElse(null);
             assertEquals(bankPayment, actual);
-            verify(repository).findById(TEST_ID_LONG);
+            verify(repository).findById(ID_LONG);
         }
     }
 
@@ -81,7 +81,7 @@ public class BankPaymentServiceTest {
         @Test
         public void findAll() {
             BankPayment bankPayment = new BankPayment();
-            bankPayment.setId(TEST_ID_LONG);
+            bankPayment.setId(ID_LONG);
             List<BankPayment> expected = List.of(bankPayment);
             when(repository.findAll()).thenReturn(expected);
 
@@ -97,7 +97,7 @@ public class BankPaymentServiceTest {
         @Test
         public void update() {
             BankPayment expected = new BankPayment();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
             when(repository.save(expected)).thenReturn(expected);
 
 
@@ -131,8 +131,8 @@ public class BankPaymentServiceTest {
     public class BankPaymentServiceTestDeleteById {
         @Test
         public void deleteById() {
-            service.deleteById(TEST_ID_LONG);
-            verify(repository).deleteById(TEST_ID_LONG);
+            service.deleteById(ID_LONG);
+            verify(repository).deleteById(ID_LONG);
         }
     }
 }

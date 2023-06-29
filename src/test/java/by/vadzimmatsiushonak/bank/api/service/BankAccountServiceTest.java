@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.TestConstants.TEST_IBAN;
+import static utils.TestConstants.IBAN;
 
 @ExtendWith(MockitoExtension.class)
 public class BankAccountServiceTest {
@@ -34,28 +34,28 @@ public class BankAccountServiceTest {
         @Test
         public void save() {
             BankAccount expected = new BankAccount();
-            expected.setIban(TEST_IBAN);
-            when(repository.findById(TEST_IBAN)).thenReturn(Optional.empty());
+            expected.setIban(IBAN);
+            when(repository.findById(IBAN)).thenReturn(Optional.empty());
             when(repository.save(expected)).thenReturn(expected);
 
 
             BankAccount actual = service.save(expected);
             assertEquals(expected, actual);
-            verify(repository).findById(TEST_IBAN);
+            verify(repository).findById(IBAN);
             verify(repository).save(expected);
         }
 
         @Test
         public void saveDuplicate() {
             BankAccount expected = new BankAccount();
-            expected.setIban(TEST_IBAN);
+            expected.setIban(IBAN);
             when(repository.findById(any())).thenReturn(Optional.of(expected));
 
 
             assertThrows(
                     DuplicateException.class,
                     () -> service.save(expected));
-            verify(repository).findById(TEST_IBAN);
+            verify(repository).findById(IBAN);
             verify(repository, times(0)).save(any());
         }
     }
@@ -65,13 +65,13 @@ public class BankAccountServiceTest {
         @Test
         public void findById() {
             BankAccount bankAccount = new BankAccount();
-            bankAccount.setIban(TEST_IBAN);
-            when(repository.findById(TEST_IBAN)).thenReturn(Optional.of(bankAccount));
+            bankAccount.setIban(IBAN);
+            when(repository.findById(IBAN)).thenReturn(Optional.of(bankAccount));
 
 
-            BankAccount actual = service.findById(TEST_IBAN).orElse(null);
+            BankAccount actual = service.findById(IBAN).orElse(null);
             assertEquals(bankAccount, actual);
-            verify(repository).findById(TEST_IBAN);
+            verify(repository).findById(IBAN);
         }
     }
 
@@ -80,7 +80,7 @@ public class BankAccountServiceTest {
         @Test
         public void findAll() {
             BankAccount bankAccount = new BankAccount();
-            bankAccount.setIban(TEST_IBAN);
+            bankAccount.setIban(IBAN);
             List<BankAccount> expected = List.of(bankAccount);
             when(repository.findAll()).thenReturn(expected);
 
@@ -96,7 +96,7 @@ public class BankAccountServiceTest {
         @Test
         public void update() {
             BankAccount expected = new BankAccount();
-            expected.setIban(TEST_IBAN);
+            expected.setIban(IBAN);
             when(repository.save(expected)).thenReturn(expected);
 
 
@@ -130,8 +130,8 @@ public class BankAccountServiceTest {
     public class BankAccountServiceTestDeleteById {
         @Test
         public void deleteById() {
-            service.deleteById(TEST_IBAN);
-            verify(repository).deleteById(TEST_IBAN);
+            service.deleteById(IBAN);
+            verify(repository).deleteById(IBAN);
         }
     }
 }

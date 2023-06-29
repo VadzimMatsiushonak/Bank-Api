@@ -18,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.TestConstants.TEST_ID_LONG;
-import static utils.TestConstants.TEST_PASSWORD;
+import static utils.TestConstants.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -38,40 +37,40 @@ public class UserServiceTest {
         @Test
         public void save() {
             User expected = new User();
-            expected.setId(TEST_ID_LONG);
-            expected.setPassword(TEST_PASSWORD);
+            expected.setId(ID_LONG);
+            expected.setPassword(PASSWORD);
 
             User user = new User();
-            user.setPassword(TEST_PASSWORD);
-            when(encoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
+            user.setPassword(PASSWORD);
+            when(encoder.encode(PASSWORD)).thenReturn(PASSWORD);
             when(repository.save(user)).thenReturn(expected);
 
 
             User actual = service.save(user);
             assertEquals(expected, actual);
             verify(repository).save(expected);
-            verify(encoder).encode(TEST_PASSWORD);
+            verify(encoder).encode(PASSWORD);
         }
 
         @Test
         public void saveWithId() {
             User expected = new User();
-            expected.setId(TEST_ID_LONG);
-            expected.setPassword(TEST_PASSWORD);
+            expected.setId(ID_LONG);
+            expected.setPassword(PASSWORD);
 
             User user = new User();
-            user.setPassword(TEST_PASSWORD);
-            when(encoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
+            user.setPassword(PASSWORD);
+            when(encoder.encode(PASSWORD)).thenReturn(PASSWORD);
             when(repository.save(user)).thenReturn(expected);
 
             User userWithId = new User();
-            userWithId.setId(TEST_ID_LONG);
-            userWithId.setPassword(TEST_PASSWORD);
+            userWithId.setId(ID_LONG);
+            userWithId.setPassword(PASSWORD);
 
             User actual = service.save(userWithId);
             assertEquals(expected, actual);
             verify(repository).save(expected);
-            verify(encoder).encode(TEST_PASSWORD);
+            verify(encoder).encode(PASSWORD);
         }
     }
 
@@ -80,13 +79,28 @@ public class UserServiceTest {
         @Test
         public void findById() {
             User user = new User();
-            user.setId(TEST_ID_LONG);
-            when(repository.findById(TEST_ID_LONG)).thenReturn(Optional.of(user));
+            user.setId(ID_LONG);
+            when(repository.findById(ID_LONG)).thenReturn(Optional.of(user));
 
 
-            User actual = service.findById(TEST_ID_LONG).orElse(null);
+            User actual = service.findById(ID_LONG).orElse(null);
             assertEquals(user, actual);
-            verify(repository).findById(TEST_ID_LONG);
+            verify(repository).findById(ID_LONG);
+        }
+    }
+
+    @Nested
+    public class UserServiceTestFindByUsername {
+        @Test
+        public void findByUsername() {
+            User user = new User();
+            user.setLogin(USERNAME);
+            when(repository.findByLogin(USERNAME)).thenReturn(Optional.of(user));
+
+
+            User actual = service.findByUsername(USERNAME).orElse(null);
+            assertEquals(user, actual);
+            verify(repository).findByLogin(USERNAME);
         }
     }
 
@@ -95,7 +109,7 @@ public class UserServiceTest {
         @Test
         public void findAll() {
             User user = new User();
-            user.setId(TEST_ID_LONG);
+            user.setId(ID_LONG);
             List<User> expected = List.of(user);
             when(repository.findAll()).thenReturn(expected);
 
@@ -111,7 +125,7 @@ public class UserServiceTest {
         @Test
         public void update() {
             User expected = new User();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
             when(repository.save(expected)).thenReturn(expected);
 
 
@@ -145,8 +159,8 @@ public class UserServiceTest {
     public class UserServiceTestDeleteById {
         @Test
         public void deleteById() {
-            service.deleteById(TEST_ID_LONG);
-            verify(repository).deleteById(TEST_ID_LONG);
+            service.deleteById(ID_LONG);
+            verify(repository).deleteById(ID_LONG);
         }
     }
 }

@@ -1,7 +1,10 @@
 package by.vadzimmatsiushonak.bank.api.util;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.concurrent.ThreadLocalRandom;
 
+@UtilityClass
 public class NumberUtils {
 
     public static final int VERIFICATION_MIN_VALUE = 1000;
