@@ -71,7 +71,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             throw new_InvalidCredentialsException();
         }
 
-        return this.generateCode(user, LOGIN_KEY);
+        return generateCode(user, LOGIN_KEY);
     }
 
     /**
