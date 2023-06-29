@@ -39,8 +39,8 @@ import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.*;
 @Service
 public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
-    private final static String LOGIN_KEY = "L_";
-    private final static String REGISTRATION_KEY = "R_";
+    public final static String LOGIN_KEY = "L_";
+    public final static String REGISTRATION_KEY = "R_";
 
     private final CustomerService customerService;
     private final UserService userServices;

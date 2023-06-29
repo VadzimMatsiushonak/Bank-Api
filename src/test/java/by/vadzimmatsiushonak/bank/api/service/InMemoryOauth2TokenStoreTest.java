@@ -13,8 +13,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static utils.TestConstants.TEST_ID_STRING;
-import static utils.TestConstants.TEST_TOKEN;
+import static utils.TestConstants.ID;
+import static utils.TestConstants.TOKEN;
 
 @ExtendWith(MockitoExtension.class)
 public class InMemoryOauth2TokenStoreTest {
@@ -33,7 +33,7 @@ public class InMemoryOauth2TokenStoreTest {
         @Test
         public void save() {
             Jwt jwt = mock(Jwt.class);
-            when(jwt.getId()).thenReturn(TEST_ID_STRING);
+            when(jwt.getId()).thenReturn(ID);
             when(store.put(jwt.getId(), jwt)).thenReturn(jwt);
 
             tokenStore.save(jwt);
@@ -46,18 +46,18 @@ public class InMemoryOauth2TokenStoreTest {
         @Test
         public void removeByIdExisting() {
             Jwt existing = mock(Jwt.class);
-            when(store.remove(TEST_ID_STRING)).thenReturn(existing);
+            when(store.remove(ID)).thenReturn(existing);
 
-            assertTrue(tokenStore.removeById(TEST_ID_STRING));
-            verify(store).remove(TEST_ID_STRING);
+            assertTrue(tokenStore.removeById(ID));
+            verify(store).remove(ID);
         }
 
         @Test
         public void removeByIdNonExisting() {
-            when(store.remove(TEST_ID_STRING)).thenReturn(null);
+            when(store.remove(ID)).thenReturn(null);
 
-            assertFalse(tokenStore.removeById(TEST_ID_STRING));
-            verify(store).remove(TEST_ID_STRING);
+            assertFalse(tokenStore.removeById(ID));
+            verify(store).remove(ID);
         }
     }
 
@@ -65,7 +65,7 @@ public class InMemoryOauth2TokenStoreTest {
     public class InMemoryOauth2TokenStoreTestRemoveByToken {
         @Test
         public void removeByToken() {
-            tokenStore.removeByToken(TEST_TOKEN);
+            tokenStore.removeByToken(TOKEN);
         }
     }
 
@@ -74,11 +74,11 @@ public class InMemoryOauth2TokenStoreTest {
         @Test
         public void findById() {
             Jwt expected = mock(Jwt.class);
-            when(store.get(TEST_ID_STRING)).thenReturn(expected);
+            when(store.get(ID)).thenReturn(expected);
 
-            Jwt actual = tokenStore.findById(TEST_ID_STRING);
+            Jwt actual = tokenStore.findById(ID);
             assertEquals(expected, actual);
-            verify(store).get(TEST_ID_STRING);
+            verify(store).get(ID);
         }
     }
 
@@ -87,10 +87,10 @@ public class InMemoryOauth2TokenStoreTest {
         @Test
         public void findByToken() {
             Jwt expected = mock(Jwt.class);
-            when(expected.getTokenValue()).thenReturn(TEST_TOKEN);
+            when(expected.getTokenValue()).thenReturn(TOKEN);
             when(store.values()).thenReturn(Collections.singleton(expected));
 
-            Jwt actual = tokenStore.findByToken(TEST_TOKEN);
+            Jwt actual = tokenStore.findByToken(TOKEN);
             assertEquals(expected, actual);
             verify(store).values();
         }
@@ -100,10 +100,10 @@ public class InMemoryOauth2TokenStoreTest {
     public class InMemoryOauth2TokenStoreTestContainsToken {
         @Test
         public void containsToken() {
-            when(store.containsKey(TEST_ID_STRING)).thenReturn(true);
+            when(store.containsKey(ID)).thenReturn(true);
 
-            assertTrue(tokenStore.containsToken(TEST_ID_STRING));
-            verify(store).containsKey(TEST_ID_STRING);
+            assertTrue(tokenStore.containsToken(ID));
+            verify(store).containsKey(ID);
         }
     }
 }

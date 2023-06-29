@@ -11,6 +11,8 @@ public interface CustomerService {
 
     Optional<Customer> findById(@NotNull Long id);
 
+    Optional<Customer> findByPhoneNumber(String phoneNumber);
+
     List<Customer> findAll();
 
     void update(@NotNull Customer customer);

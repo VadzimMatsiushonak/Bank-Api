@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.TestConstants.TEST_ID_LONG;
+import static utils.TestConstants.ID_LONG;
 
 @ExtendWith(MockitoExtension.class)
 public class BankServiceTest {
@@ -33,7 +33,7 @@ public class BankServiceTest {
         @Test
         public void save() {
             Bank expected = new Bank();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
 
             Bank bank = new Bank();
             when(repository.save(bank)).thenReturn(expected);
@@ -47,13 +47,13 @@ public class BankServiceTest {
         @Test
         public void saveWithId() {
             Bank expected = new Bank();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
 
             Bank bank = new Bank();
             when(repository.save(bank)).thenReturn(expected);
 
             Bank bankWithId = new Bank();
-            bankWithId.setId(TEST_ID_LONG);
+            bankWithId.setId(ID_LONG);
 
             Bank actual = service.save(bankWithId);
             assertEquals(expected, actual);
@@ -66,13 +66,13 @@ public class BankServiceTest {
         @Test
         public void findById() {
             Bank bank = new Bank();
-            bank.setId(TEST_ID_LONG);
-            when(repository.findById(TEST_ID_LONG)).thenReturn(Optional.of(bank));
+            bank.setId(ID_LONG);
+            when(repository.findById(ID_LONG)).thenReturn(Optional.of(bank));
 
 
-            Bank actual = service.findById(TEST_ID_LONG).orElse(null);
+            Bank actual = service.findById(ID_LONG).orElse(null);
             assertEquals(bank, actual);
-            verify(repository).findById(TEST_ID_LONG);
+            verify(repository).findById(ID_LONG);
         }
     }
 
@@ -81,7 +81,7 @@ public class BankServiceTest {
         @Test
         public void findAll() {
             Bank bank = new Bank();
-            bank.setId(TEST_ID_LONG);
+            bank.setId(ID_LONG);
             List<Bank> expected = List.of(bank);
             when(repository.findAll()).thenReturn(expected);
 
@@ -97,7 +97,7 @@ public class BankServiceTest {
         @Test
         public void update() {
             Bank expected = new Bank();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
             when(repository.save(expected)).thenReturn(expected);
 
 
@@ -131,8 +131,8 @@ public class BankServiceTest {
     public class BankServiceTestDeleteById {
         @Test
         public void deleteById() {
-            service.deleteById(TEST_ID_LONG);
-            verify(repository).deleteById(TEST_ID_LONG);
+            service.deleteById(ID_LONG);
+            verify(repository).deleteById(ID_LONG);
         }
     }
 }

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.TestConstants.TEST_ID_LONG;
+import static utils.TestConstants.ID_LONG;
 
 @ExtendWith(MockitoExtension.class)
 public class BankCardServiceTest {
@@ -33,7 +33,7 @@ public class BankCardServiceTest {
         @Test
         public void save() {
             BankCard expected = new BankCard();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
 
             BankCard bankCard = new BankCard();
             when(repository.save(bankCard)).thenReturn(expected);
@@ -47,13 +47,13 @@ public class BankCardServiceTest {
         @Test
         public void saveWithId() {
             BankCard expected = new BankCard();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
 
             BankCard bankCard = new BankCard();
             when(repository.save(bankCard)).thenReturn(expected);
 
             BankCard bankCardWithId = new BankCard();
-            bankCardWithId.setId(TEST_ID_LONG);
+            bankCardWithId.setId(ID_LONG);
 
             BankCard actual = service.save(bankCardWithId);
             assertEquals(expected, actual);
@@ -66,13 +66,13 @@ public class BankCardServiceTest {
         @Test
         public void findById() {
             BankCard bankCard = new BankCard();
-            bankCard.setId(TEST_ID_LONG);
-            when(repository.findById(TEST_ID_LONG)).thenReturn(Optional.of(bankCard));
+            bankCard.setId(ID_LONG);
+            when(repository.findById(ID_LONG)).thenReturn(Optional.of(bankCard));
 
 
-            BankCard actual = service.findById(TEST_ID_LONG).orElse(null);
+            BankCard actual = service.findById(ID_LONG).orElse(null);
             assertEquals(bankCard, actual);
-            verify(repository).findById(TEST_ID_LONG);
+            verify(repository).findById(ID_LONG);
         }
     }
 
@@ -81,7 +81,7 @@ public class BankCardServiceTest {
         @Test
         public void findAll() {
             BankCard bankCard = new BankCard();
-            bankCard.setId(TEST_ID_LONG);
+            bankCard.setId(ID_LONG);
             List<BankCard> expected = List.of(bankCard);
             when(repository.findAll()).thenReturn(expected);
 
@@ -97,7 +97,7 @@ public class BankCardServiceTest {
         @Test
         public void update() {
             BankCard expected = new BankCard();
-            expected.setId(TEST_ID_LONG);
+            expected.setId(ID_LONG);
             when(repository.save(expected)).thenReturn(expected);
 
 
@@ -131,8 +131,8 @@ public class BankCardServiceTest {
     public class BankCardServiceTestDeleteById {
         @Test
         public void deleteById() {
-            service.deleteById(TEST_ID_LONG);
-            verify(repository).deleteById(TEST_ID_LONG);
+            service.deleteById(ID_LONG);
+            verify(repository).deleteById(ID_LONG);
         }
     }
 }

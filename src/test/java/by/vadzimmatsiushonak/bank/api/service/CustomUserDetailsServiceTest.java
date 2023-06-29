@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static utils.TestConstants.TEST_PASSWORD;
-import static utils.TestConstants.TEST_USERNAME;
+import static utils.TestConstants.PASSWORD;
+import static utils.TestConstants.USERNAME;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomUserDetailsServiceTest {
@@ -40,8 +40,8 @@ public class CustomUserDetailsServiceTest {
         @Test
         public void loadUserByUsername() {
             User user = new User();
-            user.setLogin(TEST_USERNAME);
-            user.setPassword(TEST_PASSWORD);
+            user.setLogin(USERNAME);
+            user.setPassword(PASSWORD);
             user.setStatus(UserStatus.ACTIVE);
             user.setRole(Role.ADMIN);
 
@@ -50,22 +50,22 @@ public class CustomUserDetailsServiceTest {
                     Collections.singleton(new SimpleGrantedAuthority(user.getRole().authority)));
 
 
-            when(repository.findByLogin(TEST_USERNAME)).thenReturn(Optional.of(user));
+            when(repository.findByLogin(USERNAME)).thenReturn(Optional.of(user));
 
 
-            UserDetails actual = service.loadUserByUsername(TEST_USERNAME);
+            UserDetails actual = service.loadUserByUsername(USERNAME);
             assertEquals(expected, actual);
-            verify(repository).findByLogin(TEST_USERNAME);
+            verify(repository).findByLogin(USERNAME);
         }
 
         @Test
         public void loadUserByUsernameUserNotFound() {
-            when(repository.findByLogin(TEST_USERNAME)).thenReturn(Optional.empty());
+            when(repository.findByLogin(USERNAME)).thenReturn(Optional.empty());
 
             assertThrows(UsernameNotFoundException.class,
-                    () -> service.loadUserByUsername(TEST_USERNAME));
+                    () -> service.loadUserByUsername(USERNAME));
 
-            verify(repository).findByLogin(TEST_USERNAME);
+            verify(repository).findByLogin(USERNAME);
         }
 
         @Test
@@ -73,12 +73,12 @@ public class CustomUserDetailsServiceTest {
             User user = new User();
             user.setStatus(UserStatus.DISABLED);
 
-            when(repository.findByLogin(TEST_USERNAME)).thenReturn(Optional.of(user));
+            when(repository.findByLogin(USERNAME)).thenReturn(Optional.of(user));
 
             assertThrows(InactiveUserException.class,
-                    () -> service.loadUserByUsername(TEST_USERNAME));
+                    () -> service.loadUserByUsername(USERNAME));
 
-            verify(repository).findByLogin(TEST_USERNAME);
+            verify(repository).findByLogin(USERNAME);
         }
     }
 }

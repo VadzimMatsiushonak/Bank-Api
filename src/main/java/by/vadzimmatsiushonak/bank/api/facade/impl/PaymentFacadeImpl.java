@@ -10,9 +10,9 @@ import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.PaymentStatus;
-import by.vadzimmatsiushonak.bank.api.repository.BankAccountRepository;
-import by.vadzimmatsiushonak.bank.api.repository.BankPaymentRepository;
-import by.vadzimmatsiushonak.bank.api.repository.CustomerRepository;
+import by.vadzimmatsiushonak.bank.api.service.BankAccountService;
+import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
+import by.vadzimmatsiushonak.bank.api.service.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,9 +30,9 @@ import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.*;
 @Service
 public class PaymentFacadeImpl implements PaymentFacade {
 
-    private final BankPaymentRepository paymentRepository;
-    private final BankAccountRepository accountRepository;
-    private final CustomerRepository customerRepository;
+    private final BankPaymentService paymentService;
+    private final BankAccountService accountService;
+    private final CustomerService customerService;
 
     /**
      * Initiates a payment between two bank accounts.
@@ -55,15 +55,15 @@ public class PaymentFacadeImpl implements PaymentFacade {
             throw new_DuplicateException(request.senderIban);
         }
 
-        Customer customer = customerRepository.findByPhoneNumber(phoneNumber)
+        Customer customer = customerService.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new_UserNotFoundException(phoneNumber));
 
         BankAccount sender = customer.getBankAccounts().stream()
                 .filter(i -> request.senderIban.equals(i.getIban()))
                 .findFirst()
-                .orElseThrow(() -> new_EntityNotFoundException("BankAccount", request.senderIban));
+                .orElseThrow(() -> new_EntityNotFoundException("Sender", request.senderIban));
 
-        BankAccount recipient = accountRepository.findById(request.recipientIban)
+        BankAccount recipient = accountService.findById(request.recipientIban)
                 .orElseThrow(
                         () -> new_EntityNotFoundException("Recipient", request.recipientIban));
 
@@ -74,8 +74,8 @@ public class PaymentFacadeImpl implements PaymentFacade {
             sender.setAmount(senderAmount.subtract(request.amount));
             recipient.setAmount(recipientAmount.add(request.amount));
 
-            accountRepository.save(sender);
-            accountRepository.save(recipient);
+            accountService.save(sender);
+            accountService.save(recipient);
 
             BankAccount account = new BankAccount();
             account.setIban(sender.getIban());
@@ -87,7 +87,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
             payment.setRecipientBankAccountIban(recipient.getIban());
             payment.setStatus(PaymentStatus.ACCEPTED);
 
-            return paymentRepository.save(payment);
+            return paymentService.save(payment);
         } else {
             throw new_InsufficientFundsException(sender.getIban());
         }

@@ -36,6 +36,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Optional<Customer> findByPhoneNumber(String phoneNumber) {
+        log.info("CustomerServiceImpl findByPhoneNumber {}", phoneNumber);
+
+        return repository.findByPhoneNumber(phoneNumber);
+    }
+
+    @Override
     public List<Customer> findAll() {
         log.info("CustomerServiceImpl findAll");
 

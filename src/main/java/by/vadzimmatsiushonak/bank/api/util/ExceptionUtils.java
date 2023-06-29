@@ -3,12 +3,13 @@ package by.vadzimmatsiushonak.bank.api.util;
 import by.vadzimmatsiushonak.bank.api.exception.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Properties;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class ExceptionUtils {
 
     private static final Properties props = new Properties();
