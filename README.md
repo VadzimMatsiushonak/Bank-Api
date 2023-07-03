@@ -288,6 +288,36 @@ curl -X POST "http://localhost:8080/api/v1/kafka/log" -H "accept: */*" -H "Conte
 # 4 - Message
 ```
 
+## <a id="Sonar"></a> Sonar
+
+### <a id="SonarStartup"></a> Startup steps
+
+1. Start a SonarQube container by running the command:
+
+```
+docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
+```
+
+2. Access the SonarQube UI at `http://localhost:9000` and log in using the default
+   credentials `admin` and `admin`. Change the password to something more secure.
+3. Click on `Projects` and then `Manually` to create a new project.
+4. Enter the project data: display name `Bank-Api` , project key `Bank-Api`, and branch name `main`.
+5. Click `Use the global settings` and then `Create project`.
+6. Go to your project and click on `Locally` to set up local analysis.
+7. Enter `Bank-Api` as the token name and choose `No expiration`. Click `Generate` to create the
+   token.
+8. Copy the provided token and paste it into your `build.gradle` file under the `sonar.token`
+   property, using the format `property "sonar.token", "sqp_..."`. For example:
+
+```  
+   property "sonar.token", "sqp_98fc7d274354574277612b666f49e9e76879bf6b"
+```
+
+9. Run the command `./gradlew test jacocoTestReport sonar` to run the tests, generate the test
+   report, and analyze the code with SonarQube.
+10. Once the tests have passed and the report has been generated, you can view the code analysis
+    statistics on the project page in SonarQube.
+
 ## <a id="AvailableRequestsFlow"></a> Available Requests flow
 
 1. Initiate payment

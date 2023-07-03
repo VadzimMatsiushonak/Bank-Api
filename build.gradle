@@ -4,6 +4,7 @@ plugins {
     id "java"
     id "idea"
     id "jacoco"
+    id "org.sonarqube" version "4.2.1.3168"
 }
 
 group = "by.vadzimmatsiushonak"
@@ -98,6 +99,10 @@ jacoco {
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
 
+    reports {
+        xml.enabled true
+    }
+
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
@@ -113,6 +118,18 @@ jacocoTestReport {
                     "**/api/util/**"
             ])
         }))
+    }
+}
+
+sonar {
+    properties {
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.projectKey", "Bank-Api"
+        property "sonar.projectName", "'Bank-Api'"
+        property "sonar.token", "sqp_1fee55340af7be2ea82ec4720e47ef92b521d158"
+        property "srv.sonar.exclusions", "src/main/resources/**/*, **/BankApiApplication.java, **/generated/**"
+        property "sonar.coverage.exclusions", "**/BankApiApplication.java, **/generated/**, **/config/**, **/api/annotation/**, **/api/constant/**, **/api/exception/**, **/api/mapper/**, **/api/model/**, **/api/repository/**, **/api/util/**"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/jacoco/test/jacocoTestReport.xml"
     }
 }
 
