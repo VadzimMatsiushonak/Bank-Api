@@ -93,6 +93,7 @@ dependencies {
 
 jacoco {
     toolVersion = "0.8.7"
+    reportsDir = file("$buildDir/jacoco")
 }
 
 jacocoTestReport {
@@ -128,7 +129,7 @@ sonar {
         property "sonar.token", "sqp_1fee55340af7be2ea82ec4720e47ef92b521d158"
         property "srv.sonar.exclusions", "src/main/resources/**/*, **/BankApiApplication.java, **/generated/**"
         property "sonar.coverage.exclusions", "**/BankApiApplication.java, **/generated/**, **/config/**, **/api/annotation/**, **/api/constant/**, **/api/exception/**, **/api/mapper/**, **/api/model/**, **/api/repository/**, **/api/util/**"
-        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/jacoco/test/jacocoTestReport.xml"
     }
 }
 
