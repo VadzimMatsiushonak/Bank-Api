@@ -1,9 +1,9 @@
 package by.vadzimmatsiushonak.bank.api.controller;
 
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
-import by.vadzimmatsiushonak.bank.api.mapper.CustomerMapper;
+import by.vadzimmatsiushonak.bank.api.mapper.UserMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.AuthRequest;
-import by.vadzimmatsiushonak.bank.api.model.dto.request.CustomerRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.UserDataRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.TokenRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.AuthResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.RegistrationResponse;
@@ -36,7 +36,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/oauth2/v1")
 public class AuthorizationController {
 
-    private final CustomerMapper customerMapper;
+    private final UserMapper userMapper;
     private final AuthorizationFacade authorizationFacade;
 
     /**
@@ -99,32 +99,32 @@ public class AuthorizationController {
     }
 
     /**
-     * Register a new customer account and a corresponding user account, generate a verification code, send it to the
+     * Register a new user account and a corresponding user account, generate a verification code, send it to the
      * user, and return a unique identifier for verifying the user account registration.
      *
-     * @param customerDto the customer data to be registered.
+     * @param userDataRequestDto the user data to be registered.
      * @return the registration response containing the UUID key for the user account verification.
      */
-    @ApiOperation("Registers a new customer account and returns a unique key for verifying the user account registration.")
+    @ApiOperation("Registers a new user account and returns a unique key for verifying the user account registration.")
     @ApiResponses({
-            @ApiResponse(code = HTTP_CREATED, message = "Customer registered successfully.", response = RegistrationResponse.class),
+            @ApiResponse(code = HTTP_CREATED, message = "User registered successfully.", response = RegistrationResponse.class),
             @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid arguments provided.")})
     @ResponseStatus(CREATED)
     @PostMapping("/register")
-    public ResponseEntity<RegistrationResponse> registerCustomer(
-            @RequestBody @Validated CustomerRequestDto customerDto) {
-        String verificationKey = authorizationFacade.register(customerMapper.toEntity(customerDto));
+    public ResponseEntity<RegistrationResponse> registerUser(
+            @RequestBody @Validated UserDataRequestDto userDataRequestDto) {
+        String verificationKey = authorizationFacade.register(userMapper.toEntity(userDataRequestDto));
         return ResponseEntity.status(CREATED).body(new RegistrationResponse(verificationKey));
     }
 
     /**
-     * Verify the registration of a customer in the application using a verification key and code.
+     * Verify the registration of a user in the application using a verification key and code.
      *
      * @param key  the user key.
      * @param code the verification code.
      * @return the verification response indicating whether the verification was successful or not.
      */
-    @ApiOperation("Verify the registration of a customer in the application using a verification key and code.")
+    @ApiOperation("Verify the registration of a user in the application using a verification key and code.")
     @ApiResponses(value = {
             @ApiResponse(code = HTTP_OK, message = "Verification successful.", response = VerificationResponse.class),
             @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid verification code."),

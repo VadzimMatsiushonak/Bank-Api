@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class CustomerRequestDto {
+public class UserDataRequestDto {
 
     @ApiModelProperty(notes = "'name' must start with capital letter",
         required = true)

@@ -8,11 +8,11 @@ import by.vadzimmatsiushonak.bank.api.facade.PaymentFacade;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
-import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
+import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.PaymentStatus;
 import by.vadzimmatsiushonak.bank.api.service.BankAccountService;
 import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
-import by.vadzimmatsiushonak.bank.api.service.CustomerService;
+import by.vadzimmatsiushonak.bank.api.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,11 +32,11 @@ public class PaymentFacadeImpl implements PaymentFacade {
 
     private final BankPaymentService paymentService;
     private final BankAccountService accountService;
-    private final CustomerService customerService;
+    private final UserService userService;
 
     /**
      * Initiates a payment between two bank accounts.
-     * The customer initiating the payment is identified by their phone number,
+     * The user initiating the payment is identified by their phone number,
      * and their account is identified using the provided sender IBAN.
      * The recipient account is identified using the provided recipient IBAN.
      *
@@ -44,7 +44,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
      * @param request     InitiatePaymentRequest containing all information payment the payment
      * @return saved BankPayment entity representing the payment that was initiated.
      * @throws DuplicateException         If the sender and recipient have the same IBAN.
-     * @throws UserNotFoundException      If the customer cannot be found using the provided phone number.
+     * @throws UserNotFoundException      If the user cannot be found using the provided phone number.
      * @throws EntityNotFoundException    If the sender or recipient account cannot be found using the provided IBAN.
      * @throws InsufficientFundsException If the sender account does not have sufficient funds to complete the payment.
      */
@@ -55,10 +55,10 @@ public class PaymentFacadeImpl implements PaymentFacade {
             throw new_DuplicateException(request.senderIban);
         }
 
-        Customer customer = customerService.findByPhoneNumber(phoneNumber)
+        User user = userService.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new_UserNotFoundException(phoneNumber));
 
-        BankAccount sender = customer.getBankAccounts().stream()
+        BankAccount sender = user.getBankAccounts().stream()
                 .filter(i -> request.senderIban.equals(i.getIban()))
                 .findFirst()
                 .orElseThrow(() -> new_EntityNotFoundException("Sender", request.senderIban));

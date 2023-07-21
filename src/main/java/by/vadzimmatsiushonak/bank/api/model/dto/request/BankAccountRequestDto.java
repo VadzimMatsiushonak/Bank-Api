@@ -37,6 +37,6 @@ public class BankAccountRequestDto {
 
     @ApiModelProperty(example = "1", required = true)
     @NotNull
-    public Long customerId;
+    public Long userId;
 
 }
