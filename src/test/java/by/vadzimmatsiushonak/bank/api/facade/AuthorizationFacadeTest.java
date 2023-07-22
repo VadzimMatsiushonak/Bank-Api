@@ -3,11 +3,9 @@ package by.vadzimmatsiushonak.bank.api.facade;
 import by.vadzimmatsiushonak.bank.api.exception.*;
 import by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl;
 import by.vadzimmatsiushonak.bank.api.model.UserVerification;
-import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
-import by.vadzimmatsiushonak.bank.api.service.CustomerService;
 import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
@@ -41,8 +39,6 @@ public class AuthorizationFacadeTest {
     @Spy
     private AuthorizationFacadeImpl facade;
 
-    @Mock
-    private CustomerService customerService;
     @Mock
     private UserService userServices;
     @Mock
@@ -183,17 +179,15 @@ public class AuthorizationFacadeTest {
 
         @Test
         public void register() {
-            Customer customer = new Customer();
-            User user = new User(customer);
+            User user = new User();
             user.setRole(Role.TECHNICAL_USER);
 
 
             doReturn(CODE).when(facade).generateCode(user, REGISTRATION_KEY);
 
 
-            String actual = facade.register(customer);
+            String actual = facade.register(user);
             assertEquals(CODE, actual);
-            verify(customerService).save(customer);
             verify(userServices).save(user);
         }
 

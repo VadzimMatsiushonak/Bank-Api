@@ -47,6 +47,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findByPhoneNumber(String phoneNumber) {
+        log.info("UserServiceImpl findByPhoneNumber {}", phoneNumber);
+
+        return repository.findByPhoneNumber(phoneNumber);
+    }
+
+    @Override
     public List<User> findAll() {
         log.info("UserServiceImpl findAll");
 

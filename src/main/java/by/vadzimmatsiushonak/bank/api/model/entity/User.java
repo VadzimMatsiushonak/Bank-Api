@@ -9,7 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
 import lombok.Data;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity(name = "users")
@@ -26,12 +31,19 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    public User() {
-    }
+    private String name;
 
-    public User(Customer customer) {
-        this.login = customer.getPhoneNumber();
-        this.password = customer.getPassword();
+    private String surname;
+
+    private LocalDate dateOfBirth;
+
+    @Column(unique = true)
+    private String phoneNumber;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<BankAccount> bankAccounts;
+
+    public User() {
         this.status = NEW;
     }
 

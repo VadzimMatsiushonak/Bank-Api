@@ -25,7 +25,7 @@
         <constraints nullable="false"/>
       </column>
       <column name="bank_card_id" type="BIGINT"/>
-      <column name="customer_id" type="BIGINT">
+      <column name="user_id" type="BIGINT">
         <constraints nullable="false"/>
       </column>
     </createTable>
@@ -57,18 +57,6 @@
     </createTable>
   </changeSet>
   <changeSet author="Vadzim Matsiushonak" id="5">
-    <createTable tableName="customers">
-      <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_customers"/>
-      </column>
-      <column name="date_of_birth" type="date"/>
-      <column name="name" type="VARCHAR(255)"/>
-      <column name="password" type="VARCHAR(255)"/>
-      <column name="phone_number" type="VARCHAR(255)"/>
-      <column name="surname" type="VARCHAR(255)"/>
-    </createTable>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="6">
     <createTable tableName="users">
       <column autoIncrement="true" name="id" type="BIGINT">
         <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
@@ -76,58 +64,62 @@
       <column name="login" type="VARCHAR(255)"/>
       <column name="password" type="VARCHAR(255)"/>
       <column name="role" type="VARCHAR(255)"/>
+      <column name="date_of_birth" type="date"/>
+      <column name="name" type="VARCHAR(255)"/>
+      <column name="phone_number" type="VARCHAR(255)"/>
+      <column name="surname" type="VARCHAR(255)"/>
     </createTable>
   </changeSet>
 
-  <changeSet author="Vadzim Matsiushonak" id="7">
+  <changeSet author="Vadzim Matsiushonak" id="6">
     <createIndex indexName="ix_bank_cards_bank_account_iban" tableName="bank_cards">
       <column name="bank_account_iban"/>
     </createIndex>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="8">
+  <changeSet author="Vadzim Matsiushonak" id="7">
     <createIndex indexName="ix_bank_accounts_bank_id" tableName="bank_accounts">
       <column name="bank_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="9">
+  <changeSet author="Vadzim Matsiushonak" id="8">
     <createIndex indexName="ix_bank_payments_bank_account_iban" tableName="bank_payments">
       <column name="bank_account_iban"/>
     </createIndex>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="10">
+  <changeSet author="Vadzim Matsiushonak" id="9">
     <createIndex indexName="ix_bank_accounts_bank_card_id" tableName="bank_accounts">
       <column name="bank_card_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="11">
-    <createIndex indexName="ix_bank_accounts_customer_id" tableName="bank_accounts">
-      <column name="customer_id"/>
+  <changeSet author="Vadzim Matsiushonak" id="10">
+    <createIndex indexName="ix_bank_accounts_user_id" tableName="bank_accounts">
+      <column name="user_id"/>
     </createIndex>
   </changeSet>
 
-  <changeSet author="Vadzim Matsiushonak" id="12">
+  <changeSet author="Vadzim Matsiushonak" id="11">
     <addForeignKeyConstraint baseColumnNames="bank_account_iban" baseTableName="bank_cards"
       constraintName="fk_bank_cards_bank_account_iban" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
       onUpdate="RESTRICT" referencedColumnNames="iban" referencedTableName="bank_accounts" validate="true"/>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="13">
+  <changeSet author="Vadzim Matsiushonak" id="12">
     <addForeignKeyConstraint baseColumnNames="bank_id" baseTableName="bank_accounts"
       constraintName="fk_bank_accounts_bank_id" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
       onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="banks" validate="true"/>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="14">
+  <changeSet author="Vadzim Matsiushonak" id="13">
     <addForeignKeyConstraint baseColumnNames="bank_account_iban" baseTableName="bank_payments"
       constraintName="fk_bank_payments_bank_account_iban" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
       onUpdate="RESTRICT" referencedColumnNames="iban" referencedTableName="bank_accounts" validate="true"/>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="15">
+  <changeSet author="Vadzim Matsiushonak" id="14">
     <addForeignKeyConstraint baseColumnNames="bank_card_id" baseTableName="bank_accounts"
       constraintName="fk_bank_accounts_bank_card_id" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
       onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="bank_cards" validate="true"/>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="16">
-    <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="bank_accounts"
-      constraintName="fk_bank_accounts_customer_id" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-      onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="customers" validate="true"/>
+  <changeSet author="Vadzim Matsiushonak" id="15">
+    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="bank_accounts"
+      constraintName="fk_bank_accounts_user_id" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+      onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="users" validate="true"/>
   </changeSet>
 </databaseChangeLog>

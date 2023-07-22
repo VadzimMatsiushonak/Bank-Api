@@ -5,7 +5,7 @@ import by.vadzimmatsiushonak.bank.api.model.dto.response.BankAccountDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankAccountDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
-import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
+import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,7 +20,7 @@ public interface BankAccountMapper {
     List<BankAccountDtoRelations> toListDtoRelations(List<BankAccount> entities);
 
     @Mapping(target = "bank", source = "bankId")
-    @Mapping(target = "customer", source = "customerId")
+    @Mapping(target = "user", source = "userId")
     BankAccount toEntity(BankAccountRequestDto dto);
 
     default Bank fromIdToBank(Long bankId) {
@@ -29,10 +29,10 @@ public interface BankAccountMapper {
         return bank;
     }
 
-    default Customer fromIdToCustomer(Long customerId) {
-        Customer customer = new Customer();
-        customer.setId(customerId);
-        return customer;
+    default User fromIdToUser(Long userId) {
+        User user = new User();
+        user.setId(userId);
+        return user;
     }
 
 }

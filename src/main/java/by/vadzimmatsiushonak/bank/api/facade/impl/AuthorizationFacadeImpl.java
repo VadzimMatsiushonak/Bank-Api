@@ -3,11 +3,9 @@ package by.vadzimmatsiushonak.bank.api.facade.impl;
 import by.vadzimmatsiushonak.bank.api.exception.*;
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
 import by.vadzimmatsiushonak.bank.api.model.UserVerification;
-import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
-import by.vadzimmatsiushonak.bank.api.service.CustomerService;
 import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
@@ -42,7 +40,6 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     public final static String LOGIN_KEY = "L_";
     public final static String REGISTRATION_KEY = "R_";
 
-    private final CustomerService customerService;
     private final UserService userServices;
     private final UserDetailsService userDetailsService;
     private final Cache verificationCache;
@@ -116,18 +113,15 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     }
 
     /**
-     * Provides key and sends code after saving customer and inactive user entities
+     * Provides key and sends code after saving inactive user entity
      * with provided parameters to the database
      *
-     * @param customer the customer entity
+     * @param user the user entity
      * @return the String response containing the UUID key for the verification request
      */
     @Override
     @Transactional
-    public String register(@NotNull Customer customer) {
-        customerService.save(customer);
-
-        User user = new User(customer);
+    public String register(@NotNull User user) {
         user.setRole(Role.TECHNICAL_USER);
         userServices.save(user);
 

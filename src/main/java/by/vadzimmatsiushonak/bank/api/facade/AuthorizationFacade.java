@@ -1,7 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.facade;
 
 import by.vadzimmatsiushonak.bank.api.model.UserVerification;
-import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 
 import javax.validation.constraints.Max;
@@ -21,7 +20,7 @@ public interface AuthorizationFacade {
 
     boolean revokeToken(@NotBlank String token);
 
-    String register(@NotNull Customer customer);
+    String register(@NotNull User user);
 
     Boolean verifyRegistration(@NotBlank String key,
                                @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code);

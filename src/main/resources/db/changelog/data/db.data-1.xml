@@ -9,11 +9,37 @@
       <column name="login" value="admin"/>
       <column name="password" value="pass"/>
       <column name="role" value="ADMIN"/>
+      <column name="date_of_birth" valueDate="2000-02-20"/>
+      <column name="name" value="ADMIN"/>
+      <column name="phone_number" value="admin"/>
+      <column name="surname" value="ADMIN"/>
     </insert>
     <insert tableName="users">
       <column name="login" value="Vadzim"/>
       <column name="password" value="pass"/>
       <column name="role" value="TECHNICAL_USER"/>
+      <column name="date_of_birth" valueDate="2000-05-25"/>
+      <column name="name" value="VADZIM"/>
+      <column name="phone_number" value="375 44 1452003"/>
+      <column name="surname" value="MATSIUSHONAK"/>
+    </insert>
+    <insert tableName="users">
+      <column name="login" value="Walter"/>
+      <column name="password" value="pass"/>
+      <column name="role" value="TECHNICAL_USER"/>
+      <column name="date_of_birth" valueDate="1988-12-17"/>
+      <column name="name" value="Walter"/>
+      <column name="phone_number" value="46 0739 5066448"/>
+      <column name="surname" value="Rodriguez"/>
+    </insert>
+    <insert tableName="users">
+      <column name="login" value="Bradley"/>
+      <column name="password" value="pass"/>
+      <column name="role" value="TECHNICAL_USER"/>
+      <column name="date_of_birth" valueDate="1982-11-24"/>
+      <column name="name" value="Bradley"/>
+      <column name="phone_number" value="1 773 8009725"/>
+      <column name="surname" value="Cameron"/>
     </insert>
   </changeSet>
 
@@ -37,37 +63,6 @@
   </changeSet>
 
   <changeSet author="Vadzim Matsiushonak" id="3">
-    <insert tableName="customers">
-      <column name="date_of_birth" valueDate="2000-02-20"/>
-      <column name="name" value="ADMIN"/>
-      <column name="password" value="pass"/>
-      <column name="phone_number" value="admin"/>
-      <column name="surname" value="ADMIN"/>
-    </insert>
-    <insert tableName="customers">
-      <column name="date_of_birth" valueDate="2000-05-25"/>
-      <column name="name" value="VADZIM"/>
-      <column name="password" value="pass"/>
-      <column name="phone_number" value="375 44 1452003"/>
-      <column name="surname" value="MATSIUSHONAK"/>
-    </insert>
-    <insert tableName="customers">
-      <column name="date_of_birth" valueDate="1988-12-17"/>
-      <column name="name" value="Walter"/>
-      <column name="password" value="pass"/>
-      <column name="phone_number" value="46 0739 5066448"/>
-      <column name="surname" value="Rodriguez"/>
-    </insert>
-    <insert tableName="customers">
-      <column name="date_of_birth" valueDate="1982-11-24"/>
-      <column name="name" value="Bradley"/>
-      <column name="password" value="pass"/>
-      <column name="phone_number" value="1 773 8009725"/>
-      <column name="surname" value="Cameron"/>
-    </insert>
-  </changeSet>
-
-  <changeSet author="Vadzim Matsiushonak" id="4">
     <insert tableName="bank_accounts">
       <column name="amount" valueNumeric="12000000.00"/>
       <column name="currency" value="USD"/>
@@ -75,7 +70,7 @@
       <column name="title" value="ADMIN ADMIN"/>
       <column name="type" value="DEBIT"/>
       <column name="bank_id" valueNumeric="1"/>
-      <column name="customer_id" valueNumeric="1"/>
+      <column name="user_id" valueNumeric="1"/>
     </insert>
     <insert tableName="bank_accounts">
       <column name="amount" valueNumeric="150000.00"/>
@@ -84,7 +79,7 @@
       <column name="title" value="VADZIM MATSIUSHONAK"/>
       <column name="type" value="DEBIT"/>
       <column name="bank_id" valueNumeric="2"/>
-      <column name="customer_id" valueNumeric="2"/>
+      <column name="user_id" valueNumeric="2"/>
     </insert>
     <insert tableName="bank_accounts">
       <column name="amount" valueNumeric="4136.60"/>
@@ -93,7 +88,7 @@
       <column name="title" value="Walter Rodriguez"/>
       <column name="type" value="DEBIT"/>
       <column name="bank_id" valueNumeric="3"/>
-      <column name="customer_id" valueNumeric="3"/>
+      <column name="user_id" valueNumeric="3"/>
     </insert>
     <insert tableName="bank_accounts">
       <column name="amount" valueNumeric="137474.91"/>
@@ -102,11 +97,11 @@
       <column name="title" value="Bradley Cameron"/>
       <column name="type" value="DEBIT"/>
       <column name="bank_id" valueNumeric="4"/>
-      <column name="customer_id" valueNumeric="4"/>
+      <column name="user_id" valueNumeric="4"/>
     </insert>
   </changeSet>
 
-  <changeSet author="Vadzim Matsiushonak" id="5">
+  <changeSet author="Vadzim Matsiushonak" id="4">
     <insert tableName="bank_cards">
       <column name="cvs" value="111"/>
       <column name="expiration_date" valueDate="2111-11-11"/>
@@ -133,7 +128,7 @@
     </insert>
   </changeSet>
 
-  <changeSet author="Vadzim Matsiushonak " id="6">
+  <changeSet author="Vadzim Matsiushonak " id="5">
     <update tableName="bank_accounts">
       <column name="bank_card_id" value="1"/>
       <where>iban='US23AA1234567'</where>
@@ -152,7 +147,7 @@
     </update>
   </changeSet>
 
-  <changeSet author="Vadzim Matsiushonak" id="7">
+  <changeSet author="Vadzim Matsiushonak" id="6">
     <insert tableName="bank_payments">
       <column name="amount" valueNumeric="-150000.00"/>
       <column name="currency" value="BYN"/>

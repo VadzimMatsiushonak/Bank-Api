@@ -14,6 +14,8 @@ public interface UserService {
 
     Optional<User> findByUsername(@NotNull String username);
 
+    Optional<User> findByPhoneNumber(String phoneNumber);
+
     List<User> findAll();
 
     void update(@NotNull User user);

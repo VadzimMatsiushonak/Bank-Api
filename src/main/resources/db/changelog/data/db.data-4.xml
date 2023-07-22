@@ -12,5 +12,13 @@
       <column name="status" value="ACTIVE"/>
       <where>ID='2'</where>
     </update>
+    <update tableName="users">
+      <column name="status" value="ACTIVE"/>
+      <where>ID='3'</where>
+    </update>
+    <update tableName="users">
+      <column name="status" value="ACTIVE"/>
+      <where>ID='4'</where>
+    </update>
   </changeSet>
 </databaseChangeLog>

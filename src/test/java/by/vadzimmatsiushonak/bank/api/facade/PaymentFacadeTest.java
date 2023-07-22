@@ -8,10 +8,10 @@ import by.vadzimmatsiushonak.bank.api.facade.impl.PaymentFacadeImpl;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
-import by.vadzimmatsiushonak.bank.api.model.entity.Customer;
+import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.service.BankAccountService;
 import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
-import by.vadzimmatsiushonak.bank.api.service.CustomerService;
+import by.vadzimmatsiushonak.bank.api.service.UserService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +43,7 @@ public class PaymentFacadeTest {
     @Mock
     private BankAccountService accountService;
     @Mock
-    private CustomerService customerService;
+    private UserService userService;
 
     @Nested
     public class PaymentFacadeTestInitiatePayment {
@@ -55,8 +55,8 @@ public class PaymentFacadeTest {
             BankAccount sender = new BankAccount();
             sender.setIban(SENDER);
             sender.setAmount(AMOUNT_BD);
-            Customer customer = new Customer();
-            customer.setBankAccounts(List.of(sender));
+            User user = new User();
+            user.setBankAccounts(List.of(sender));
 
             BankAccount recipient = new BankAccount();
             recipient.setIban(RECIPIENT);
@@ -66,8 +66,8 @@ public class PaymentFacadeTest {
             BankPayment expected = buildBankPayment();
             expected.setId(ID_LONG);
 
-            when(customerService.findByPhoneNumber(PHONENUMBER)).thenReturn(
-                    Optional.of(customer));
+            when(userService.findByPhoneNumber(PHONENUMBER)).thenReturn(
+                    Optional.of(user));
             when(accountService.findById(RECIPIENT)).thenReturn(Optional.of(recipient));
             when(paymentService.save(bankPayment)).thenReturn(expected);
 
@@ -75,7 +75,7 @@ public class PaymentFacadeTest {
 
             assertEquals(expected, actual);
 
-            verify(customerService).findByPhoneNumber(PHONENUMBER);
+            verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService).findById(RECIPIENT);
             verify(paymentService).save(bankPayment);
             verify(accountService, times(2)).save(any());
@@ -94,22 +94,22 @@ public class PaymentFacadeTest {
             assertThrows(DuplicateException.class,
                     () -> facade.initiatePayment(PHONENUMBER, request));
 
-            verify(customerService, times(0)).findByPhoneNumber(any());
+            verify(userService, times(0)).findByPhoneNumber(any());
             verify(accountService, times(0)).findById(any());
             verify(paymentService, times(0)).save(any());
             verify(accountService, times(0)).save(any());
         }
 
         @Test
-        public void initiatePaymentAbsentCustomer() {
+        public void initiatePaymentAbsentUser() {
             InitiatePaymentRequest request = buildInitiatePaymentRequest();
 
-            when(customerService.findByPhoneNumber(PHONENUMBER)).thenReturn(Optional.empty());
+            when(userService.findByPhoneNumber(PHONENUMBER)).thenReturn(Optional.empty());
 
             assertThrows(UserNotFoundException.class,
                     () -> facade.initiatePayment(PHONENUMBER, request));
 
-            verify(customerService).findByPhoneNumber(PHONENUMBER);
+            verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService, times(0)).findById(any());
             verify(paymentService, times(0)).save(any());
             verify(accountService, times(0)).save(any());
@@ -119,16 +119,16 @@ public class PaymentFacadeTest {
         public void initiatePaymentAbsentSender() {
             InitiatePaymentRequest request = buildInitiatePaymentRequest();
 
-            Customer customer = new Customer();
-            customer.setBankAccounts(Collections.emptyList());
+            User user = new User();
+            user.setBankAccounts(Collections.emptyList());
 
-            when(customerService.findByPhoneNumber(PHONENUMBER)).thenReturn(
-                    Optional.of(customer));
+            when(userService.findByPhoneNumber(PHONENUMBER)).thenReturn(
+                    Optional.of(user));
 
             assertThrows(EntityNotFoundException.class,
                     () -> facade.initiatePayment(PHONENUMBER, request));
 
-            verify(customerService).findByPhoneNumber(PHONENUMBER);
+            verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService, times(0)).findById(any());
             verify(paymentService, times(0)).save(any());
             verify(accountService, times(0)).save(any());
@@ -140,17 +140,17 @@ public class PaymentFacadeTest {
 
             BankAccount bankAccount = new BankAccount();
             bankAccount.setIban(SENDER);
-            Customer customer = new Customer();
-            customer.setBankAccounts(List.of(bankAccount));
+            User user = new User();
+            user.setBankAccounts(List.of(bankAccount));
 
-            when(customerService.findByPhoneNumber(PHONENUMBER)).thenReturn(
-                    Optional.of(customer));
+            when(userService.findByPhoneNumber(PHONENUMBER)).thenReturn(
+                    Optional.of(user));
             when(accountService.findById(RECIPIENT)).thenReturn(Optional.empty());
 
             assertThrows(EntityNotFoundException.class,
                     () -> facade.initiatePayment(PHONENUMBER, request));
 
-            verify(customerService).findByPhoneNumber(PHONENUMBER);
+            verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService).findById(RECIPIENT);
             verify(paymentService, times(0)).save(any());
             verify(accountService, times(0)).save(any());
@@ -163,20 +163,20 @@ public class PaymentFacadeTest {
             BankAccount sender = new BankAccount();
             sender.setIban(SENDER);
             sender.setAmount(new BigDecimal(0));
-            Customer customer = new Customer();
-            customer.setBankAccounts(List.of(sender));
+            User user = new User();
+            user.setBankAccounts(List.of(sender));
 
             BankAccount recipient = new BankAccount();
             recipient.setIban(RECIPIENT);
 
-            when(customerService.findByPhoneNumber(PHONENUMBER)).thenReturn(
-                    Optional.of(customer));
+            when(userService.findByPhoneNumber(PHONENUMBER)).thenReturn(
+                    Optional.of(user));
             when(accountService.findById(RECIPIENT)).thenReturn(Optional.of(recipient));
 
             assertThrows(InsufficientFundsException.class,
                     () -> facade.initiatePayment(PHONENUMBER, request));
 
-            verify(customerService).findByPhoneNumber(PHONENUMBER);
+            verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService).findById(RECIPIENT);
             verify(paymentService, times(0)).save(any());
             verify(accountService, times(0)).save(any());

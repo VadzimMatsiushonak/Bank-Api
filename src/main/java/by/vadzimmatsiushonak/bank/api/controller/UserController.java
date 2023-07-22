@@ -3,7 +3,8 @@ package by.vadzimmatsiushonak.bank.api.controller;
 import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
 import static org.springframework.http.HttpStatus.OK;
 
-import by.vadzimmatsiushonak.bank.api.model.entity.User;
+import by.vadzimmatsiushonak.bank.api.mapper.UserMapper;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.UserDtoRelations;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,17 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    @ApiOperation("Get User")
+    @ApiOperation("Get User with property relations")
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
-        return ResponseEntity.status(OK).body(userService.findById(id).orElse(null));
+    public ResponseEntity<UserDtoRelations> findById(@PathVariable Long id) {
+        return ResponseEntity.status(OK)
+            .body(userMapper.toDtoRelations(userService.findById(id).orElse(null)));
     }
 
-    @ApiOperation("Get List of Users")
+    @ApiOperation("Get List of Users with property relations")
     @GetMapping
-    public ResponseEntity<List<User>> findAll() {
-        return ResponseEntity.status(OK).body(userService.findAll());
+    public ResponseEntity<List<UserDtoRelations>> findAll() {
+        return ResponseEntity.status(OK)
+            .body(userMapper.toListDtoRelations(userService.findAll()));
     }
 
 }
