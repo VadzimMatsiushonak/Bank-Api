@@ -1,6 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.mapper;
 
-import by.vadzimmatsiushonak.bank.api.model.dto.request.UserDataRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.UserRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.UserDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.UserDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
@@ -19,6 +19,6 @@ public interface UserMapper {
 
     List<UserDtoRelations> toListDtoRelations(List<User> entities);
 
-    User toEntity(UserDataRequestDto dto);
+    User toEntity(UserRequestDto dto);
 
 }

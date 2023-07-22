@@ -9,6 +9,8 @@ public class UserDto extends BaseEntityDto {
     public String surname;
     public LocalDate dateOfBirth;
     public String phoneNumber;
+    public String login;
+    private String role;
     public String password;
 
 }

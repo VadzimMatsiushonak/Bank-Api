@@ -113,7 +113,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     }
 
     /**
-     * Provides key and sends code after saving user and inactive user entities
+     * Provides key and sends code after saving inactive user entity
      * with provided parameters to the database
      *
      * @param user the user entity

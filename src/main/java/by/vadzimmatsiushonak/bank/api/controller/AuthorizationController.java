@@ -3,7 +3,7 @@ package by.vadzimmatsiushonak.bank.api.controller;
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
 import by.vadzimmatsiushonak.bank.api.mapper.UserMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.AuthRequest;
-import by.vadzimmatsiushonak.bank.api.model.dto.request.UserDataRequestDto;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.UserRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.TokenRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.AuthResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.RegistrationResponse;
@@ -102,7 +102,7 @@ public class AuthorizationController {
      * Register a new user account and a corresponding user account, generate a verification code, send it to the
      * user, and return a unique identifier for verifying the user account registration.
      *
-     * @param userDataRequestDto the user data to be registered.
+     * @param userRequestDto the user data to be registered.
      * @return the registration response containing the UUID key for the user account verification.
      */
     @ApiOperation("Registers a new user account and returns a unique key for verifying the user account registration.")
@@ -112,8 +112,8 @@ public class AuthorizationController {
     @ResponseStatus(CREATED)
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> registerUser(
-            @RequestBody @Validated UserDataRequestDto userDataRequestDto) {
-        String verificationKey = authorizationFacade.register(userMapper.toEntity(userDataRequestDto));
+            @RequestBody @Validated UserRequestDto userRequestDto) {
+        String verificationKey = authorizationFacade.register(userMapper.toEntity(userRequestDto));
         return ResponseEntity.status(CREATED).body(new RegistrationResponse(verificationKey));
     }
 

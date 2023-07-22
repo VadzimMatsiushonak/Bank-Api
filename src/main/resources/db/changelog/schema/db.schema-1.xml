@@ -64,7 +64,6 @@
       <column name="login" type="VARCHAR(255)"/>
       <column name="password" type="VARCHAR(255)"/>
       <column name="role" type="VARCHAR(255)"/>
-
       <column name="date_of_birth" type="date"/>
       <column name="name" type="VARCHAR(255)"/>
       <column name="phone_number" type="VARCHAR(255)"/>
