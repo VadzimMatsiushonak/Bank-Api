@@ -105,6 +105,20 @@ public class UserServiceTest {
     }
 
     @Nested
+    public class UserServiceTestFindByPhoneNumber{
+        @Test
+        public void findByUsername() {
+            User user = new User();
+            user.setPhoneNumber(PHONENUMBER);
+            when(repository.findByPhoneNumber(PHONENUMBER)).thenReturn(Optional.of(user));
+
+            User actual = service.findByPhoneNumber(PHONENUMBER).orElse(null);
+            assertEquals(user, actual);
+            verify(repository).findByPhoneNumber(PHONENUMBER);
+        }
+    }
+
+    @Nested
     public class UserServiceTestFindAll {
         @Test
         public void findAll() {
