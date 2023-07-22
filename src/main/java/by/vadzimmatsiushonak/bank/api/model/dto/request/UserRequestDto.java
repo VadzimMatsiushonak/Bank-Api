@@ -28,7 +28,7 @@ public class UserRequestDto {
     @NotNull
     public String name;
 
-    @ApiModelProperty(notes = "'name' must start with capital letter",
+    @ApiModelProperty(notes = "'surname' must start with capital letter",
             required = true)
     @NotNull
     public String surname;

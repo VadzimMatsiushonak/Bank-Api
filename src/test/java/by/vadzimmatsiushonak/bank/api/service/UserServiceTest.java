@@ -107,7 +107,7 @@ public class UserServiceTest {
     @Nested
     public class UserServiceTestFindByPhoneNumber{
         @Test
-        public void findByUsername() {
+        public void findByPhoneNumber() {
             User user = new User();
             user.setPhoneNumber(PHONENUMBER);
             when(repository.findByPhoneNumber(PHONENUMBER)).thenReturn(Optional.of(user));
