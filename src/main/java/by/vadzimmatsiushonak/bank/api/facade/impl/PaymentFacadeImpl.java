@@ -74,8 +74,8 @@ public class PaymentFacadeImpl implements PaymentFacade {
             sender.setAmount(senderAmount.subtract(request.amount));
             recipient.setAmount(recipientAmount.add(request.amount));
 
-            accountService.save(sender);
-            accountService.save(recipient);
+            accountService.update(sender);
+            accountService.update(recipient);
 
             BankAccount account = new BankAccount();
             account.setIban(sender.getIban());

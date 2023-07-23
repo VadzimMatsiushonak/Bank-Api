@@ -78,12 +78,12 @@ public class PaymentFacadeTest {
             verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService).findById(RECIPIENT);
             verify(paymentService).save(bankPayment);
-            verify(accountService, times(2)).save(any());
+            verify(accountService, times(2)).update(any());
 
             sender.setAmount(AMOUNT_BD.subtract(AMOUNT_BD));
-            verify(accountService).save(sender);
+            verify(accountService).update(sender);
             recipient.setAmount(AMOUNT_BD.add(AMOUNT_BD));
-            verify(accountService).save(recipient);
+            verify(accountService).update(recipient);
         }
 
         @Test
@@ -97,7 +97,7 @@ public class PaymentFacadeTest {
             verify(userService, times(0)).findByPhoneNumber(any());
             verify(accountService, times(0)).findById(any());
             verify(paymentService, times(0)).save(any());
-            verify(accountService, times(0)).save(any());
+            verify(accountService, times(0)).update(any());
         }
 
         @Test
@@ -112,7 +112,7 @@ public class PaymentFacadeTest {
             verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService, times(0)).findById(any());
             verify(paymentService, times(0)).save(any());
-            verify(accountService, times(0)).save(any());
+            verify(accountService, times(0)).update(any());
         }
 
         @Test
@@ -131,7 +131,7 @@ public class PaymentFacadeTest {
             verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService, times(0)).findById(any());
             verify(paymentService, times(0)).save(any());
-            verify(accountService, times(0)).save(any());
+            verify(accountService, times(0)).update(any());
         }
 
         @Test
@@ -153,7 +153,7 @@ public class PaymentFacadeTest {
             verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService).findById(RECIPIENT);
             verify(paymentService, times(0)).save(any());
-            verify(accountService, times(0)).save(any());
+            verify(accountService, times(0)).update(any());
         }
 
         @Test
@@ -179,7 +179,7 @@ public class PaymentFacadeTest {
             verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService).findById(RECIPIENT);
             verify(paymentService, times(0)).save(any());
-            verify(accountService, times(0)).save(any());
+            verify(accountService, times(0)).update(any());
         }
 
     }
