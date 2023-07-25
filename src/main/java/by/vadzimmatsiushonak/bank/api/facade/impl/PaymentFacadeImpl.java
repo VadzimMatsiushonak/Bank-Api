@@ -5,7 +5,10 @@ import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
 import by.vadzimmatsiushonak.bank.api.exception.InsufficientFundsException;
 import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import by.vadzimmatsiushonak.bank.api.facade.PaymentFacade;
+import by.vadzimmatsiushonak.bank.api.service.VerificationService;
+import by.vadzimmatsiushonak.bank.api.model.UserVerification;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentVerificationResponse;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
@@ -18,17 +21,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.transaction.Transactional;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.*;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MAX_VALUE;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_VALUE;
 
 @AllArgsConstructor
 @Validated
 @Slf4j
 @Service
 public class PaymentFacadeImpl implements PaymentFacade {
+
+    public final static String PAYMENT_KEY = "P_";
+    public final VerificationService verificationService;
 
     private final BankPaymentService paymentService;
     private final BankAccountService accountService;
@@ -49,8 +60,8 @@ public class PaymentFacadeImpl implements PaymentFacade {
      * @throws InsufficientFundsException If the sender account does not have sufficient funds to complete the payment.
      */
     @Override
-    public BankPayment initiatePayment(@NotBlank String phoneNumber,
-                                       @NotNull InitiatePaymentRequest request) {
+    public BankPaymentVerificationResponse initiatePayment(@NotBlank String phoneNumber,
+                                                           @NotNull InitiatePaymentRequest request) {
         if (request.senderIban.equals(request.recipientIban)) {
             throw new_DuplicateException(request.senderIban);
         }
@@ -85,11 +96,38 @@ public class PaymentFacadeImpl implements PaymentFacade {
             payment.setCurrency(request.currency);
             payment.setBankAccount(account);
             payment.setRecipientBankAccountIban(recipient.getIban());
-            payment.setStatus(PaymentStatus.ACCEPTED);
+            payment.setStatus(PaymentStatus.PENDING);
 
-            return paymentService.save(payment);
+            payment = paymentService.save(payment);
+            String code = verificationService.generateCode(payment, PAYMENT_KEY);
+
+            return new BankPaymentVerificationResponse(payment.getId(), code);
         } else {
             throw new_InsufficientFundsException(sender.getIban());
         }
+    }
+
+    /**
+     * Verifies provided key and code and set the payment status to the ACCEPTED
+     *
+     * @param key  the verification key
+     * @param code the verification code
+     * @return the Boolean response indicating whether the verification was successful.
+     * @throws EntityNotFoundException If the user cannot be found using the ID associated with the verification key.
+     */
+    @Override
+    @Transactional
+    public Boolean confirmPayment(@NotBlank String key,
+                                  @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
+        UserVerification verification = (UserVerification) verificationService.verifyCode(key, code);
+
+        BankPayment bankPayment = paymentService.findById(verification.getBaseEntity().getId())
+                .orElseThrow(() -> new_EntityNotFoundException("BankPayment", verification.getBaseEntity().getId()));
+
+        bankPayment.setStatus(PaymentStatus.ACCEPTED);
+
+        log.info("User '{}' with key {} successfully confirmed payment", bankPayment.getBankAccount().getUser().getLogin(), key);
+
+        return true;
     }
 }

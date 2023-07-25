@@ -1,14 +1,14 @@
 package by.vadzimmatsiushonak.bank.api.model;
 
-import lombok.AllArgsConstructor;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class UserVerification {
+public class UserVerification extends VerificationEntity{
+    private final BaseEntity baseEntity;
 
-    private final Long id;
-    private final String username;
-    private final Integer code;
-
+    public UserVerification(BaseEntity baseEntity, Integer code) {
+        super(code);
+        this.baseEntity = baseEntity;
+    }
 }

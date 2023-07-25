@@ -1,6 +1,5 @@
 package by.vadzimmatsiushonak.bank.api.facade;
 
-import by.vadzimmatsiushonak.bank.api.model.UserVerification;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 
 import javax.validation.constraints.Max;
@@ -24,10 +23,5 @@ public interface AuthorizationFacade {
 
     Boolean verifyRegistration(@NotBlank String key,
                                @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code);
-
-    String generateCode(@NotNull User user, String prefix);
-
-    UserVerification verifyCode(@NotBlank String key,
-                                @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code);
 
 }

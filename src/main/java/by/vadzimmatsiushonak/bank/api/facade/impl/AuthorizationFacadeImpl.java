@@ -2,6 +2,7 @@ package by.vadzimmatsiushonak.bank.api.facade.impl;
 
 import by.vadzimmatsiushonak.bank.api.exception.*;
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
+import by.vadzimmatsiushonak.bank.api.service.VerificationService;
 import by.vadzimmatsiushonak.bank.api.model.UserVerification;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
@@ -12,7 +13,6 @@ import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
 import com.sun.security.auth.UserPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +26,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.*;
 import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.*;
@@ -42,7 +41,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
     private final UserService userServices;
     private final UserDetailsService userDetailsService;
-    private final Cache verificationCache;
+    private final VerificationService verificationService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
     private final Oauth2TokenStore tokenService;
@@ -68,7 +67,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             throw new_InvalidCredentialsException();
         }
 
-        return generateCode(user, LOGIN_KEY);
+        return verificationService.generateCode(user, LOGIN_KEY);
     }
 
     /**
@@ -82,9 +81,10 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Override
     public String getToken(@NotBlank String key,
                            @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserVerification verification = verifyCode(key, code);
+        UserVerification verification = (UserVerification) verificationService.verifyCode(key, code);
 
-        UserDetails user = userDetailsService.loadUserByUsername(verification.getUsername());
+        UserDetails user = userDetailsService.loadUserByUsername(
+                ((User)verification.getBaseEntity()).getLogin());
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 new UserPrincipal(user.getUsername()), null, user.getAuthorities());
@@ -125,7 +125,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         user.setRole(Role.TECHNICAL_USER);
         userServices.save(user);
 
-        return generateCode(user, REGISTRATION_KEY);
+        return verificationService.generateCode(user, REGISTRATION_KEY);
     }
 
     /**
@@ -140,65 +140,14 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Transactional
     public Boolean verifyRegistration(@NotBlank String key,
                                       @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserVerification verification = verifyCode(key, code);
+        UserVerification verification = (UserVerification) verificationService.verifyCode(key, code);
 
-        User user = userServices.findById(verification.getId())
-                .orElseThrow(() -> new_EntityNotFoundException("User", verification.getId()));
+        User user = userServices.findById(verification.getBaseEntity().getId())
+                .orElseThrow(() -> new_EntityNotFoundException("User", verification.getBaseEntity().getId()));
         user.setStatus(UserStatus.ACTIVE);
         log.info("User with key {} has been successfully verified", key);
 
         return true;
     }
 
-    /**
-     * Provides key and saves code
-     * Sends code to the user device/mail
-     *
-     * @param user   user entity data that will be stored in the cache
-     * @param prefix the prefix used for the generated key value
-     * @return the String response containing the UUID key stored in cache
-     */
-    @Override
-    public String generateCode(@NotNull User user, String prefix) {
-        String key = UUID.randomUUID().toString();
-        if (prefix != null) {
-            key = prefix.concat(key);
-        }
-        Integer code = getRandom(VERIFICATION_MIN_VALUE, VERIFICATION_MAX_VALUE);
-        verificationCache.put(key, new UserVerification(user.getId(), user.getLogin(), code));
-        log.info(
-                "Verification code '{}' has been prepared for user with key '{}' and id '{}'",
-                code, key, user.getId());
-
-        return key;
-    }
-
-    /**
-     * Verifies provided key and code with the data in the cache
-     *
-     * @param key  the verification key
-     * @param code the verification code
-     * @return the UserVerification response containing information about the verified user
-     * @throws VerificationNotFoundException If the verification key cannot be found or has expired.
-     * @throws InvalidVerificationException  If the provided verification code is invalid.
-     */
-    @Override
-    public UserVerification verifyCode(@NotBlank String key,
-                                       @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserVerification verification = this.verificationCache.get(key, UserVerification.class);
-
-        if (verification == null) {
-            log.info("Verification {} not found or expired", key);
-            throw new_VerificationNotFoundException(key);
-        }
-
-        if (!verification.getCode().equals(code)) {
-            log.info("Invalid verification code {} for key {}", code, key);
-            throw new_InvalidVerificationException(String.valueOf(code), key);
-        }
-
-        this.verificationCache.evictIfPresent(key);
-
-        return verification;
-    }
 }
