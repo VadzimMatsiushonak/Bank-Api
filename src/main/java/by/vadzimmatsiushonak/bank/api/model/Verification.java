@@ -2,12 +2,14 @@ package by.vadzimmatsiushonak.bank.api.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor
-public class VerificationEntity {
+public class Verification {
 
     private final Integer code;
+    private final Map<Object, Object> metaData;
 
 }

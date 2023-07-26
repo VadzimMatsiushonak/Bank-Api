@@ -5,10 +5,9 @@ import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
 import by.vadzimmatsiushonak.bank.api.exception.InsufficientFundsException;
 import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import by.vadzimmatsiushonak.bank.api.facade.PaymentFacade;
+import by.vadzimmatsiushonak.bank.api.model.Verification;
 import by.vadzimmatsiushonak.bank.api.service.VerificationService;
-import by.vadzimmatsiushonak.bank.api.model.UserVerification;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentVerificationResponse;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
@@ -27,8 +26,12 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Map;
 
-import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.*;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_DuplicateException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_EntityNotFoundException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InsufficientFundsException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_UserNotFoundException;
 import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MAX_VALUE;
 import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_VALUE;
 
@@ -39,7 +42,9 @@ import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_V
 public class PaymentFacadeImpl implements PaymentFacade {
 
     public final static String PAYMENT_KEY = "P_";
-    public final VerificationService verificationService;
+    public final static String METADATA_KEY = "paymentId";
+
+    public final VerificationService confirmationService;
 
     private final BankPaymentService paymentService;
     private final BankAccountService accountService;
@@ -53,14 +58,14 @@ public class PaymentFacadeImpl implements PaymentFacade {
      *
      * @param phoneNumber initiator phoneNumber
      * @param request     InitiatePaymentRequest containing all information payment the payment
-     * @return saved BankPayment entity representing the payment that was initiated.
+     * @return the String response containing the UUID key for the confirmation request.
      * @throws DuplicateException         If the sender and recipient have the same IBAN.
      * @throws UserNotFoundException      If the user cannot be found using the provided phone number.
      * @throws EntityNotFoundException    If the sender or recipient account cannot be found using the provided IBAN.
      * @throws InsufficientFundsException If the sender account does not have sufficient funds to complete the payment.
      */
     @Override
-    public BankPaymentVerificationResponse initiatePayment(@NotBlank String phoneNumber,
+    public String initiatePayment(@NotBlank String phoneNumber,
                                                            @NotNull InitiatePaymentRequest request) {
         if (request.senderIban.equals(request.recipientIban)) {
             throw new_DuplicateException(request.senderIban);
@@ -99,34 +104,35 @@ public class PaymentFacadeImpl implements PaymentFacade {
             payment.setStatus(PaymentStatus.PENDING);
 
             payment = paymentService.save(payment);
-            String code = verificationService.generateCode(payment, PAYMENT_KEY);
 
-            return new BankPaymentVerificationResponse(payment.getId(), code);
+            return confirmationService.generateCode(Map.of(METADATA_KEY, payment), PAYMENT_KEY);
         } else {
             throw new_InsufficientFundsException(sender.getIban());
         }
     }
 
     /**
-     * Verifies provided key and code and set the payment status to the ACCEPTED
+     * Confirms provided key and code and set the payment status to the ACCEPTED
      *
-     * @param key  the verification key
-     * @param code the verification code
-     * @return the Boolean response indicating whether the verification was successful.
-     * @throws EntityNotFoundException If the user cannot be found using the ID associated with the verification key.
+     * @param key  the confirmation key
+     * @param code the confirmation code
+     * @return the Boolean response indicating whether the confirmation was successful.
+     * @throws EntityNotFoundException If the user cannot be found using the ID associated with the confirmation key.
      */
     @Override
     @Transactional
     public Boolean confirmPayment(@NotBlank String key,
                                   @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserVerification verification = (UserVerification) verificationService.verifyCode(key, code);
+        Verification confirmation = confirmationService.verifyCode(key, code);
 
-        BankPayment bankPayment = paymentService.findById(verification.getBaseEntity().getId())
-                .orElseThrow(() -> new_EntityNotFoundException("BankPayment", verification.getBaseEntity().getId()));
+        Long confirmBankPaymentId = ((BankPayment)confirmation.getMetaData().get(METADATA_KEY)).getId();
+
+        BankPayment bankPayment = paymentService.findById(confirmBankPaymentId)
+                .orElseThrow(() -> new_EntityNotFoundException("BankPayment", confirmBankPaymentId));
 
         bankPayment.setStatus(PaymentStatus.ACCEPTED);
 
-        log.info("User '{}' with key {} successfully confirmed payment", bankPayment.getBankAccount().getUser().getLogin(), key);
+        log.info("Payment with id '{}' and key {} successfully confirmed", confirmBankPaymentId, key);
 
         return true;
     }

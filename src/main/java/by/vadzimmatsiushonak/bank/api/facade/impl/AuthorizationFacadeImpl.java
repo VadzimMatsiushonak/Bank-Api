@@ -2,8 +2,9 @@ package by.vadzimmatsiushonak.bank.api.facade.impl;
 
 import by.vadzimmatsiushonak.bank.api.exception.*;
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
+import by.vadzimmatsiushonak.bank.api.model.Verification;
+import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.service.VerificationService;
-import by.vadzimmatsiushonak.bank.api.model.UserVerification;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
@@ -27,8 +28,14 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.*;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.*;
+import java.util.Map;
+
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_BadRequestException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_EntityNotFoundException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InvalidCredentialsException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_UserNotFoundException;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MAX_VALUE;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_VALUE;
 
 @AllArgsConstructor
 @Validated
@@ -38,6 +45,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
     public final static String LOGIN_KEY = "L_";
     public final static String REGISTRATION_KEY = "R_";
+    public final static String METADATA_KEY = "userId";
 
     private final UserService userServices;
     private final UserDetailsService userDetailsService;
@@ -67,7 +75,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             throw new_InvalidCredentialsException();
         }
 
-        return verificationService.generateCode(user, LOGIN_KEY);
+        return verificationService.generateCode(Map.of(METADATA_KEY, user), LOGIN_KEY);
     }
 
     /**
@@ -81,10 +89,10 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Override
     public String getToken(@NotBlank String key,
                            @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserVerification verification = (UserVerification) verificationService.verifyCode(key, code);
+        Verification verification = verificationService.verifyCode(key, code);
 
         UserDetails user = userDetailsService.loadUserByUsername(
-                ((User)verification.getBaseEntity()).getLogin());
+                ((User)verification.getMetaData().get(METADATA_KEY)).getLogin());
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 new UserPrincipal(user.getUsername()), null, user.getAuthorities());
@@ -125,7 +133,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         user.setRole(Role.TECHNICAL_USER);
         userServices.save(user);
 
-        return verificationService.generateCode(user, REGISTRATION_KEY);
+        return verificationService.generateCode(Map.of(METADATA_KEY, user), REGISTRATION_KEY);
     }
 
     /**
@@ -140,10 +148,12 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Transactional
     public Boolean verifyRegistration(@NotBlank String key,
                                       @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserVerification verification = (UserVerification) verificationService.verifyCode(key, code);
+        Verification verification = verificationService.verifyCode(key, code);
+        Long verifyUserId = ((BankPayment)verification.getMetaData().get(METADATA_KEY)).getId();
 
-        User user = userServices.findById(verification.getBaseEntity().getId())
-                .orElseThrow(() -> new_EntityNotFoundException("User", verification.getBaseEntity().getId()));
+        User user = userServices.findById(verifyUserId)
+                .orElseThrow(() -> new_EntityNotFoundException("User", verifyUserId));
+
         user.setStatus(UserStatus.ACTIVE);
         log.info("User with key {} has been successfully verified", key);
 

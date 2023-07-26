@@ -4,9 +4,9 @@ import by.vadzimmatsiushonak.bank.api.facade.PaymentFacade;
 import by.vadzimmatsiushonak.bank.api.mapper.BankPaymentMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankPaymentRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentConfirmationResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentDto;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentVerificationResponse;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.VerificationResponse;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.ConfirmationResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankPaymentDtoRelations;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
@@ -16,7 +16,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -75,24 +81,24 @@ public class BankPaymentController {
             @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid arguments provided")})
     @ResponseStatus(CREATED)
     @PostMapping("/initiatePayment")
-    public ResponseEntity<BankPaymentVerificationResponse> initiatePayment(
+    public ResponseEntity<BankPaymentConfirmationResponse> initiatePayment(
             @Valid @RequestBody InitiatePaymentRequest initiatePaymentRequest) {
-        BankPaymentVerificationResponse result = paymentFacade.initiatePayment(getCurrentUserPhoneNumber(),
+        String confirmationKey = paymentFacade.initiatePayment(getCurrentUserPhoneNumber(),
                 initiatePaymentRequest);
-        return ResponseEntity.status(CREATED).body(result );
+        return ResponseEntity.status(CREATED).body(new BankPaymentConfirmationResponse(confirmationKey));
     }
 
     @ApiOperation("Confirm the user's payment")
     @ApiResponses(value = {
-            @ApiResponse(code = HTTP_OK, message = "Verification payment successful.", response = VerificationResponse.class),
-            @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid verification code."),
+            @ApiResponse(code = HTTP_OK, message = "Confirmation payment successful.", response = ConfirmationResponse.class),
+            @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid confirmation code."),
             @ApiResponse(code = HTTP_NOT_FOUND, message = "User key not found.")})
     @PostMapping("/confirmPayment/{key}/{code}")
-    public ResponseEntity<VerificationResponse> confirmPayment(
+    public ResponseEntity<ConfirmationResponse> confirmPayment(
             @PathVariable @NotBlank String key,
             @PathVariable @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        Boolean isVerified = paymentFacade.confirmPayment(key, code);
-        return ResponseEntity.status(OK).body(new VerificationResponse(isVerified));
+        Boolean isConfirmed = paymentFacade.confirmPayment(key, code);
+        return ResponseEntity.status(OK).body(new ConfirmationResponse(isConfirmed));
     }
 
 }
