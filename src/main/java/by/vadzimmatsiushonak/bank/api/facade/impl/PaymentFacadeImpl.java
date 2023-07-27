@@ -5,8 +5,8 @@ import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
 import by.vadzimmatsiushonak.bank.api.exception.InsufficientFundsException;
 import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import by.vadzimmatsiushonak.bank.api.facade.PaymentFacade;
-import by.vadzimmatsiushonak.bank.api.model.Verification;
-import by.vadzimmatsiushonak.bank.api.service.VerificationService;
+import by.vadzimmatsiushonak.bank.api.model.Confirmation;
+import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
@@ -28,12 +28,13 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.KEY_PAYMENT_ID;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_DuplicateException;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_EntityNotFoundException;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InsufficientFundsException;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_UserNotFoundException;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MAX_VALUE;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_VALUE;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MAX_VALUE;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MIN_VALUE;
 
 @AllArgsConstructor
 @Validated
@@ -42,9 +43,8 @@ import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_V
 public class PaymentFacadeImpl implements PaymentFacade {
 
     public final static String PAYMENT_KEY = "P_";
-    public final static String METADATA_KEY = "paymentId";
 
-    public final VerificationService confirmationService;
+    public final ConfirmationService confirmationService;
 
     private final BankPaymentService paymentService;
     private final BankAccountService accountService;
@@ -65,8 +65,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
      * @throws InsufficientFundsException If the sender account does not have sufficient funds to complete the payment.
      */
     @Override
-    public String initiatePayment(@NotBlank String phoneNumber,
-                                                           @NotNull InitiatePaymentRequest request) {
+    public String initiatePayment(@NotBlank String phoneNumber, @NotNull InitiatePaymentRequest request) {
         if (request.senderIban.equals(request.recipientIban)) {
             throw new_DuplicateException(request.senderIban);
         }
@@ -105,7 +104,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
 
             payment = paymentService.save(payment);
 
-            return confirmationService.generateCode(Map.of(METADATA_KEY, payment), PAYMENT_KEY);
+            return confirmationService.generateCode(Map.of(KEY_PAYMENT_ID, payment.getId()), PAYMENT_KEY);
         } else {
             throw new_InsufficientFundsException(sender.getIban());
         }
@@ -122,10 +121,10 @@ public class PaymentFacadeImpl implements PaymentFacade {
     @Override
     @Transactional
     public Boolean confirmPayment(@NotBlank String key,
-                                  @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        Verification confirmation = confirmationService.verifyCode(key, code);
+                                  @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
+        Confirmation confirmation = confirmationService.confirmCode(key, code);
 
-        Long confirmBankPaymentId = ((BankPayment)confirmation.getMetaData().get(METADATA_KEY)).getId();
+        Long confirmBankPaymentId = (Long) confirmation.getMetaData().get(KEY_PAYMENT_ID);
 
         BankPayment bankPayment = paymentService.findById(confirmBankPaymentId)
                 .orElseThrow(() -> new_EntityNotFoundException("BankPayment", confirmBankPaymentId));

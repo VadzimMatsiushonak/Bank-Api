@@ -31,8 +31,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MAX_VALUE;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.VERIFICATION_MIN_VALUE;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MAX_VALUE;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MIN_VALUE;
 import static by.vadzimmatsiushonak.bank.api.util.SecurityUtils.getCurrentUserPhoneNumber;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
@@ -98,7 +98,7 @@ public class BankPaymentController {
     @PostMapping("/confirmPayment/{key}/{code}")
     public ResponseEntity<ConfirmationResponse> confirmPayment(
             @PathVariable @NotBlank String key,
-            @PathVariable @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
+            @PathVariable @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
         Boolean isConfirmed = paymentFacade.confirmPayment(key, code);
         return ResponseEntity.status(OK).body(new ConfirmationResponse(isConfirmed));
     }

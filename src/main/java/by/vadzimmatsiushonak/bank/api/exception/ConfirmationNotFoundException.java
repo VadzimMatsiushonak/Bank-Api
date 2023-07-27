@@ -3,11 +3,10 @@ package by.vadzimmatsiushonak.bank.api.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class InvalidVerificationException extends RuntimeException {
+@ResponseStatus(code = HttpStatus.NOT_FOUND)
+public class ConfirmationNotFoundException extends RuntimeException {
 
-    public InvalidVerificationException(String message) {
+    public ConfirmationNotFoundException(String message) {
         super(message);
     }
 }
-

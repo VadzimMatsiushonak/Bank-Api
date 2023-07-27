@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
-public class Verification {
+public class Confirmation {
 
     private final Integer code;
     private final Map<Object, Object> metaData;

@@ -6,6 +6,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ConfirmationResponse {
 
-    @ApiModelProperty(value = "Indicates the bank payment Confirmation was successful.", example = "true")
+    @ApiModelProperty(value = "Indicates the user's action is confirmed successful.", example = "true")
     public Boolean isConfirmed;
 }
