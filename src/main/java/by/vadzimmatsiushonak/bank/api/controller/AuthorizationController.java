@@ -138,7 +138,7 @@ public class AuthorizationController {
             @ApiResponse(code = HTTP_OK, message = "Confirmation successful.", response = ConfirmationResponse.class),
             @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid confirmation code."),
             @ApiResponse(code = HTTP_NOT_FOUND, message = "User key not found."),})
-    @PostMapping("/confirm/{key}/{code}")
+    @PostMapping("/confirmRegistration/{key}/{code}")
     public ResponseEntity<ConfirmationResponse> confirmRegistration(
             @PathVariable @NotBlank String key,
             @PathVariable @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {

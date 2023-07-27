@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.KEY_PAYMENT_ID;
+import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_DuplicateException;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_EntityNotFoundException;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InsufficientFundsException;
@@ -104,7 +104,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
 
             payment = paymentService.save(payment);
 
-            return confirmationService.generateCode(Map.of(KEY_PAYMENT_ID, payment.getId()), PAYMENT_KEY);
+            return confirmationService.generateCode(Map.of(ID, payment.getId()), PAYMENT_KEY);
         } else {
             throw new_InsufficientFundsException(sender.getIban());
         }
@@ -124,7 +124,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
                                   @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
         Confirmation confirmation = confirmationService.confirmCode(key, code);
 
-        Long confirmBankPaymentId = (Long) confirmation.getMetaData().get(KEY_PAYMENT_ID);
+        Long confirmBankPaymentId = (Long) confirmation.getMetaData().get(ID);
 
         BankPayment bankPayment = paymentService.findById(confirmBankPaymentId)
                 .orElseThrow(() -> new_EntityNotFoundException("BankPayment", confirmBankPaymentId));

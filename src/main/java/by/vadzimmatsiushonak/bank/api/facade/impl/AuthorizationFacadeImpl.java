@@ -32,8 +32,8 @@ import javax.validation.constraints.NotNull;
 
 import java.util.Map;
 
-import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.KEY_USER_ID;
-import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.KEY_LOGIN;
+import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
+import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.LOGIN;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_BadRequestException;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_EntityNotFoundException;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InvalidCredentialsException;
@@ -60,7 +60,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     /**
      * Authenticates a user by their username and password.
      * <p>
-     * Provides key and sends code after confirm
+     * Provides key and sends code after confirmation
      * provided parameters are equals to the database entity
      *
      * @param username The username of the user to authenticate.
@@ -78,7 +78,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             throw new_InvalidCredentialsException();
         }
 
-        return confirmationService.generateCode(Map.of(KEY_LOGIN, user.getLogin()), LOGIN_KEY);
+        return confirmationService.generateCode(Map.of(LOGIN, user.getLogin()), LOGIN_KEY);
     }
 
     /**
@@ -95,7 +95,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         Confirmation confirmation = confirmationService.confirmCode(key, code);
 
         UserDetails user = userDetailsService.loadUserByUsername(
-                (String) confirmation.getMetaData().get(KEY_LOGIN));
+                (String) confirmation.getMetaData().get(LOGIN));
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 new UserPrincipal(user.getUsername()), null, user.getAuthorities());
@@ -136,7 +136,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         user.setRole(Role.TECHNICAL_USER);
         userServices.save(user);
 
-        return confirmationService.generateCode(Map.of(KEY_USER_ID, user.getId()), REGISTRATION_KEY);
+        return confirmationService.generateCode(Map.of(ID, user.getId()), REGISTRATION_KEY);
     }
 
     /**
@@ -152,7 +152,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     public Boolean confirmRegistration(@NotBlank String key,
                                        @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
         Confirmation confirmation = confirmationService.confirmCode(key, code);
-        Long confirmUserId = (Long) confirmation.getMetaData().get(KEY_USER_ID);
+        Long confirmUserId = (Long) confirmation.getMetaData().get(ID);
 
         User user = userServices.findById(confirmUserId)
                 .orElseThrow(() -> new_EntityNotFoundException("User", confirmUserId));

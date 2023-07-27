@@ -5,12 +5,15 @@ import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
 import by.vadzimmatsiushonak.bank.api.exception.InsufficientFundsException;
 import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import by.vadzimmatsiushonak.bank.api.facade.impl.PaymentFacadeImpl;
+import by.vadzimmatsiushonak.bank.api.model.Confirmation;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankAccount;
 import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.PaymentStatus;
 import by.vadzimmatsiushonak.bank.api.service.BankAccountService;
 import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
+import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,8 +25,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
+import static by.vadzimmatsiushonak.bank.api.facade.impl.PaymentFacadeImpl.PAYMENT_KEY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +44,8 @@ public class PaymentFacadeTest {
     @InjectMocks
     private PaymentFacadeImpl facade;
 
+    @Mock
+    private ConfirmationService confirmationService;
     @Mock
     private BankPaymentService paymentService;
     @Mock
@@ -65,15 +73,19 @@ public class PaymentFacadeTest {
             BankPayment bankPayment = buildBankPayment();
             BankPayment expected = buildBankPayment();
             expected.setId(ID_LONG);
+            bankPayment.setStatus(PaymentStatus.PENDING);
+            expected.setStatus(PaymentStatus.PENDING);
+            String expectedKey = KEY;
 
             when(userService.findByPhoneNumber(PHONENUMBER)).thenReturn(
                     Optional.of(user));
             when(accountService.findById(RECIPIENT)).thenReturn(Optional.of(recipient));
             when(paymentService.save(bankPayment)).thenReturn(expected);
+            when(confirmationService.generateCode(Map.of(ID, ID_LONG), PAYMENT_KEY)).thenReturn(expectedKey);
 
-            BankPayment actual = facade.initiatePayment(PHONENUMBER, request);
+            String actualKey = facade.initiatePayment(PHONENUMBER, request);
 
-            assertEquals(expected, actual);
+            assertEquals(expectedKey, actualKey);
 
             verify(userService).findByPhoneNumber(PHONENUMBER);
             verify(accountService).findById(RECIPIENT);
@@ -180,6 +192,38 @@ public class PaymentFacadeTest {
             verify(accountService).findById(RECIPIENT);
             verify(paymentService, times(0)).save(any());
             verify(accountService, times(0)).update(any());
+        }
+
+    }
+
+    @Nested
+    public class PaymentFacadeTestConfirmPayment {
+        @Test
+        public void confirmPayment() {
+            Boolean expectedConfirmed = true;
+            Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG));
+
+            when(confirmationService.confirmCode(KEY, CODE_INT)).thenReturn(confirmation);
+            when(paymentService.findById(ID_LONG)).thenReturn(Optional.of(new BankPayment()));
+
+            Boolean actualConfirmed = facade.confirmPayment(KEY, CODE_INT);
+
+            assertEquals(expectedConfirmed, actualConfirmed);
+
+            verify(paymentService).findById(ID_LONG);
+        }
+
+        @Test
+        public void confirmPaymentBankPaymentNotFound() {
+            Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG));
+
+            when(confirmationService.confirmCode(KEY, CODE_INT)).thenReturn(confirmation);
+            when(paymentService.findById(ID_LONG)).thenReturn(Optional.empty());
+
+            assertThrows(EntityNotFoundException.class,
+                    () -> facade.confirmPayment(KEY, CODE_INT));
+
+            verify(paymentService).findById(ID_LONG);
         }
 
     }

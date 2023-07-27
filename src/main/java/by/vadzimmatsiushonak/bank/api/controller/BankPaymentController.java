@@ -4,7 +4,7 @@ import by.vadzimmatsiushonak.bank.api.facade.PaymentFacade;
 import by.vadzimmatsiushonak.bank.api.mapper.BankPaymentMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankPaymentRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiatePaymentRequest;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentConfirmationResponse;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.ConfirmationResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankPaymentDtoRelations;
@@ -83,11 +83,11 @@ public class BankPaymentController {
             @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid arguments provided")})
     @ResponseStatus(CREATED)
     @PostMapping("/initiatePayment")
-    public ResponseEntity<BankPaymentConfirmationResponse> initiatePayment(
+    public ResponseEntity<BankPaymentResponse> initiatePayment(
             @Valid @RequestBody InitiatePaymentRequest initiatePaymentRequest) {
         String confirmationKey = paymentFacade.initiatePayment(getCurrentUserPhoneNumber(),
                 initiatePaymentRequest);
-        return ResponseEntity.status(CREATED).body(new BankPaymentConfirmationResponse(confirmationKey));
+        return ResponseEntity.status(CREATED).body(new BankPaymentResponse(confirmationKey));
     }
 
     @ApiOperation("Confirm the user's payment")
