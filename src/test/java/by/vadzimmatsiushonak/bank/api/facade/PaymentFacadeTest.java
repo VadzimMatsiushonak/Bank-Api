@@ -30,8 +30,7 @@ import java.util.Optional;
 
 import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
 import static by.vadzimmatsiushonak.bank.api.facade.impl.PaymentFacadeImpl.PAYMENT_KEY;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static utils.BankPaymentBuilder.buildBankPayment;
@@ -71,9 +70,9 @@ public class PaymentFacadeTest {
             recipient.setAmount(AMOUNT_BD);
 
             BankPayment bankPayment = buildBankPayment();
+            bankPayment.setStatus(PaymentStatus.PENDING);
             BankPayment expected = buildBankPayment();
             expected.setId(ID_LONG);
-            bankPayment.setStatus(PaymentStatus.PENDING);
             expected.setStatus(PaymentStatus.PENDING);
             String expectedKey = KEY;
 
@@ -202,13 +201,18 @@ public class PaymentFacadeTest {
         public void confirmPayment() {
             Boolean expectedConfirmed = true;
             Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG));
+            BankPayment expected = new BankPayment();
+            expected.setStatus(PaymentStatus.ACCEPTED);
 
             when(confirmationService.confirmCode(KEY, CODE_INT)).thenReturn(confirmation);
-            when(paymentService.findById(ID_LONG)).thenReturn(Optional.of(new BankPayment()));
+            when(paymentService.findById(ID_LONG)).thenReturn(Optional.of(expected));
 
             Boolean actualConfirmed = facade.confirmPayment(KEY, CODE_INT);
 
-            assertEquals(expectedConfirmed, actualConfirmed);
+            assertAll(
+                    () -> assertEquals(PaymentStatus.ACCEPTED, expected.getStatus()),
+                    () -> assertEquals(expectedConfirmed, actualConfirmed)
+            );
 
             verify(paymentService).findById(ID_LONG);
         }
