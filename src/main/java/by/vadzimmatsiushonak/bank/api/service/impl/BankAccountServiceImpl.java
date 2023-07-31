@@ -50,7 +50,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     public void update(@NotNull BankAccount bankAccount) {
-        log.info("BankAccountServiceImpl update {}", bankAccount);
 
         Objects.requireNonNull(bankAccount.getIban());
         repository.save(bankAccount);

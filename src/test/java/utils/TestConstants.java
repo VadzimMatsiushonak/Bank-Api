@@ -15,6 +15,7 @@ public class TestConstants {
     public final static String ID = "ID";
     public final static String USERNAME = "USERNAME";
     public final static String PASSWORD = "PASSWORD";
+    public final static String LOGIN = "LOGIN";
     public final static String WRONG_PASSWORD = "WRONG_PASSWORD";
     public final static String TOKEN = "TOKEN";
     public final static String PHONENUMBER = "PHONENUMBER";

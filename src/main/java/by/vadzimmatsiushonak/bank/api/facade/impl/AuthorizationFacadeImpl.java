@@ -1,8 +1,12 @@
 package by.vadzimmatsiushonak.bank.api.facade.impl;
 
-import by.vadzimmatsiushonak.bank.api.exception.*;
+import by.vadzimmatsiushonak.bank.api.exception.BadRequestException;
+import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
+import by.vadzimmatsiushonak.bank.api.exception.InvalidCredentialsException;
+import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
-import by.vadzimmatsiushonak.bank.api.model.UserVerification;
+import by.vadzimmatsiushonak.bank.api.model.Confirmation;
+import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
@@ -12,7 +16,6 @@ import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
 import com.sun.security.auth.UserPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,10 +29,17 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
-import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.*;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.*;
+import java.util.Map;
+
+import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
+import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.LOGIN;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_BadRequestException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_EntityNotFoundException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InvalidCredentialsException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_UserNotFoundException;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MAX_VALUE;
+import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MIN_VALUE;
 
 @AllArgsConstructor
 @Validated
@@ -42,7 +52,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
 
     private final UserService userServices;
     private final UserDetailsService userDetailsService;
-    private final Cache verificationCache;
+    private final ConfirmationService confirmationService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
     private final Oauth2TokenStore tokenService;
@@ -50,7 +60,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     /**
      * Authenticates a user by their username and password.
      * <p>
-     * Provides key and sends code after verifying
+     * Provides key and sends code after confirmation
      * provided parameters are equals to the database entity
      *
      * @param username The username of the user to authenticate.
@@ -68,23 +78,24 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
             throw new_InvalidCredentialsException();
         }
 
-        return generateCode(user, LOGIN_KEY);
+        return confirmationService.generateCode(Map.of(LOGIN, user.getLogin()), LOGIN_KEY);
     }
 
     /**
-     * Provides token after verifying
+     * Provides token after confirm
      * provided parameters are equals to the cache value
      *
-     * @param key  the verification key
-     * @param code the verification code
+     * @param key  the confirmation key
+     * @param code the confirmation code
      * @return the String response containing the JWT accessToken
      */
     @Override
     public String getToken(@NotBlank String key,
-                           @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserVerification verification = verifyCode(key, code);
+                           @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
+        Confirmation confirmation = confirmationService.confirmCode(key, code);
 
-        UserDetails user = userDetailsService.loadUserByUsername(verification.getUsername());
+        UserDetails user = userDetailsService.loadUserByUsername(
+                (String) confirmation.getMetaData().get(LOGIN));
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 new UserPrincipal(user.getUsername()), null, user.getAuthorities());
@@ -117,7 +128,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      * with provided parameters to the database
      *
      * @param user the user entity
-     * @return the String response containing the UUID key for the verification request
+     * @return the String response containing the UUID key for the confirmation request
      */
     @Override
     @Transactional
@@ -125,80 +136,31 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         user.setRole(Role.TECHNICAL_USER);
         userServices.save(user);
 
-        return generateCode(user, REGISTRATION_KEY);
+        return confirmationService.generateCode(Map.of(ID, user.getId()), REGISTRATION_KEY);
     }
 
     /**
-     * Verifies provided key and code and set the user status to the ACTIVE
+     * Confirms provided key and code and set the user status to the ACTIVE
      *
-     * @param key  the verification key
-     * @param code the verification code
-     * @return the Boolean response indicating whether the verification was successful.
-     * @throws EntityNotFoundException If the user cannot be found using the ID associated with the verification key.
+     * @param key  the confirmation key
+     * @param code the confirmation code
+     * @return the Boolean response indicating whether the confirmation was successful.
+     * @throws EntityNotFoundException If the user cannot be found using the ID associated with the confirmation key.
      */
     @Override
     @Transactional
-    public Boolean verifyRegistration(@NotBlank String key,
-                                      @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserVerification verification = verifyCode(key, code);
+    public Boolean confirmRegistration(@NotBlank String key,
+                                       @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
+        Confirmation confirmation = confirmationService.confirmCode(key, code);
+        Long confirmUserId = (Long) confirmation.getMetaData().get(ID);
 
-        User user = userServices.findById(verification.getId())
-                .orElseThrow(() -> new_EntityNotFoundException("User", verification.getId()));
+        User user = userServices.findById(confirmUserId)
+                .orElseThrow(() -> new_EntityNotFoundException("User", confirmUserId));
+
         user.setStatus(UserStatus.ACTIVE);
-        log.info("User with key {} has been successfully verified", key);
+        log.info("User with key {} has been successfully confirmed", key);
 
         return true;
     }
 
-    /**
-     * Provides key and saves code
-     * Sends code to the user device/mail
-     *
-     * @param user   user entity data that will be stored in the cache
-     * @param prefix the prefix used for the generated key value
-     * @return the String response containing the UUID key stored in cache
-     */
-    @Override
-    public String generateCode(@NotNull User user, String prefix) {
-        String key = UUID.randomUUID().toString();
-        if (prefix != null) {
-            key = prefix.concat(key);
-        }
-        Integer code = getRandom(VERIFICATION_MIN_VALUE, VERIFICATION_MAX_VALUE);
-        verificationCache.put(key, new UserVerification(user.getId(), user.getLogin(), code));
-        log.info(
-                "Verification code '{}' has been prepared for user with key '{}' and id '{}'",
-                code, key, user.getId());
-
-        return key;
-    }
-
-    /**
-     * Verifies provided key and code with the data in the cache
-     *
-     * @param key  the verification key
-     * @param code the verification code
-     * @return the UserVerification response containing information about the verified user
-     * @throws VerificationNotFoundException If the verification key cannot be found or has expired.
-     * @throws InvalidVerificationException  If the provided verification code is invalid.
-     */
-    @Override
-    public UserVerification verifyCode(@NotBlank String key,
-                                       @Min(VERIFICATION_MIN_VALUE) @Max(VERIFICATION_MAX_VALUE) Integer code) {
-        UserVerification verification = this.verificationCache.get(key, UserVerification.class);
-
-        if (verification == null) {
-            log.info("Verification {} not found or expired", key);
-            throw new_VerificationNotFoundException(key);
-        }
-
-        if (!verification.getCode().equals(code)) {
-            log.info("Invalid verification code {} for key {}", code, key);
-            throw new_InvalidVerificationException(String.valueOf(code), key);
-        }
-
-        this.verificationCache.evictIfPresent(key);
-
-        return verification;
-    }
 }

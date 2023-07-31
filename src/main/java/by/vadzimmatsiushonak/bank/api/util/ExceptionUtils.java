@@ -40,13 +40,13 @@ public class ExceptionUtils {
         return new DuplicateException(format("DuplicateException", values));
     }
 
-    public static VerificationNotFoundException new_VerificationNotFoundException(
+    public static ConfirmationNotFoundException new_ConfirmationNotFoundException(
             Object... values) {
-        return new VerificationNotFoundException(format("VerificationNotFoundException", values));
+        return new ConfirmationNotFoundException(format("ConfirmationNotFoundException", values));
     }
 
-    public static InvalidVerificationException new_InvalidVerificationException(Object... values) {
-        return new InvalidVerificationException(format("InvalidVerificationException", values));
+    public static InvalidConfirmationException new_InvalidConfirmationException(Object... values) {
+        return new InvalidConfirmationException(format("InvalidConfirmationException", values));
     }
 
     public static InvalidCredentialsException new_InvalidCredentialsException(Object... values) {

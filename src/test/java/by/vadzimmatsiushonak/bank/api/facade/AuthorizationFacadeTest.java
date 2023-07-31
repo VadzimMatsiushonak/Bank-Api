@@ -2,10 +2,11 @@ package by.vadzimmatsiushonak.bank.api.facade;
 
 import by.vadzimmatsiushonak.bank.api.exception.*;
 import by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl;
-import by.vadzimmatsiushonak.bank.api.model.UserVerification;
+import by.vadzimmatsiushonak.bank.api.model.Confirmation;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
+import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
 import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
@@ -24,8 +25,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
+import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
 import static by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl.LOGIN_KEY;
 import static by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl.REGISTRATION_KEY;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,11 +43,11 @@ public class AuthorizationFacadeTest {
     private AuthorizationFacadeImpl facade;
 
     @Mock
+    private ConfirmationService confirmationService;
+    @Mock
     private UserService userServices;
     @Mock
     private UserDetailsService userDetailsService;
-    @Mock
-    private Cache verificationCache;
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
@@ -80,15 +83,17 @@ public class AuthorizationFacadeTest {
 
         @Test
         public void authenticate() {
-            String expected = "code";
+            String expected = CODE;
             User user = new User();
+            user.setLogin(USERNAME);
             user.setPassword(PASSWORD);
 
 
             when(userServices.findByUsername(USERNAME)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(PASSWORD, PASSWORD)).thenReturn(true);
-            doReturn(expected).when(facade).generateCode(user, LOGIN_KEY);
+            when(confirmationService.generateCode(Map.of(LOGIN, user.getLogin()), LOGIN_KEY)).thenReturn(expected);
 
+            System.out.println(expected);
 
             String actual = facade.authenticate(USERNAME, PASSWORD);
             assertEquals(expected, actual);
@@ -102,7 +107,7 @@ public class AuthorizationFacadeTest {
 
         @Test
         public void getToken() {
-            UserVerification verification = new UserVerification(ID_LONG, USERNAME, CODE_INT);
+            Confirmation verification = new Confirmation(CODE_INT, Map.of(LOGIN, USERNAME));
             org.springframework.security.core.userdetails.User userDetails =
                     new org.springframework.security.core.userdetails.User(USERNAME, PASSWORD,
                             Collections.emptyList());
@@ -111,7 +116,7 @@ public class AuthorizationFacadeTest {
             Jwt jwt = mock(Jwt.class);
 
 
-            doReturn(verification).when(facade).verifyCode(KEY, CODE_INT);
+            doReturn(verification).when(confirmationService).confirmCode(KEY, CODE_INT);
             when(userDetailsService.loadUserByUsername(USERNAME)).thenReturn(userDetails);
             when(jwtTokenUtil.generateJwtToken(auth)).thenReturn(jwt);
             when(jwt.getTokenValue()).thenReturn(TOKEN);
@@ -180,10 +185,11 @@ public class AuthorizationFacadeTest {
         @Test
         public void register() {
             User user = new User();
+            user.setId(ID_LONG);
             user.setRole(Role.TECHNICAL_USER);
 
 
-            doReturn(CODE).when(facade).generateCode(user, REGISTRATION_KEY);
+            doReturn(CODE).when(confirmationService).generateCode(Map.of(ID, user.getId()), REGISTRATION_KEY);
 
 
             String actual = facade.register(user);
@@ -199,91 +205,33 @@ public class AuthorizationFacadeTest {
 
         @Test
         public void verifyRegistration() {
-            UserVerification verification = new UserVerification(ID_LONG, USERNAME, CODE_INT);
+            Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG));
             User user = new User();
+            user.setId(ID_LONG);
             user.setStatus(UserStatus.DISABLED);
 
 
-            doReturn(verification).when(facade).verifyCode(KEY, CODE_INT);
+            doReturn(confirmation).when(confirmationService).confirmCode(KEY, CODE_INT);
             when(userServices.findById(ID_LONG)).thenReturn(Optional.of(user));
 
 
-            assertTrue(facade.verifyRegistration(KEY, CODE_INT));
+            assertTrue(facade.confirmRegistration(KEY, CODE_INT));
             assertEquals(UserStatus.ACTIVE, user.getStatus());
             verify(userServices).findById(ID_LONG);
         }
 
         @Test
         public void verifyRegistrationAbsentUser() {
-            UserVerification verification = new UserVerification(ID_LONG, USERNAME, CODE_INT);
+            Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG, LOGIN, USERNAME));
 
 
-            doReturn(verification).when(facade).verifyCode(KEY, CODE_INT);
+            doReturn(confirmation).when(confirmationService).confirmCode(KEY, CODE_INT);
             when(userServices.findById(ID_LONG)).thenReturn(Optional.empty());
 
 
             assertThrows(EntityNotFoundException.class,
-                    () -> facade.verifyRegistration(KEY, CODE_INT));
+                    () -> facade.confirmRegistration(KEY, CODE_INT));
             verify(userServices).findById(ID_LONG);
-        }
-
-    }
-
-    @Nested
-    public class AuthorizationFacadeTestGenerateCode {
-
-        @Test
-        public void generateCode() {
-            User user = new User();
-            user.setId(ID_LONG);
-            user.setLogin(USERNAME);
-            String key = facade.generateCode(user, LOGIN_KEY);
-
-
-            assertTrue(key.startsWith(LOGIN_KEY));
-            verify(verificationCache).put(any(),
-                    new UserVerification(ID_LONG, USERNAME, any()));
-        }
-
-    }
-
-    @Nested
-    public class AuthorizationFacadeTestVerifyCode {
-
-        @Test
-        public void verifyCode() {
-            UserVerification expected = new UserVerification(ID_LONG, USERNAME, CODE_INT);
-
-
-            when(verificationCache.get(KEY, UserVerification.class)).thenReturn(expected);
-
-
-            UserVerification actual = facade.verifyCode(KEY, CODE_INT);
-            assertEquals(expected, actual);
-            verify(verificationCache).evictIfPresent(KEY);
-        }
-
-        @Test
-        public void verifyCodeAbsentVerification() {
-            when(verificationCache.get(KEY, UserVerification.class)).thenReturn(null);
-
-
-            assertThrows(VerificationNotFoundException.class,
-                    () -> facade.verifyCode(KEY, CODE_INT));
-            verify(verificationCache, times(0)).evictIfPresent(any());
-        }
-
-        @Test
-        public void verifyCodeWrongInputCode() {
-            UserVerification verification = new UserVerification(ID_LONG, USERNAME, CODE_INT);
-
-
-            when(verificationCache.get(KEY, UserVerification.class)).thenReturn(verification);
-
-
-            assertThrows(InvalidVerificationException.class,
-                    () -> facade.verifyCode(KEY, WRONG_CODE_INT));
-            verify(verificationCache, times(0)).evictIfPresent(any());
         }
 
     }

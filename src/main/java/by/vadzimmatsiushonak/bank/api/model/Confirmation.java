@@ -3,12 +3,13 @@ package by.vadzimmatsiushonak.bank.api.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Map;
+
 @Getter
 @AllArgsConstructor
-public class UserVerification {
+public class Confirmation {
 
-    private final Long id;
-    private final String username;
     private final Integer code;
+    private final Map<Object, Object> metaData;
 
 }
