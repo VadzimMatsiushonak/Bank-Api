@@ -1,14 +1,14 @@
 package by.vadzimmatsiushonak.bank.api.model.dto.request;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.OperationType;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionType;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 public class BankAccountRequestDto {
-
 
     @ApiModelProperty(required = true)
     @NotNull
@@ -29,7 +29,7 @@ public class BankAccountRequestDto {
 
     @ApiModelProperty(example = "DEBIT")
     @NotNull
-    public OperationType type;
+    public TransactionType type;
 
     @ApiModelProperty(example = "1", required = true)
     @NotNull

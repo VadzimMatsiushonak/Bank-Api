@@ -5,7 +5,7 @@ import by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl;
 import by.vadzimmatsiushonak.bank.api.model.Confirmation;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
 import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
 import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
@@ -207,7 +207,7 @@ public class AuthorizationFacadeTest {
             Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG));
             User user = new User();
             user.setId(ID_LONG);
-            user.setStatus(UserStatus.DISABLED);
+            user.setStatus(ModelStatus.INACTIVE);
 
 
             doReturn(confirmation).when(confirmationService).confirmCode(KEY, CODE_INT);
@@ -215,7 +215,7 @@ public class AuthorizationFacadeTest {
 
 
             assertTrue(facade.confirmRegistration(KEY, CODE_INT));
-            assertEquals(UserStatus.ACTIVE, user.getStatus());
+            assertEquals(ModelStatus.ACTIVE, user.getStatus());
             verify(userServices).findById(ID_LONG);
         }
 

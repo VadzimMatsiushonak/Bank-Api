@@ -3,7 +3,7 @@ package by.vadzimmatsiushonak.bank.api.service;
 import by.vadzimmatsiushonak.bank.api.exception.InactiveUserException;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
 import by.vadzimmatsiushonak.bank.api.repository.UserRepository;
 import by.vadzimmatsiushonak.bank.api.service.impl.CustomUserDetailsService;
 import org.junit.jupiter.api.Nested;
@@ -42,7 +42,7 @@ public class CustomUserDetailsServiceTest {
             User user = new User();
             user.setLogin(USERNAME);
             user.setPassword(PASSWORD);
-            user.setStatus(UserStatus.ACTIVE);
+            user.setStatus(ModelStatus.ACTIVE);
             user.setRole(Role.ADMIN);
 
             UserDetails expected = new org.springframework.security.core.userdetails.User(
@@ -71,7 +71,7 @@ public class CustomUserDetailsServiceTest {
         @Test
         public void loadUserByUsernameInactiveUser() {
             User user = new User();
-            user.setStatus(UserStatus.DISABLED);
+            user.setStatus(ModelStatus.INACTIVE);
 
             when(repository.findByLogin(USERNAME)).thenReturn(Optional.of(user));
 

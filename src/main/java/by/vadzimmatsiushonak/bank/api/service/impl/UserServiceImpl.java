@@ -50,7 +50,8 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         log.info("UserServiceImpl findByPhoneNumber {}", phoneNumber);
 
-        return repository.findByPhoneNumber(phoneNumber);
+//        return repository.findByPhoneNumber(phoneNumber);
+        return null;
     }
 
     @Override

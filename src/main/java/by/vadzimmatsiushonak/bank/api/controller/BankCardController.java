@@ -9,8 +9,7 @@ import by.vadzimmatsiushonak.bank.api.mapper.BankCardMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankCardRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.BankCardDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankCardDtoRelations;
-import by.vadzimmatsiushonak.bank.api.model.entity.BankCard;
-import by.vadzimmatsiushonak.bank.api.service.BankCardService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
@@ -30,29 +29,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/cards")
 public class BankCardController {
-
-    private final BankCardService bankCardService;
-    private final BankCardMapper bankCardMapper;
-
-    @ApiOperation("Get Card with property relations")
-    @GetMapping("/{id}")
-    public ResponseEntity<BankCardDtoRelations> findById(@PathVariable Long id) {
-        return ResponseEntity.status(OK)
-            .body(bankCardMapper.toDtoRelations(bankCardService.findById(id).orElse(null)));
-    }
-
-    @ApiOperation("Get List of Cards with property relations")
-    @GetMapping
-    public ResponseEntity<List<BankCardDtoRelations>> findAll() {
-        return ResponseEntity.status(OK)
-            .body(bankCardMapper.toListDtoRelations(bankCardService.findAll()));
-    }
-
-    @ApiOperation("Add the Card to the Api database")
-    @ResponseStatus(CREATED)
-    @PostMapping
-    public ResponseEntity<BankCardDto> create(@Valid @RequestBody BankCardRequestDto bankCardRequestDto) {
-        BankCard bankCard = bankCardService.save(bankCardMapper.toEntity(bankCardRequestDto));
-        return ResponseEntity.status(CREATED).body(bankCardMapper.toDto(bankCard));
-    }
+//
+//    private final BankCardService bankCardService;
+//    private final BankCardMapper bankCardMapper;
+//
+//    @ApiOperation("Get Card with property relations")
+//    @GetMapping("/{id}")
+//    public ResponseEntity<BankCardDtoRelations> findById(@PathVariable Long id) {
+//        return ResponseEntity.status(OK)
+//            .body(bankCardMapper.toDtoRelations(bankCardService.findById(id).orElse(null)));
+//    }
+//
+//    @ApiOperation("Get List of Cards with property relations")
+//    @GetMapping
+//    public ResponseEntity<List<BankCardDtoRelations>> findAll() {
+//        return ResponseEntity.status(OK)
+//            .body(bankCardMapper.toListDtoRelations(bankCardService.findAll()));
+//    }
+//
+//    @ApiOperation("Add the Card to the Api database")
+//    @ResponseStatus(CREATED)
+//    @PostMapping
+//    public ResponseEntity<BankCardDto> create(@Valid @RequestBody BankCardRequestDto bankCardRequestDto) {
+//        BankCard bankCard = bankCardService.save(bankCardMapper.toEntity(bankCardRequestDto));
+//        return ResponseEntity.status(CREATED).body(bankCardMapper.toDto(bankCard));
+//    }
 }

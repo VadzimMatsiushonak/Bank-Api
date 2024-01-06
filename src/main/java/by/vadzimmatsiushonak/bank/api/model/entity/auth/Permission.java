@@ -1,4 +1,4 @@
-package by.vadzimmatsiushonak.bank.api.model.v2.model.entity.auth;
+package by.vadzimmatsiushonak.bank.api.model.entity.auth;
 
 public enum Permission {
 

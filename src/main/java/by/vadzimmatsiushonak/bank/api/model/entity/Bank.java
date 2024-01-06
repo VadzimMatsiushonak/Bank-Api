@@ -1,22 +1,56 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
-import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
-import java.math.BigDecimal;
-import java.util.List;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.BankTier;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
+import by.vadzimmatsiushonak.bank.api.model.entity.auth.Permission;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.BankType;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.IdEntity;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import lombok.Data;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToOne;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
 @Entity(name = "banks")
-public class Bank extends BaseEntity {
+public class Bank extends IdEntity {
 
-    private String title;
+    private String name;
 
-    private BigDecimal amount;
+    private String description;
 
-    @OneToMany(mappedBy = "bank", fetch = FetchType.EAGER)
-    private List<BankAccount> bankAccounts;
+    @Enumerated(EnumType.STRING)
+    private Currency mainCurrency;
+
+    @Enumerated(EnumType.STRING)
+    private BankType type;
+
+    @Enumerated(EnumType.STRING)
+    private BankTier tier;
+
+    @Enumerated(EnumType.STRING)
+    private ModelStatus status;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_holder_id")
+    private AccountHolder accountHolder;
+
+    @ElementCollection(targetClass = Permission.class)
+    @JoinTable(name = "bank_permissions", joinColumns = @JoinColumn(name = "bank_id"))
+    @Column(name = "permission", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private List<Permission> permissions;
 
 }

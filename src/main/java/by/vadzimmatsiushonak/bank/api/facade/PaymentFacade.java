@@ -12,9 +12,9 @@ import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MIN_V
 
 public interface PaymentFacade {
 
-    String initiatePayment(@NotBlank String phoneNumber, @NotNull InitiatePaymentRequest request);
-
-    Boolean confirmPayment(@NotBlank String key,
-                           @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code);
+//    String initiatePayment(@NotBlank String phoneNumber, @NotNull InitiatePaymentRequest request);
+//
+//    Boolean confirmPayment(@NotBlank String key,
+//                           @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code);
 
 }

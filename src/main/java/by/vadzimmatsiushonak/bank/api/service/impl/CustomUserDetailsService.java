@@ -16,7 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.Collection;
 import java.util.Collections;
 
-import static by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus.ACTIVE;
+import static by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus.ACTIVE;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InactiveUserException;
 
 @AllArgsConstructor

@@ -6,10 +6,10 @@ import by.vadzimmatsiushonak.bank.api.exception.InvalidCredentialsException;
 import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
 import by.vadzimmatsiushonak.bank.api.model.Confirmation;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
 import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
 import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
@@ -157,7 +157,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
         User user = userServices.findById(confirmUserId)
                 .orElseThrow(() -> new_EntityNotFoundException("User", confirmUserId));
 
-        user.setStatus(UserStatus.ACTIVE);
+        user.setStatus(ModelStatus.ACTIVE);
         log.info("User with key {} has been successfully confirmed", key);
 
         return true;

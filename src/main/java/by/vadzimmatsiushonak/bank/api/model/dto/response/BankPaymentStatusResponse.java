@@ -1,7 +1,7 @@
 package by.vadzimmatsiushonak.bank.api.model.dto.response;
 
 import by.vadzimmatsiushonak.bank.api.model.dto.base.BaseEntityDto;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.PaymentStatus;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionStatus;
 import io.swagger.annotations.ApiModelProperty;
 
 public class BankPaymentStatusResponse extends BaseEntityDto {
@@ -11,5 +11,6 @@ public class BankPaymentStatusResponse extends BaseEntityDto {
             "ACCEPTED indicates that the payment was successful.\n" +
             "PENDING indicates that the payment is awaiting confirmation.\n" +
             "REJECTED indicates that there were issues with the payment.", example = "PENDING")
-    public PaymentStatus status;
+    public TransactionStatus status;
+
 }

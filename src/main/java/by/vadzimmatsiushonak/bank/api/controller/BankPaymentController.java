@@ -8,8 +8,6 @@ import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.BankPaymentDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.ConfirmationResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.BankPaymentDtoRelations;
-import by.vadzimmatsiushonak.bank.api.model.entity.BankPayment;
-import by.vadzimmatsiushonak.bank.api.service.BankPaymentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -46,61 +44,61 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/api/v1/payments")
 public class BankPaymentController {
-
-    private final BankPaymentService bankPaymentService;
-    private final BankPaymentMapper bankPaymentMapper;
-
-    private final PaymentFacade paymentFacade;
-
-    @ApiOperation("Get Payment with property relations")
-    @GetMapping("/{id}")
-    public ResponseEntity<BankPaymentDtoRelations> findById(@PathVariable Long id) {
-        return ResponseEntity.status(OK)
-                .body(bankPaymentMapper.toDtoRelations(
-                        bankPaymentService.findById(id).orElse(null)));
-    }
-
-    @ApiOperation("Get List of Payments with property relations")
-    @GetMapping
-    public ResponseEntity<List<BankPaymentDtoRelations>> findAll() {
-        return ResponseEntity.status(OK)
-                .body(bankPaymentMapper.toListDtoRelations(bankPaymentService.findAll()));
-    }
-
-    @ApiOperation("Add the Payment to the Api database")
-    @ResponseStatus(CREATED)
-    @PostMapping
-    public ResponseEntity<BankPaymentDto> create(
-            @Valid @RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
-        BankPayment bankPayment = bankPaymentService.save(
-                bankPaymentMapper.toEntity(bankPaymentRequestDto));
-        return ResponseEntity.status(CREATED).body(bankPaymentMapper.toDto(bankPayment));
-    }
-
-    @ApiOperation("Initiates a payment between 2 accounts")
-    @ApiResponses({
-            @ApiResponse(code = HTTP_CREATED, message = "Provides created Payment from database"),
-            @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid arguments provided")})
-    @ResponseStatus(CREATED)
-    @PostMapping("/initiatePayment")
-    public ResponseEntity<BankPaymentResponse> initiatePayment(
-            @Valid @RequestBody InitiatePaymentRequest initiatePaymentRequest) {
-        String confirmationKey = paymentFacade.initiatePayment(getCurrentUserPhoneNumber(),
-                initiatePaymentRequest);
-        return ResponseEntity.status(CREATED).body(new BankPaymentResponse(confirmationKey));
-    }
-
-    @ApiOperation("Confirm the user's payment")
-    @ApiResponses(value = {
-            @ApiResponse(code = HTTP_OK, message = "Confirmation payment successful.", response = ConfirmationResponse.class),
-            @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid confirmation code."),
-            @ApiResponse(code = HTTP_NOT_FOUND, message = "User key not found.")})
-    @PostMapping("/confirmPayment/{key}/{code}")
-    public ResponseEntity<ConfirmationResponse> confirmPayment(
-            @PathVariable @NotBlank String key,
-            @PathVariable @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
-        Boolean isConfirmed = paymentFacade.confirmPayment(key, code);
-        return ResponseEntity.status(OK).body(new ConfirmationResponse(isConfirmed));
-    }
+//
+//    private final BankPaymentService bankPaymentService;
+//    private final BankPaymentMapper bankPaymentMapper;
+//
+//    private final PaymentFacade paymentFacade;
+//
+//    @ApiOperation("Get Payment with property relations")
+//    @GetMapping("/{id}")
+//    public ResponseEntity<BankPaymentDtoRelations> findById(@PathVariable Long id) {
+//        return ResponseEntity.status(OK)
+//                .body(bankPaymentMapper.toDtoRelations(
+//                        bankPaymentService.findById(id).orElse(null)));
+//    }
+//
+//    @ApiOperation("Get List of Payments with property relations")
+//    @GetMapping
+//    public ResponseEntity<List<BankPaymentDtoRelations>> findAll() {
+//        return ResponseEntity.status(OK)
+//                .body(bankPaymentMapper.toListDtoRelations(bankPaymentService.findAll()));
+//    }
+//
+//    @ApiOperation("Add the Payment to the Api database")
+//    @ResponseStatus(CREATED)
+//    @PostMapping
+//    public ResponseEntity<BankPaymentDto> create(
+//            @Valid @RequestBody BankPaymentRequestDto bankPaymentRequestDto) {
+//        BankPayment bankPayment = bankPaymentService.save(
+//                bankPaymentMapper.toEntity(bankPaymentRequestDto));
+//        return ResponseEntity.status(CREATED).body(bankPaymentMapper.toDto(bankPayment));
+//    }
+//
+//    @ApiOperation("Initiates a payment between 2 accounts")
+//    @ApiResponses({
+//            @ApiResponse(code = HTTP_CREATED, message = "Provides created Payment from database"),
+//            @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid arguments provided")})
+//    @ResponseStatus(CREATED)
+//    @PostMapping("/initiatePayment")
+//    public ResponseEntity<BankPaymentResponse> initiatePayment(
+//            @Valid @RequestBody InitiatePaymentRequest initiatePaymentRequest) {
+//        String confirmationKey = paymentFacade.initiatePayment(getCurrentUserPhoneNumber(),
+//                initiatePaymentRequest);
+//        return ResponseEntity.status(CREATED).body(new BankPaymentResponse(confirmationKey));
+//    }
+//
+//    @ApiOperation("Confirm the user's payment")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = HTTP_OK, message = "Confirmation payment successful.", response = ConfirmationResponse.class),
+//            @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid confirmation code."),
+//            @ApiResponse(code = HTTP_NOT_FOUND, message = "User key not found.")})
+//    @PostMapping("/confirmPayment/{key}/{code}")
+//    public ResponseEntity<ConfirmationResponse> confirmPayment(
+//            @PathVariable @NotBlank String key,
+//            @PathVariable @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
+//        Boolean isConfirmed = paymentFacade.confirmPayment(key, code);
+//        return ResponseEntity.status(OK).body(new ConfirmationResponse(isConfirmed));
+//    }
 
 }

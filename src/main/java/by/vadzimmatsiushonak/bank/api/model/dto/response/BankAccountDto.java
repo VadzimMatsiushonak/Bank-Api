@@ -1,7 +1,8 @@
 package by.vadzimmatsiushonak.bank.api.model.dto.response;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.OperationType;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionType;
+
 import java.math.BigDecimal;
 
 public class BankAccountDto {
@@ -14,6 +15,6 @@ public class BankAccountDto {
 
     public BigDecimal amount;
 
-    public OperationType type;
+    public TransactionType type;
 
 }

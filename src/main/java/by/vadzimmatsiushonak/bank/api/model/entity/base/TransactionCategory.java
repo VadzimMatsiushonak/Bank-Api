@@ -1,4 +1,4 @@
-package by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base;
+package by.vadzimmatsiushonak.bank.api.model.entity.base;
 
 public enum TransactionCategory {
 

@@ -1,11 +1,12 @@
 package by.vadzimmatsiushonak.bank.api.model.dto.request;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.PaymentStatus;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionStatus;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 public class BankPaymentRequestDto {
 
@@ -24,7 +25,7 @@ public class BankPaymentRequestDto {
 
     @ApiModelProperty(example = "ACCEPTED", required = true)
     @NotNull
-    public PaymentStatus status;
+    public TransactionStatus status;
 
     @ApiModelProperty(notes = "IBAN structure: 2 Letter Country Code + Mobile Operator Code + First Letter Of Name + First Letter Of Surname + Mobile Number", example = "BY29VM1234567", required = true)
     @NotNull

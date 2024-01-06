@@ -1,7 +1,7 @@
-package by.vadzimmatsiushonak.bank.api.model.v2.model.entity;
+package by.vadzimmatsiushonak.bank.api.model.entity;
 
-import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.BaseEntity;
-import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.ModelStatus;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
