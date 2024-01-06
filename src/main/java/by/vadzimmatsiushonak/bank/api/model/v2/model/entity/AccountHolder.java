@@ -1,6 +1,6 @@
-package by.vadzimmatsiushonak.bank.api.v2.model.entity;
+package by.vadzimmatsiushonak.bank.api.model.v2.model.entity;
 
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.IdEntity;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.IdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,4 +27,5 @@ public class AccountHolder extends IdEntity {
 
     @OneToMany(mappedBy = "accountHolder", fetch = FetchType.LAZY)
     private List<Account> accounts;
+
 }

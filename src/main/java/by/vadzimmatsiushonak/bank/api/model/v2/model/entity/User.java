@@ -1,9 +1,9 @@
-package by.vadzimmatsiushonak.bank.api.v2.model.entity;
+package by.vadzimmatsiushonak.bank.api.model.v2.model.entity;
 
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.auth.Permission;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.auth.Role;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.IdEntity;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.ModelStatus;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.auth.Permission;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.auth.Role;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.IdEntity;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.ModelStatus;
 import lombok.Getter;
 import lombok.Setter;
 

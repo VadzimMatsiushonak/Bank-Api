@@ -1,9 +1,10 @@
-package by.vadzimmatsiushonak.bank.api.v2.model.entity.base;
+package by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,5 +16,7 @@ public abstract class BaseEntity {
 
     protected LocalDateTime modifiedAt;
 
+    @Version
     protected Long version;
+
 }

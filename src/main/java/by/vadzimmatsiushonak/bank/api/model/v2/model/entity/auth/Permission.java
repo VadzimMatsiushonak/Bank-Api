@@ -1,4 +1,4 @@
-package by.vadzimmatsiushonak.bank.api.v2.model.entity.auth;
+package by.vadzimmatsiushonak.bank.api.model.v2.model.entity.auth;
 
 public enum Permission {
 
@@ -12,4 +12,5 @@ public enum Permission {
         this.scope = scope;
         this.authority = ROLE_PREFIX.concat(scope);
     }
+
 }

@@ -1,4 +1,4 @@
-package by.vadzimmatsiushonak.bank.api.v2.model.entity;
+package by.vadzimmatsiushonak.bank.api.model.v2.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,4 +20,5 @@ public class UserDetails {
 
     @Column(unique = true)
     private String phoneNumber;
+
 }

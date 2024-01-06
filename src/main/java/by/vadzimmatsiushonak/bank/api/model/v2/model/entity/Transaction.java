@@ -1,10 +1,10 @@
-package by.vadzimmatsiushonak.bank.api.v2.model.entity;
+package by.vadzimmatsiushonak.bank.api.model.v2.model.entity;
 
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.Currency;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.IdEntity;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.TransactionCategory;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.TransactionStatus;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.TransactionType;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.Currency;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.IdEntity;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.TransactionCategory;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.TransactionStatus;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.TransactionType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -60,4 +60,5 @@ public class Transaction extends IdEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resipient_card_id")
     private Card resipientCard;
+
 }

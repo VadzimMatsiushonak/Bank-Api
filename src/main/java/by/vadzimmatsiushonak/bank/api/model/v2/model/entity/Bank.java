@@ -1,11 +1,11 @@
-package by.vadzimmatsiushonak.bank.api.v2.model.entity;
+package by.vadzimmatsiushonak.bank.api.model.v2.model.entity;
 
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.auth.Permission;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.BankTier;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.BankType;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.Currency;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.IdEntity;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.ModelStatus;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.auth.Permission;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.BankTier;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.BankType;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.Currency;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.IdEntity;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.ModelStatus;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +23,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @Entity(name = "banks")
 public class Bank extends IdEntity {
 

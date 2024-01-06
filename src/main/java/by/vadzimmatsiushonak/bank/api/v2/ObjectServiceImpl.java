@@ -17,7 +17,7 @@ import java.util.Optional;
 public class ObjectServiceImpl implements ObjectService {
     
     private ObjectRepository repository;
-
+/*
     @Override
     public Object save(@NotNull Object object) {
         log.info("ObjectServiceImpl create {}", object);
@@ -61,5 +61,5 @@ public class ObjectServiceImpl implements ObjectService {
 
         repository.deleteById(id);
     }
-    
+*/
 }

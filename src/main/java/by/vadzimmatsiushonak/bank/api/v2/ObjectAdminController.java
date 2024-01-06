@@ -1,27 +1,21 @@
 package by.vadzimmatsiushonak.bank.api.v2;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 @Api(tags = "Object", description = EMPTY_DESCRIPTION)
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/objects")
+@RequestMapping("/api/v2/objects")
 public class ObjectAdminController {
 
     private ObjectService objectService;
     private ObjectMapper objectMapper;
-
+/*
     @ApiOperation("Get Object by id")
     @ResponseStatus(OK)
     @GetMapping("/{id}")
@@ -80,5 +74,6 @@ public class ObjectAdminController {
         Object object = objectService.updateField(request.id, request.name, request.value);
         return ResponseEntity.status(OK).body(objectMapper.toDto(object));
     }
+*/
 
 }

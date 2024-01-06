@@ -1,13 +1,14 @@
-package by.vadzimmatsiushonak.bank.api.v2.model.entity;
+package by.vadzimmatsiushonak.bank.api.model.v2.model.entity;
 
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.BaseEntity;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.ModelStatus;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.BaseEntity;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.ModelStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -36,11 +37,11 @@ public class Card extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ModelStatus status;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_id")
     private Bank bank;
 

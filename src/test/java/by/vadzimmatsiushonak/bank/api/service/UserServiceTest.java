@@ -17,8 +17,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static utils.TestConstants.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static utils.TestConstants.ID_LONG;
+import static utils.TestConstants.PASSWORD;
+import static utils.TestConstants.PHONENUMBER;
+import static utils.TestConstants.USERNAME;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -105,7 +110,7 @@ public class UserServiceTest {
     }
 
     @Nested
-    public class UserServiceTestFindByPhoneNumber{
+    public class UserServiceTestFindByPhoneNumber {
         @Test
         public void findByPhoneNumber() {
             User user = new User();

@@ -1,16 +1,17 @@
-package by.vadzimmatsiushonak.bank.api.v2.model.entity;
+package by.vadzimmatsiushonak.bank.api.model.v2.model.entity;
 
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.AccountType;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.BaseEntity;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.Currency;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.ModelStatus;
-import by.vadzimmatsiushonak.bank.api.v2.model.entity.base.TransactionType;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.AccountType;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.BaseEntity;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.Currency;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.ModelStatus;
+import by.vadzimmatsiushonak.bank.api.model.v2.model.entity.base.TransactionType;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -39,11 +40,11 @@ public class Account extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ModelStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_holder_id", nullable = false)
     private AccountHolder accountHolder;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_id", nullable = false)
     private Bank bank;
 

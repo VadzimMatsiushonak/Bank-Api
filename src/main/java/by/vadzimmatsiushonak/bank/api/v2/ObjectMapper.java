@@ -7,6 +7,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ObjectMapper {
 
+/*
     ObjectDto toDto(Object entity);
 
     List<ObjectDto> toListDto(List<Object> entities);
@@ -16,5 +17,6 @@ public interface ObjectMapper {
     List<ObjectDtoRelations> toListDtoRelations(List<Object> entities);
 
     Object toEntity(ObjectRequest dto);
+*/
 
 }
