@@ -1,50 +1,45 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
-import static by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus.NEW;
-
+import by.vadzimmatsiushonak.bank.api.model.entity.auth.Permission;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.BaseEntity;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.UserStatus;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
-import javax.persistence.FetchType;
-import lombok.Data;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.IdEntity;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.time.LocalDate;
-import java.util.List;
+import javax.persistence.*;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Entity(name = "users")
-public class User extends BaseEntity {
+public class User extends IdEntity {
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String login;
 
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(nullable = false)
+    private ModelStatus status;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    @Column(nullable = false)
+    private Role role;
 
-    private String name;
+    @ElementCollection(targetClass = Permission.class)
+    @JoinTable(name = "users_permissions", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "permission", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Set<Permission> permissions;
 
-    private String surname;
-
-    private LocalDate dateOfBirth;
-
-    @Column(unique = true)
-    private String phoneNumber;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<BankAccount> bankAccounts;
-
-    public User() {
-        this.status = NEW;
-    }
+    @Embedded
+    private UserDetails userDetails;
 
 }

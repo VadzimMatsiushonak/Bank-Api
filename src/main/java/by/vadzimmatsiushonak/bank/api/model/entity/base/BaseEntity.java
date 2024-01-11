@@ -1,17 +1,30 @@
 package by.vadzimmatsiushonak.bank.api.model.entity.base;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-@Data
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 @MappedSuperclass
 public abstract class BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    @CreationTimestamp
+    protected LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    protected LocalDateTime modifiedAt;
+
+    @Version
+    protected Long version;
 
 }

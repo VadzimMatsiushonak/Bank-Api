@@ -2,8 +2,8 @@ package by.vadzimmatsiushonak.bank.api.controller;
 
 import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
 import by.vadzimmatsiushonak.bank.api.mapper.UserMapper;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.UserRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.AuthRequest;
-import by.vadzimmatsiushonak.bank.api.model.dto.request.UserRequestDto;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.TokenRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.AuthResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.ConfirmationResponse;
@@ -111,7 +111,7 @@ public class AuthorizationController {
      * Register a new user account and a corresponding user account, generate a confirmation code, send it to the
      * user, and return a unique identifier for confirm the user account registration.
      *
-     * @param userRequestDto the user data to be registered.
+     * @param userRequest the user data to be registered.
      * @return the registration response containing the UUID key for the user account confirmation.
      */
     @ApiOperation("Registers a new user account and returns a unique key for confirm the user account registration.")
@@ -121,8 +121,8 @@ public class AuthorizationController {
     @ResponseStatus(CREATED)
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> registerUser(
-            @RequestBody @Validated UserRequestDto userRequestDto) {
-        String confirmationKey = authorizationFacade.register(userMapper.toEntity(userRequestDto));
+            @RequestBody @Validated UserRequest userRequest) {
+        String confirmationKey = authorizationFacade.register(userMapper.toEntity(userRequest));
         return ResponseEntity.status(CREATED).body(new RegistrationResponse(confirmationKey));
     }
 

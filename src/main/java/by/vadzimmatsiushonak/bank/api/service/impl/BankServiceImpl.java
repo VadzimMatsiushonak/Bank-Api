@@ -3,16 +3,17 @@ package by.vadzimmatsiushonak.bank.api.service.impl;
 import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
 import by.vadzimmatsiushonak.bank.api.repository.BankRepository;
 import by.vadzimmatsiushonak.bank.api.service.BankService;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-@AllArgsConstructor
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+@RequiredArgsConstructor
 @Validated
 @Slf4j
 @Service
@@ -43,11 +44,11 @@ public class BankServiceImpl implements BankService {
     }
 
     @Override
-    public void update(@NotNull Bank bank) {
+    public Bank update(@NotNull Bank bank) {
         log.info("BankServiceImpl update {}", bank);
 
         Objects.requireNonNull(bank.getId());
-        repository.save(bank);
+        return repository.save(bank);
     }
 
     @Override

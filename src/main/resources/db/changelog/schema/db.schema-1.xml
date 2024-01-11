@@ -1,125 +1,120 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-  <changeSet author="Vadzim Matsiushonak" id="1">
+  <changeSet author="Vadzim Matsiushonak" id="accounts_default">
+    <createTable tableName="accounts">
+      <column name="iban" type="varchar(255)">
+        <constraints primaryKey="true" primaryKeyName="pk_accounts"/>
+      </column>
+      <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="modified_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="bigint" defaultValueNumeric="0">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createIndex indexName="idx_accounts_iban" tableName="accounts" unique="true">
+      <column name="iban"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="account_holders_default">
+    <createTable tableName="account_holders">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_account_holders"/>
+      </column>
+      <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="modified_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="bigint" defaultValueNumeric="0">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createIndex indexName="idx_account_holders_id" tableName="account_holders" unique="true">
+      <column name="id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="banks_default">
     <createTable tableName="banks">
-      <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_banks"/>
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_banks"/>
       </column>
-      <column name="amount" type="numeric(19, 2)"/>
-      <column name="title" type="VARCHAR(255)"/>
-    </createTable>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="2">
-    <createTable tableName="bank_accounts">
-      <column name="iban" type="VARCHAR(255)">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_bank_accounts"/>
-      </column>
-      <column name="amount" type="numeric(19, 2)"/>
-      <column name="currency" type="VARCHAR(255)"/>
-      <column name="title" type="VARCHAR(255)"/>
-      <column name="type" type="VARCHAR(255)"/>
-      <column name="bank_id" type="BIGINT">
+      <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
         <constraints nullable="false"/>
       </column>
-      <column name="bank_card_id" type="BIGINT"/>
-      <column name="user_id" type="BIGINT">
+      <column name="modified_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="bigint" defaultValueNumeric="0">
         <constraints nullable="false"/>
       </column>
     </createTable>
+    <createIndex indexName="idx_banks_id" tableName="banks" unique="true">
+      <column name="id"/>
+    </createIndex>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="3">
-    <createTable tableName="bank_cards">
-      <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_bank_cards"/>
+  <changeSet author="Vadzim Matsiushonak" id="cards_default">
+    <createTable tableName="cards">
+      <column name="card_number" type="varchar(255)">
+        <constraints primaryKey="true" primaryKeyName="pk_cards"/>
       </column>
-      <column name="cvs" type="VARCHAR(255)"/>
-      <column name="expiration_date" type="date"/>
-      <column name="number" type="VARCHAR(255)"/>
-      <column name="bank_account_iban" type="VARCHAR(255)">
+      <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="modified_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="bigint" defaultValueNumeric="0">
         <constraints nullable="false"/>
       </column>
     </createTable>
+    <createIndex indexName="idx_cards_card_number" tableName="cards" unique="true">
+      <column name="card_number"/>
+    </createIndex>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="4">
-    <createTable tableName="bank_payments">
-      <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_bank_payments"/>
+  <changeSet author="Vadzim Matsiushonak" id="transactions_default">
+    <createTable tableName="transactions">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_transactions"/>
       </column>
-      <column name="amount" type="numeric(19, 2)"/>
-      <column name="currency" type="VARCHAR(255)"/>
-      <column name="recipient_bank_account_iban" type="VARCHAR(255)"/>
-      <column name="bank_account_iban" type="VARCHAR(255)">
+      <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="modified_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="bigint" defaultValueNumeric="0">
         <constraints nullable="false"/>
       </column>
     </createTable>
+    <createIndex indexName="idx_transactions_id" tableName="transactions" unique="true">
+      <column name="id"/>
+    </createIndex>
   </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="5">
+  <changeSet author="Vadzim Matsiushonak" id="users_default">
     <createTable tableName="users">
-      <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_users"/>
       </column>
-      <column name="login" type="VARCHAR(255)"/>
-      <column name="password" type="VARCHAR(255)"/>
-      <column name="role" type="VARCHAR(255)"/>
-      <column name="date_of_birth" type="date"/>
-      <column name="name" type="VARCHAR(255)"/>
-      <column name="phone_number" type="VARCHAR(255)"/>
-      <column name="surname" type="VARCHAR(255)"/>
+      <column name="created_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="modified_at" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="bigint" defaultValueNumeric="0">
+        <constraints nullable="false"/>
+      </column>
     </createTable>
-  </changeSet>
-
-  <changeSet author="Vadzim Matsiushonak" id="6">
-    <createIndex indexName="ix_bank_cards_bank_account_iban" tableName="bank_cards">
-      <column name="bank_account_iban"/>
+    <createIndex indexName="idx_users_id" tableName="users" unique="true">
+      <column name="id"/>
     </createIndex>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="7">
-    <createIndex indexName="ix_bank_accounts_bank_id" tableName="bank_accounts">
-      <column name="bank_id"/>
-    </createIndex>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="8">
-    <createIndex indexName="ix_bank_payments_bank_account_iban" tableName="bank_payments">
-      <column name="bank_account_iban"/>
-    </createIndex>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="9">
-    <createIndex indexName="ix_bank_accounts_bank_card_id" tableName="bank_accounts">
-      <column name="bank_card_id"/>
-    </createIndex>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="10">
-    <createIndex indexName="ix_bank_accounts_user_id" tableName="bank_accounts">
-      <column name="user_id"/>
-    </createIndex>
-  </changeSet>
-
-  <changeSet author="Vadzim Matsiushonak" id="11">
-    <addForeignKeyConstraint baseColumnNames="bank_account_iban" baseTableName="bank_cards"
-      constraintName="fk_bank_cards_bank_account_iban" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-      onUpdate="RESTRICT" referencedColumnNames="iban" referencedTableName="bank_accounts" validate="true"/>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="12">
-    <addForeignKeyConstraint baseColumnNames="bank_id" baseTableName="bank_accounts"
-      constraintName="fk_bank_accounts_bank_id" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-      onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="banks" validate="true"/>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="13">
-    <addForeignKeyConstraint baseColumnNames="bank_account_iban" baseTableName="bank_payments"
-      constraintName="fk_bank_payments_bank_account_iban" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-      onUpdate="RESTRICT" referencedColumnNames="iban" referencedTableName="bank_accounts" validate="true"/>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="14">
-    <addForeignKeyConstraint baseColumnNames="bank_card_id" baseTableName="bank_accounts"
-      constraintName="fk_bank_accounts_bank_card_id" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-      onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="bank_cards" validate="true"/>
-  </changeSet>
-  <changeSet author="Vadzim Matsiushonak" id="15">
-    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="bank_accounts"
-      constraintName="fk_bank_accounts_user_id" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
-      onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="users" validate="true"/>
   </changeSet>
 </databaseChangeLog>

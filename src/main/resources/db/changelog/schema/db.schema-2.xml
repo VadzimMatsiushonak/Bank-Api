@@ -1,11 +1,214 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
   <changeSet author="Vadzim Matsiushonak" id="1">
-    <addColumn tableName="bank_payments">
-      <column name="status" type="VARCHAR(255)"/>
+    <addColumn tableName="accounts">
+      <column name="name" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="varchar(255)"/>
+      <column name="type" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="transaction_type" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="amount" type="numeric(19, 2)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="currency" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="account_holder_id" type="bigint"/>
+      <column name="bank_id" type="bigint"/>
     </addColumn>
+    <addForeignKeyConstraint baseColumnNames="account_holder_id" baseTableName="accounts"
+                             constraintName="fk_accounts_account_holder_id" deferrable="false" initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id"
+                             referencedTableName="account_holders" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="bank_id" baseTableName="accounts"
+                             constraintName="fk_accounts_bank_id" deferrable="false" initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id"
+                             referencedTableName="banks" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="2">
+    <addColumn tableName="account_holders">
+      <column name="user_id" type="bigint"/>
+      <column name="bank_id" type="bigint"/>
+    </addColumn>
+    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="account_holders"
+                             constraintName="fk_account_holders_user_id" deferrable="false" initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id"
+                             referencedTableName="users" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="bank_id" baseTableName="account_holders"
+                             constraintName="fk_account_holders_bank_id" deferrable="false" initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id"
+                             referencedTableName="banks" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="3">
+    <addColumn tableName="banks">
+      <column name="name" type="varchar(255)"/>
+      <column name="description" type="varchar(255)"/>
+      <column name="amount" type="numeric(19, 2)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="main_currency" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="tier" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="account_holder_id" type="bigint"/>
+      <!--      TODO: Decide how to use permissions property-->
+      <!--      <column name="permissions" type="varchar(64) []"/>-->
+      <!--      <column name="permissions" type="blob"/>-->
+    </addColumn>
+    <addForeignKeyConstraint baseColumnNames="account_holder_id" baseTableName="banks"
+                             constraintName="fk_banks_account_holder_id" deferrable="false" initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id"
+                             referencedTableName="account_holders" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="4">
+    <addColumn tableName="cards">
+      <column name="name" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="varchar(255)"/>
+      <column name="expiration_date" type="date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="cvv" type="smallint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="pin_code" type="smallint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="max_unconfirmed_transaction_amount" type="smallint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="account_iban" type="varchar(255)"/>
+      <column name="bank_id" type="bigint"/>
+    </addColumn>
+    <addForeignKeyConstraint baseColumnNames="account_iban" baseTableName="cards"
+                             constraintName="fk_cards_account_iban" deferrable="false" initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="iban"
+                             referencedTableName="accounts" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="bank_id" baseTableName="cards"
+                             constraintName="fk_cards_bank_id" deferrable="false" initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id"
+                             referencedTableName="banks" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="5">
+    <addColumn tableName="transactions">
+      <column name="amount" type="numeric(19, 2)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="actual_amount" type="numeric(19, 2)"/>
+      <column name="currency" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="fee_percent" type="numeric(19, 2)"/>
+      <column name="fee_amount" type="numeric(19, 2)"/>
+      <column name="details" type="varchar(255)"/>
+      <column name="process_date" type="datetime"/>
+      <column name="category" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sender_account_iban" type="varchar(255)"/>
+      <column name="sender_card_number" type="varchar(255)"/>
+      <column name="recipient_account_iban" type="varchar(255)"/>
+      <column name="recipient_card_number" type="varchar(255)"/>
+    </addColumn>
+    <addForeignKeyConstraint baseColumnNames="sender_account_iban" baseTableName="transactions"
+                             constraintName="fk_transactions_sender_account_iban" deferrable="false"
+                             initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="iban"
+                             referencedTableName="accounts" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="sender_card_number" baseTableName="transactions"
+                             constraintName="fk_transactions_sender_card_number" deferrable="false"
+                             initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="card_number"
+                             referencedTableName="cards" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="recipient_account_iban" baseTableName="transactions"
+                             constraintName="fk_transactions_recipient_account_iban" deferrable="false"
+                             initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="iban"
+                             referencedTableName="accounts" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="recipient_card_number" baseTableName="transactions"
+                             constraintName="fk_transactions_recipient_card_number" deferrable="false"
+                             initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="card_number"
+                             referencedTableName="cards" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="6">
+    <addColumn tableName="users">
+      <column name="login" type="varchar(255)">
+        <constraints unique="true" nullable="false"/>
+      </column>
+      <column name="password" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="role" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <!--      TODO: Decide how to use permissions property-->
+      <!--      <column name="permissions" type="varchar(64) []"/>-->
+      <!--      <column name="permissions" type="blob"/>-->
+      <column name="name" type="varchar(255)"/>
+      <column name="surname" type="varchar(255)"/>
+      <column name="date_of_birth" type="date"/>
+      <column name="phone_number" type="varchar(255)"/>
+    </addColumn>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="7">
+    <createTable tableName="banks_permissions">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_banks_permissions"/>
+      </column>
+      <column name="permission" type="varchar(255)"/>
+      <column name="bank_id" type="bigint"/>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="bank_id" baseTableName="banks_permissions"
+                             constraintName="fk_banks_permissions_bank_id" deferrable="false"
+                             initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id"
+                             referencedTableName="banks" validate="true"/>
+  </changeSet>
+  <changeSet author="Vadzim Matsiushonak" id="8">
+    <createTable tableName="users_permissions">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_users_permissions"/>
+      </column>
+      <column name="permission" type="varchar(255)"/>
+      <column name="user_id" type="bigint"/>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="users_permissions"
+                             constraintName="fk_users_permissions_user_id" deferrable="false"
+                             initiallyDeferred="false"
+                             onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id"
+                             referencedTableName="users" validate="true"/>
   </changeSet>
 </databaseChangeLog>

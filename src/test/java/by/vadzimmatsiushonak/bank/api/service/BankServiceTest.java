@@ -16,7 +16,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static utils.TestConstants.ID_LONG;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +43,7 @@ public class BankServiceTest {
 
             Bank actual = service.save(bank);
             assertEquals(expected, actual);
-            verify(repository).save(expected);
+            verify(repository).save(bank);
         }
 
         @Test
@@ -55,9 +57,10 @@ public class BankServiceTest {
             Bank bankWithId = new Bank();
             bankWithId.setId(ID_LONG);
 
+
             Bank actual = service.save(bankWithId);
             assertEquals(expected, actual);
-            verify(repository).save(expected);
+            verify(repository).save(bank);
         }
     }
 

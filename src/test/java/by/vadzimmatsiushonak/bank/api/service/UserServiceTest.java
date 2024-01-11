@@ -1,6 +1,7 @@
 package by.vadzimmatsiushonak.bank.api.service;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
+import by.vadzimmatsiushonak.bank.api.model.entity.UserDetails;
 import by.vadzimmatsiushonak.bank.api.repository.UserRepository;
 import by.vadzimmatsiushonak.bank.api.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Nested;
@@ -48,7 +49,7 @@ public class UserServiceTest {
 
             User actual = service.save(user);
             assertEquals(expected, actual);
-            verify(repository).save(expected);
+            verify(repository).save(user);
             verify(encoder).encode(PASSWORD);
         }
 
@@ -69,7 +70,7 @@ public class UserServiceTest {
 
             User actual = service.save(userWithId);
             assertEquals(expected, actual);
-            verify(repository).save(expected);
+            verify(repository).save(user);
             verify(encoder).encode(PASSWORD);
         }
     }
@@ -105,16 +106,18 @@ public class UserServiceTest {
     }
 
     @Nested
-    public class UserServiceTestFindByPhoneNumber{
+    public class UserServiceTestFindByPhoneNumber {
         @Test
-        public void findByPhoneNumber() {
+        public void findByUserDetailsPhoneNumber() {
+            UserDetails userDetails = new UserDetails();
+            userDetails.setPhoneNumber(PHONENUMBER);
             User user = new User();
-            user.setPhoneNumber(PHONENUMBER);
-            when(repository.findByPhoneNumber(PHONENUMBER)).thenReturn(Optional.of(user));
+            user.setUserDetails(userDetails);
+            when(repository.findByUserDetailsPhoneNumber(PHONENUMBER)).thenReturn(Optional.of(user));
 
             User actual = service.findByPhoneNumber(PHONENUMBER).orElse(null);
             assertEquals(user, actual);
-            verify(repository).findByPhoneNumber(PHONENUMBER);
+            verify(repository).findByUserDetailsPhoneNumber(PHONENUMBER);
         }
     }
 
