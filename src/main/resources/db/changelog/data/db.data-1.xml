@@ -1,14 +1,15 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
   <changeSet author="Vadzim Matsiushonak" id="1">
     <insert tableName="users">
       <column name="login" value="admin"/>
-      <column name="password" value="pass"/>
+      <column name="password" value="$2a$10$60pFUU0NmgZAGr8GvJwX3eM/3wW0RR7rRr2b519WFzijNjSr/TeNi"/>
       <column name="role" value="ADMIN"/>
+      <column name="status" value="ACTIVE"/>
       <column name="date_of_birth" valueDate="2000-02-20"/>
       <column name="name" value="ADMIN"/>
       <column name="phone_number" value="admin"/>
@@ -16,155 +17,215 @@
     </insert>
     <insert tableName="users">
       <column name="login" value="Vadzim"/>
-      <column name="password" value="pass"/>
+      <column name="password" value="$2a$10$60pFUU0NmgZAGr8GvJwX3eM/3wW0RR7rRr2b519WFzijNjSr/TeNi"/>
       <column name="role" value="TECHNICAL_USER"/>
-      <column name="date_of_birth" valueDate="2000-05-25"/>
+      <column name="status" value="ACTIVE"/>
       <column name="name" value="VADZIM"/>
-      <column name="phone_number" value="375 44 1452003"/>
       <column name="surname" value="MATSIUSHONAK"/>
+      <column name="date_of_birth" valueDate="2000-05-25"/>
+      <column name="phone_number" value="375 44 1452003"/>
     </insert>
     <insert tableName="users">
       <column name="login" value="Walter"/>
-      <column name="password" value="pass"/>
+      <column name="password" value="$2a$10$60pFUU0NmgZAGr8GvJwX3eM/3wW0RR7rRr2b519WFzijNjSr/TeNi"/>
       <column name="role" value="TECHNICAL_USER"/>
-      <column name="date_of_birth" valueDate="1988-12-17"/>
+      <column name="status" value="ACTIVE"/>
       <column name="name" value="Walter"/>
-      <column name="phone_number" value="46 0739 5066448"/>
       <column name="surname" value="Rodriguez"/>
+      <column name="date_of_birth" valueDate="1988-12-17"/>
+      <column name="phone_number" value="46 0739 5066448"/>
     </insert>
     <insert tableName="users">
       <column name="login" value="Bradley"/>
-      <column name="password" value="pass"/>
+      <column name="password" value="$2a$10$60pFUU0NmgZAGr8GvJwX3eM/3wW0RR7rRr2b519WFzijNjSr/TeNi"/>
       <column name="role" value="TECHNICAL_USER"/>
-      <column name="date_of_birth" valueDate="1982-11-24"/>
+      <column name="status" value="ACTIVE"/>
       <column name="name" value="Bradley"/>
-      <column name="phone_number" value="1 773 8009725"/>
       <column name="surname" value="Cameron"/>
+      <column name="date_of_birth" valueDate="1982-11-24"/>
+      <column name="phone_number" value="1 773 8009725"/>
     </insert>
   </changeSet>
 
   <changeSet author="Vadzim Matsiushonak" id="2">
-    <insert tableName="banks">
-      <column name="amount" valueNumeric="12000000.00"/>
-      <column name="title" value="ADMIN bank"/>
+    <insert tableName="account_holders">
+      <column name="user_id" value="1"/>
     </insert>
-    <insert tableName="banks">
-      <column name="amount" valueNumeric="1500000.00"/>
-      <column name="title" value="CJSC ALFA-bank"/>
+    <insert tableName="account_holders">
+      <column name="user_id" value="2"/>
     </insert>
-    <insert tableName="banks">
-      <column name="amount" valueNumeric="1234567.00"/>
-      <column name="title" value="BNP PARIBAS OSLO BRANCH"/>
+    <insert tableName="account_holders">
+      <column name="user_id" value="3"/>
     </insert>
-    <insert tableName="banks">
-      <column name="amount" valueNumeric="999999999.00"/>
-      <column name="title" value="WESTERN bank OF LAS CRUCES"/>
+    <insert tableName="account_holders">
+      <column name="user_id" value="4"/>
     </insert>
   </changeSet>
 
   <changeSet author="Vadzim Matsiushonak" id="3">
-    <insert tableName="bank_accounts">
+    <insert tableName="banks">
       <column name="amount" valueNumeric="12000000.00"/>
-      <column name="currency" value="USD"/>
-      <column name="iban" value="US23AA1234567"/>
-      <column name="title" value="ADMIN ADMIN"/>
-      <column name="type" value="DEBIT"/>
-      <column name="bank_id" valueNumeric="1"/>
-      <column name="user_id" valueNumeric="1"/>
+      <column name="name" value="ADMIN bank"/>
+      <column name="description" value="description for ADMIN bank"/>
+      <column name="main_currency" value="USD"/>
+      <column name="type" value="CENTRAL"/>
+      <column name="tier" value="GSIB"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="account_holder_id" value="1"/>
     </insert>
-    <insert tableName="bank_accounts">
-      <column name="amount" valueNumeric="150000.00"/>
-      <column name="currency" value="BYN"/>
-      <column name="iban" value="BY44VM1452003"/>
-      <column name="title" value="VADZIM MATSIUSHONAK"/>
-      <column name="type" value="DEBIT"/>
-      <column name="bank_id" valueNumeric="2"/>
-      <column name="user_id" valueNumeric="2"/>
+    <insert tableName="banks">
+      <column name="amount" valueNumeric="1500000.00"/>
+      <column name="name" value="CJSC ALFA-bank"/>
+      <column name="description" value="description for CJSC ALFA-bank"/>
+      <column name="main_currency" value="BYN"/>
+      <column name="type" value="BUSINESS"/>
+      <column name="tier" value="NATIONAL"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="account_holder_id" value="1"/>
     </insert>
-    <insert tableName="bank_accounts">
-      <column name="amount" valueNumeric="4136.60"/>
-      <column name="currency" value="EUR"/>
-      <column name="iban" value="SE0739WR5066448"/>
-      <column name="title" value="Walter Rodriguez"/>
-      <column name="type" value="DEBIT"/>
-      <column name="bank_id" valueNumeric="3"/>
-      <column name="user_id" valueNumeric="3"/>
+    <insert tableName="banks">
+      <column name="amount" valueNumeric="1234567.00"/>
+      <column name="name" value="BNP PARIBAS OSLO BRANCH"/>
+      <column name="description" value="description for BNP PARIBAS OSLO BRANCH"/>
+      <column name="main_currency" value="EUR"/>
+      <column name="type" value="BUSINESS"/>
+      <column name="tier" value="REGIONAL"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="account_holder_id" value="1"/>
     </insert>
-    <insert tableName="bank_accounts">
-      <column name="amount" valueNumeric="137474.91"/>
-      <column name="currency" value="USD"/>
-      <column name="iban" value="US773BC8009725"/>
-      <column name="title" value="Bradley Cameron"/>
-      <column name="type" value="DEBIT"/>
-      <column name="bank_id" valueNumeric="4"/>
-      <column name="user_id" valueNumeric="4"/>
+    <insert tableName="banks">
+      <column name="amount" valueNumeric="999999999.00"/>
+      <column name="name" value="WESTERN bank OF LAS CRUCES"/>
+      <column name="description" value="description for WESTERN bank OF LAS CRUCES"/>
+      <column name="main_currency" value="USD"/>
+      <column name="type" value="BUSINESS"/>
+      <column name="tier" value="REGIONAL"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="account_holder_id" value="1"/>
     </insert>
   </changeSet>
 
   <changeSet author="Vadzim Matsiushonak" id="4">
-    <insert tableName="bank_cards">
-      <column name="cvs" value="111"/>
-      <column name="expiration_date" valueDate="2111-11-11"/>
-      <column name="number" value="1234567890987654"/>
-      <column name="bank_account_iban" value="US23AA1234567"/>
+    <insert tableName="accounts">
+      <column name="iban" value="US23AA1234567"/>
+      <column name="name" value="ADMIN ADMIN"/>
+      <column name="type" value="BUSINESS"/>
+      <column name="transaction_type" value="DEBIT"/>
+      <column name="currency" value="USD"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="amount" valueNumeric="12000000.00"/>
+      <column name="account_holder_id" valueNumeric="1"/>
+      <column name="bank_id" valueNumeric="1"/>
     </insert>
-    <insert tableName="bank_cards">
-      <column name="cvs" value="123"/>
-      <column name="expiration_date" valueDate="2026-10-01"/>
-      <column name="number" value="4585227889907279"/>
-      <column name="bank_account_iban" value="BY44VM1452003"/>
+    <insert tableName="accounts">
+      <column name="iban" value="BY44VM1452003"/>
+      <column name="name" value="VADZIM MATSIUSHONAK"/>
+      <column name="type" value="PERSONAL"/>
+      <column name="transaction_type" value="DEBIT"/>
+      <column name="currency" value="BYN"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="amount" valueNumeric="150000.00"/>
+      <column name="account_holder_id" valueNumeric="2"/>
+      <column name="bank_id" valueNumeric="2"/>
     </insert>
-    <insert tableName="bank_cards">
-      <column name="cvs" value="620"/>
-      <column name="expiration_date" valueDate="2023-06-01"/>
-      <column name="number" value="4253453975037505"/>
-      <column name="bank_account_iban" value="SE0739WR5066448"/>
+    <insert tableName="accounts">
+      <column name="iban" value="SE0739WR5066448"/>
+      <column name="name" value="Walter Rodriguez"/>
+      <column name="type" value="PERSONAL"/>
+      <column name="transaction_type" value="DEBIT"/>
+      <column name="currency" value="EUR"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="amount" valueNumeric="4136.60"/>
+      <column name="account_holder_id" valueNumeric="3"/>
+      <column name="bank_id" valueNumeric="3"/>
     </insert>
-    <insert tableName="bank_cards">
-      <column name="cvs" value="255"/>
-      <column name="expiration_date" valueDate="2028-11-01"/>
-      <column name="number" value="5445896103585199"/>
-      <column name="bank_account_iban" value="US773BC8009725"/>
+    <insert tableName="accounts">
+      <column name="iban" value="US773BC8009725"/>
+      <column name="name" value="Bradley Cameron"/>
+      <column name="type" value="PERSONAL"/>
+      <column name="transaction_type" value="CREDIT"/>
+      <column name="currency" value="USD"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="amount" valueNumeric="137474.91"/>
+      <column name="account_holder_id" valueNumeric="4"/>
+      <column name="bank_id" valueNumeric="4"/>
     </insert>
   </changeSet>
 
-  <changeSet author="Vadzim Matsiushonak " id="5">
-    <update tableName="bank_accounts">
-      <column name="bank_card_id" value="1"/>
-      <where>iban='US23AA1234567'</where>
-    </update>
-    <update tableName="bank_accounts">
-      <column name="bank_card_id" value="2"/>
-      <where>iban='BY44VM1452003'</where>
-    </update>
-    <update tableName="bank_accounts">
-      <column name="bank_card_id" value="3"/>
-      <where>iban='SE0739WR5066448'</where>
-    </update>
-    <update tableName="bank_accounts">
-      <column name="bank_card_id" value="4"/>
-      <where>iban='US773BC8009725'</where>
-    </update>
+  <changeSet author="Vadzim Matsiushonak" id="5">
+    <insert tableName="cards">
+      <column name="card_number" value="1234567890987654"/>
+      <column name="name" value="main USD"/>
+      <column name="expiration_date" valueDate="2111-11-11"/>
+      <column name="cvv" value="111"/>
+      <column name="pin_code" value="1111"/>
+      <column name="max_unconfirmed_transaction_amount" value="-1"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="account_iban" value="US23AA1234567"/>
+      <column name="bank_id" value="1"/>
+    </insert>
+    <insert tableName="cards">
+      <column name="card_number" value="4585227889907279"/>
+      <column name="name" value="main BYN"/>
+      <column name="expiration_date" valueDate="2026-10-01"/>
+      <column name="cvv" value="123"/>
+      <column name="pin_code" value="1234"/>
+      <column name="max_unconfirmed_transaction_amount" value="80"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="account_iban" value="BY44VM1452003"/>
+      <column name="bank_id" value="2"/>
+    </insert>
+    <insert tableName="cards">
+      <column name="card_number" value="4253453975037505"/>
+      <column name="name" value="main EUR"/>
+      <column name="expiration_date" valueDate="2023-06-01"/>
+      <column name="cvv" value="620"/>
+      <column name="pin_code" value="6201"/>
+      <column name="max_unconfirmed_transaction_amount" value="100"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="account_iban" value="SE0739WR5066448"/>
+      <column name="bank_id" value="3"/>
+    </insert>
+    <insert tableName="cards">
+      <column name="card_number" value="5445896103585199"/>
+      <column name="name" value="main USD"/>
+      <column name="expiration_date" valueDate="2028-11-01"/>
+      <column name="cvv" value="255"/>
+      <column name="pin_code" value="2556"/>
+      <column name="max_unconfirmed_transaction_amount" value="500"/>
+      <column name="status" value="ACTIVE"/>
+      <column name="account_iban" value="US773BC8009725"/>
+      <column name="bank_id" value="4"/>
+    </insert>
   </changeSet>
 
   <changeSet author="Vadzim Matsiushonak" id="6">
-    <insert tableName="bank_payments">
-      <column name="amount" valueNumeric="-150000.00"/>
+    <insert tableName="transactions">
+      <column name="amount" valueNumeric="150000.00"/>
       <column name="currency" value="BYN"/>
-      <column name="recipient_bank_account_iban" value="BY44VM1452003"/>
-      <column name="bank_account_iban" value="US23AA1234567"/>
+      <column name="category" value="TRANSFER"/>
+      <column name="type" value="DEBIT"/>
+      <column name="status" value="COMPLETED"/>
+      <column name="recipient_account_iban" value="BY44VM1452003"/>
+      <column name="sender_account_iban" value="US23AA1234567"/>
     </insert>
-    <insert tableName="bank_payments">
-      <column name="amount" valueNumeric="-4136.60"/>
+    <insert tableName="transactions">
+      <column name="amount" valueNumeric="4136.60"/>
       <column name="currency" value="EUR"/>
-      <column name="recipient_bank_account_iban" value="SE0739WR5066448"/>
-      <column name="bank_account_iban" value="US23AA1234567"/>
+      <column name="category" value="TRANSFER"/>
+      <column name="type" value="DEBIT"/>
+      <column name="status" value="COMPLETED"/>
+      <column name="recipient_account_iban" value="SE0739WR5066448"/>
+      <column name="sender_account_iban" value="US23AA1234567"/>
     </insert>
-    <insert tableName="bank_payments">
-      <column name="amount" valueNumeric="-137474.91"/>
+    <insert tableName="transactions">
+      <column name="amount" valueNumeric="137474.91"/>
       <column name="currency" value="USD"/>
-      <column name="recipient_bank_account_iban" value="US773BC8009725"/>
-      <column name="bank_account_iban" value="US23AA1234567"/>
+      <column name="category" value="TRANSFER"/>
+      <column name="type" value="DEBIT"/>
+      <column name="status" value="COMPLETED"/>
+      <column name="recipient_account_iban" value="US773BC8009725"/>
+      <column name="sender_account_iban" value="US23AA1234567"/>
     </insert>
   </changeSet>
 </databaseChangeLog>

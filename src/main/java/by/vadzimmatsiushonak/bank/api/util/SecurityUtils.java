@@ -8,12 +8,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class SecurityUtils {
 
     /**
-     * Returns the phone number of the current authenticated user.
-     * @return the phone number of the current authenticated user, as a String.
+     * Returns the login of the current authenticated user.
+     * @return the login of the current authenticated user, as a String.
      * @throws NullPointerException if the current authentication context is null.
      * @see by.vadzimmatsiushonak.bank.api.service.impl.CustomUserDetailsService#loadUserByUsername(String) The place where we set data in auth
      */
-    public static String getCurrentUserPhoneNumber() {
+    public static String getAuthLogin() {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             return auth.getName();

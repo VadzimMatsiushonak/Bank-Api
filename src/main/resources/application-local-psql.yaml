@@ -6,3 +6,9 @@ spring:
     driverClassName: org.postgresql.Driver
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+# Note: solution for issue "Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented"
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true

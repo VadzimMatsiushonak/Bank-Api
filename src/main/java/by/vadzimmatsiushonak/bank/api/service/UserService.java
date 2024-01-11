@@ -18,7 +18,7 @@ public interface UserService {
 
     List<User> findAll();
 
-    void update(@NotNull User user);
+    User update(@NotNull User user);
 
     void delete(@NotNull User user);
 

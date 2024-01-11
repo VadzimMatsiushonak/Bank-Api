@@ -1,24 +1,30 @@
 package by.vadzimmatsiushonak.bank.api.mapper;
 
-import by.vadzimmatsiushonak.bank.api.model.dto.request.UserRequestDto;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.UserDto;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.UserDtoRelations;
+import by.vadzimmatsiushonak.bank.api.model.dto.request.UserRequest;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.UserResponse;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.UserRelationsResponse;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(target = "password", ignore = true)
-    UserDto toDto(User entity);
+    @Named(value = "plain")
+    UserResponse toResponse(User entity);
 
-    UserDtoRelations toDtoRelations(User entity);
+    @IterableMapping(qualifiedByName = "plain")
+    List<UserResponse> toListResponse(List<User> entities);
 
-    List<UserDtoRelations> toListDtoRelations(List<User> entities);
+    @Named(value = "relations")
+    UserRelationsResponse toResponseRelations(User entity);
 
-    User toEntity(UserRequestDto dto);
+    @IterableMapping(qualifiedByName = "relations")
+    List<UserRelationsResponse> toListResponseRelations(List<User> entities);
+
+    User toEntity(UserRequest request);
 
 }
