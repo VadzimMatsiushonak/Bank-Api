@@ -170,7 +170,7 @@ machine:
 ##### Docker run
 
 1. Create docker network ```docker network create psqlnet```
-2. Run your mysql instance
+2. Run your psql instance
     ```
     docker run -it --rm -d \
     --network psqlnet \
