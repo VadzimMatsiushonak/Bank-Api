@@ -1,0 +1,671 @@
+{
+	"info": {
+		"_postman_id": "1cceea6a-d8fd-4375-bcac-4d7786167758",
+		"name": "Bank-Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19822473"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"confirmationKey is present in the response\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('confirmationKey');",
+									"    ",
+									"    // Set confirmationKey to collection variables",
+									"    pm.collectionVariables.set(\"confirmationKey\", pm.response.json().confirmationKey);",
+									"    ",
+									"    // Print the value of confirmationKey from collection variables",
+									"    console.log(pm.collectionVariables.get(\"confirmationKey\"));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"{{login}}\",\r\n    \"password\" : \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/oauth2/v1/auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"oauth2",
+								"v1",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"token is present in the response\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('token');\r",
+									"    \r",
+									"    // Set token to collection variables\r",
+									"    pm.collectionVariables.set(\"token\", pm.response.json().token);\r",
+									"    \r",
+									"    // Print the value of token from collection variables\r",
+									"    console.log(pm.collectionVariables.get(\"token\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"key\" : \"{{confirmationKey}}\",\r\n    \"code\" : \"1111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/oauth2/v1/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"oauth2",
+								"v1",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "get All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"// Test to check specific properties and values for Admin user with id: 1\r",
+									"pm.test(\"Admin user with id: 1 has specific properties and values\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    // Find the user with id: 1\r",
+									"    const user = responseData.find(user => user.id === 1);\r",
+									"\r",
+									"    pm.expect(user).to.have.property('id', 1);\r",
+									"    pm.expect(user).to.have.property('login', 'admin');\r",
+									"    pm.expect(user).to.have.property('password', '$2a$10$60pFUU0NmgZAGr8GvJwX3eM/3wW0RR7rRr2b519WFzijNjSr/TeNi');\r",
+									"    pm.expect(user).to.have.property('status', 'ACTIVE');\r",
+									"    pm.expect(user).to.have.property('role', 'ADMIN');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"id is present in the response\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('id');\r",
+									"    \r",
+									"    // Set id to collection variables\r",
+									"    pm.collectionVariables.set(\"user_id\", pm.response.json().id);\r",
+									"    \r",
+									"    // Print the value of user_id from collection variables\r",
+									"    console.log(pm.collectionVariables.get(\"user_id\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/users/info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "initiate Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"payment key is present in the response\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('confirmationKey');\r",
+									"    \r",
+									"    // Set payment key to collection variables\r",
+									"    pm.collectionVariables.set(\"payment_key\", pm.response.json().confirmationKey);\r",
+									"    \r",
+									"    // Print the value of payment_key from collection variables\r",
+									"    console.log(pm.collectionVariables.get(\"payment_key\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\": 1,\r\n    \"currency\": \"{{account_currency}}\",\r\n    \"recipientIban\": \"{{recipient_iban}}\",\r\n    \"senderIban\": \"{{account_iban}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/payments/initiatePayment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"payments",
+								"initiatePayment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "confirm Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"isConfirmed is present in the response\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('isConfirmed', true);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"transaction_id is present in the response\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('metadata');\r",
+									"    pm.expect(pm.response.json().metadata).to.have.property('transaction_id')\r",
+									"    \r",
+									"    // Set transaction_id to collection variables\r",
+									"    pm.collectionVariables.set(\"transaction_id\", pm.response.json().metadata.transaction_id);\r",
+									"    \r",
+									"    // Print the value of transaction_id from collection variables\r",
+									"    console.log(pm.collectionVariables.get(\"transaction_id\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/payments/confirmPayment/{{payment_key}}/{{payment_code}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"payments",
+								"confirmPayment",
+								"{{payment_key}}",
+								"{{payment_code}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AccountHolder",
+			"item": [
+				{
+					"name": "get Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"account iban is present in the response\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('accounts');\r",
+									"    \r",
+									"    // Set account iban to collection variables\r",
+									"    pm.collectionVariables.set(\"account_iban\", pm.response.json().accounts[0].iban);\r",
+									"    \r",
+									"    // Print the value of account_iban from collection variables\r",
+									"    console.log(pm.collectionVariables.get(\"account_iban\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"account currency is present in the response\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('accounts');\r",
+									"    \r",
+									"    // Set account currency to collection variables\r",
+									"    pm.collectionVariables.set(\"account_currency\", pm.response.json().accounts[0].currency);\r",
+									"    \r",
+									"    // Print the value of account_currency from collection variables\r",
+									"    console.log(pm.collectionVariables.get(\"account_currency\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/accountHolders/info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"accountHolders",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "get By Iban",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/accounts/{{account_iban}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"{{account_iban}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "get All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/transactions/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"status is present in the response\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('status');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"status is COMPLETED\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('status', 'COMPLETED');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/transactions/{{transaction_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"{{transaction_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "grant_type",
+				"value": "client_credentials",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "confirmationKey",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "login",
+			"value": "admin",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "pass",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "account_iban",
+			"value": ""
+		},
+		{
+			"key": "account_currency",
+			"value": ""
+		},
+		{
+			"key": "recipient_iban",
+			"value": "BY44VM1452003",
+			"type": "string"
+		},
+		{
+			"key": "payment_key",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "payment_code",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "transaction_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
