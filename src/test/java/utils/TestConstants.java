@@ -13,7 +13,7 @@ public class TestConstants {
     public final static String SENDER = "SENDER_IBAN";
     public final static String RECIPIENT = "RECIPIENT_IBAN";
     public final static String ID = "ID";
-    public final static String USERNAME = "USERNAME";
+    public final static String LOGIN_USERNAME = "LOGIN_USERNAME";
     public final static String PASSWORD = "PASSWORD";
     public final static String LOGIN = "LOGIN";
     public final static String WRONG_LOGIN = "WRONG_LOGIN";
