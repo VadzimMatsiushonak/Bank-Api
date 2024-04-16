@@ -208,19 +208,19 @@ public class PaymentFacadeTest {
     public class PaymentFacadeTestConfirmPayment {
         @Test
         public void confirmPayment() {
-            Boolean expectedConfirmed = true;
             Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG));
             Transaction expected = new Transaction();
+            expected.setId(ID_LONG);
             expected.setStatus(TransactionStatus.COMPLETED);
 
             when(confirmationService.confirmCode(KEY, CODE_INT)).thenReturn(confirmation);
             when(transactionService.findById(ID_LONG)).thenReturn(Optional.of(expected));
 
-            Boolean actualConfirmed = facade.confirmPayment(KEY, CODE_INT);
+            Long actualId = facade.confirmPayment(KEY, CODE_INT);
 
             assertAll(
                     () -> assertEquals(TransactionStatus.COMPLETED, expected.getStatus()),
-                    () -> assertEquals(expectedConfirmed, actualConfirmed)
+                    () -> assertEquals(ID_LONG, actualId)
             );
 
             verify(transactionService).findById(ID_LONG);

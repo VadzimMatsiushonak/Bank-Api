@@ -5,6 +5,7 @@ import by.vadzimmatsiushonak.bank.api.exception.InvalidConfirmationException;
 import by.vadzimmatsiushonak.bank.api.model.Confirmation;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.service.impl.ConfirmationServiceImpl;
+import by.vadzimmatsiushonak.bank.api.util.NumberUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +29,7 @@ import static utils.TestConstants.ID;
 import static utils.TestConstants.ID_LONG;
 import static utils.TestConstants.KEY;
 import static utils.TestConstants.LOGIN;
-import static utils.TestConstants.USERNAME;
+import static utils.TestConstants.LOGIN_USERNAME;
 import static utils.TestConstants.WRONG_CODE_INT;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,7 +38,9 @@ class ConfirmationServiceTest {
     @InjectMocks
     private ConfirmationServiceImpl confirmationService;
     @Mock
-    private Cache verificationCache;
+    private Cache confirmationCache;
+    @Mock
+    private NumberUtils numberUtils;
 
     @Nested
     public class AuthorizationFacadeTestGenerateCode {
@@ -46,13 +49,13 @@ class ConfirmationServiceTest {
         public void generateCode() {
             User user = new User();
             user.setId(ID_LONG);
-            user.setLogin(USERNAME);
-            Map<Object, Object> metadata = Map.of(ID, ID_LONG, LOGIN, USERNAME);
+            user.setLogin(LOGIN_USERNAME);
+            Map<Object, Object> metadata = Map.of(ID, ID_LONG, LOGIN, LOGIN_USERNAME);
             String key = confirmationService.generateCode(metadata, LOGIN_KEY);
 
 
             assertTrue(key.startsWith(LOGIN_KEY));
-            verify(verificationCache).put(any(),
+            verify(confirmationCache).put(any(),
                     new Confirmation(any(), metadata));
         }
 
@@ -63,38 +66,38 @@ class ConfirmationServiceTest {
 
         @Test
         public void confirmCode() {
-            Confirmation expected = new Confirmation(CODE_INT, Map.of(ID, ID_LONG, LOGIN, USERNAME));
+            Confirmation expected = new Confirmation(CODE_INT, Map.of(ID, ID_LONG, LOGIN, LOGIN_USERNAME));
 
 
-            when(verificationCache.get(KEY, Confirmation.class)).thenReturn(expected);
+            when(confirmationCache.get(KEY, Confirmation.class)).thenReturn(expected);
 
 
             Confirmation actual = confirmationService.confirmCode(KEY, CODE_INT);
             assertEquals(expected, actual);
-            verify(verificationCache).evictIfPresent(KEY);
+            verify(confirmationCache).evictIfPresent(KEY);
         }
 
         @Test
         public void confirmCodeAbsentVerification() {
-            when(verificationCache.get(KEY, Confirmation.class)).thenReturn(null);
+            when(confirmationCache.get(KEY, Confirmation.class)).thenReturn(null);
 
 
             assertThrows(ConfirmationNotFoundException.class,
                     () -> confirmationService.confirmCode(KEY, CODE_INT));
-            verify(verificationCache, times(0)).evictIfPresent(any());
+            verify(confirmationCache, times(0)).evictIfPresent(any());
         }
 
         @Test
         public void confirmCodeWrongInputCode() {
-            Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG, LOGIN, USERNAME));
+            Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG, LOGIN, LOGIN_USERNAME));
 
 
-            when(verificationCache.get(KEY, Confirmation.class)).thenReturn(confirmation);
+            when(confirmationCache.get(KEY, Confirmation.class)).thenReturn(confirmation);
 
 
             assertThrows(InvalidConfirmationException.class,
                     () -> confirmationService.confirmCode(KEY, WRONG_CODE_INT));
-            verify(verificationCache, times(0)).evictIfPresent(any());
+            verify(confirmationCache, times(0)).evictIfPresent(any());
         }
 
     }

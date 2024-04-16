@@ -1,9 +1,10 @@
 package by.vadzimmatsiushonak.bank.api.service.impl;
 
-import by.vadzimmatsiushonak.bank.api.exception.InvalidConfirmationException;
 import by.vadzimmatsiushonak.bank.api.exception.ConfirmationNotFoundException;
-import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
+import by.vadzimmatsiushonak.bank.api.exception.InvalidConfirmationException;
 import by.vadzimmatsiushonak.bank.api.model.Confirmation;
+import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
+import by.vadzimmatsiushonak.bank.api.util.NumberUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -17,11 +18,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.UUID;
 
-import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InvalidConfirmationException;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_ConfirmationNotFoundException;
+import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InvalidConfirmationException;
 import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MAX_VALUE;
 import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MIN_VALUE;
-import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.getRandom;
 
 @AllArgsConstructor
 @Validated
@@ -30,13 +30,14 @@ import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.getRandom;
 public class ConfirmationServiceImpl implements ConfirmationService {
 
     private final Cache confirmationCache;
+    private final NumberUtils numberUtils;
 
     /**
      * Provides key and saves code
      * Sends code to the user device/mail
      *
-     * @param metaData  value is the entity data that will be stored in the cache
-     * @param prefix the prefix used for the generated key value
+     * @param metaData value is the entity data that will be stored in the cache
+     * @param prefix   the prefix used for the generated key value
      * @return the String response containing the UUID key stored in cache
      */
     @Override
@@ -45,7 +46,7 @@ public class ConfirmationServiceImpl implements ConfirmationService {
         if (prefix != null) {
             key = prefix.concat(key);
         }
-        Integer code = getRandom(CONFIRMATION_MIN_VALUE, CONFIRMATION_MAX_VALUE);
+        Integer code = numberUtils.getRandom(CONFIRMATION_MIN_VALUE, CONFIRMATION_MAX_VALUE);
         confirmationCache.put(key, new Confirmation(code, metaData));
         log.info("Confirmation code '{}' has been prepared  with key '{}'", code, key);
 

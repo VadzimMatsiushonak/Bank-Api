@@ -105,8 +105,10 @@ public class PaymentFacadeImpl implements PaymentFacade {
             payment.setStatus(TransactionStatus.INITIATED);
 
             payment = transactionService.save(payment);
+            // TODO delete transaction after some time, if not confirmed
 
             return confirmationService.generateCode(Map.of(ID, payment.getId()), PAYMENT_KEY);
+            // TODO add payment id to metadata response to get transaction id after initiation
         } else {
             throw new_InsufficientFundsException(sender.getIban());
         }
@@ -117,13 +119,13 @@ public class PaymentFacadeImpl implements PaymentFacade {
      *
      * @param key  the confirmation key
      * @param code the confirmation code
-     * @return the Boolean response indicating whether the confirmation was successful.
+     * @return the Long value  with transaction id.
      * @throws EntityNotFoundException If the user cannot be found using the ID associated with the confirmation key.
      */
     @Override
     @Transactional
-    public Boolean confirmPayment(@NotBlank String key,
-                                  @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
+    public Long confirmPayment(@NotBlank String key,
+                                           @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
         Confirmation confirmation = confirmationService.confirmCode(key, code);
 
         Long confirmTransactionId = (Long) confirmation.getMetaData().get(ID);
@@ -135,6 +137,6 @@ public class PaymentFacadeImpl implements PaymentFacade {
 
         log.info("Payment with id '{}' and key {} successfully confirmed", confirmTransactionId, key);
 
-        return true;
+        return confirmTransactionId;
     }
 }
