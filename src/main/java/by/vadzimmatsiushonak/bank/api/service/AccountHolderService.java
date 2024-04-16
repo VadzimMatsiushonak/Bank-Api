@@ -12,6 +12,10 @@ public interface AccountHolderService {
 
     Optional<AccountHolder> findById(@NotNull Long id);
 
+    Optional<AccountHolder> findByUserId(@NotNull Long id);
+
+    Optional<AccountHolder> findByUserLogin(@NotNull String login);
+
     List<AccountHolder> findAll();
 
     AccountHolder update(@NotNull AccountHolder accountHolder);

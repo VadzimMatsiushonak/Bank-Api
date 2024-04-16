@@ -95,13 +95,13 @@ public class UserServiceTest {
         @Test
         public void findByUsername() {
             User user = new User();
-            user.setLogin(USERNAME);
-            when(repository.findByLogin(USERNAME)).thenReturn(Optional.of(user));
+            user.setLogin(LOGIN_USERNAME);
+            when(repository.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.of(user));
 
 
-            User actual = service.findByUsername(USERNAME).orElse(null);
+            User actual = service.findByLogin(LOGIN_USERNAME).orElse(null);
             assertEquals(user, actual);
-            verify(repository).findByLogin(USERNAME);
+            verify(repository).findByLogin(LOGIN_USERNAME);
         }
     }
 

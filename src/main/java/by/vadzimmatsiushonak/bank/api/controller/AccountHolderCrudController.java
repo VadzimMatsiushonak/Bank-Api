@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
+import static by.vadzimmatsiushonak.bank.api.util.SecurityUtils.getAuthLogin;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -78,6 +79,13 @@ public class AccountHolderCrudController {
 
         AccountHolder accountHolder = accountHolderService.update(entity);
         return ResponseEntity.status(OK).body(accountHolderMapper.toResponse(accountHolder));
+    }
+    @ApiOperation("Get current account holder information")
+    @ResponseStatus(OK)
+    @GetMapping("/info")
+    public ResponseEntity<AccountHolderRelationsResponse> info() {
+        return ResponseEntity.status(OK)
+                .body(accountHolderMapper.toResponseRelations(accountHolderService.findByUserLogin(getAuthLogin()).orElse(null)));
     }
 
 //    @ApiOperation("Update all AccountHolder properties in database")
