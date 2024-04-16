@@ -16,6 +16,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static by.vadzimmatsiushonak.bank.api.model.entity.auth.Role.SCOPE_PREFIX;
+
 @Service
 @Slf4j
 public class JwtTokenUtil {
@@ -52,6 +54,8 @@ public class JwtTokenUtil {
         // @formatter:off
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
+                // Removing SCOPE_PREFIX, since it will be added at .claim builder
+                .map(auth -> auth.replace(SCOPE_PREFIX, ""))
                 .collect(Collectors.joining(" "));
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .id(UUID.randomUUID().toString())
@@ -59,6 +63,7 @@ public class JwtTokenUtil {
                 .issuedAt(issuedAt)
                 .expiresAt(expiresAt)
                 .subject(authentication.getName())
+                // If we adding "SCOPE" then in our authority will be "SCOPE_" + authority
                 .claim(OAuth2ParameterNames.SCOPE, scope)
                 .build();
         JwsHeader headers = JwsHeader.with(SignatureAlgorithm.RS256).build();

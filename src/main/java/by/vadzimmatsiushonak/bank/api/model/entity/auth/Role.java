@@ -11,14 +11,14 @@ public enum Role {
     MANAGER("MANAGER", Set.of(Permission.READ)),
     EMPLOYEE("EMPLOYEE", Set.of(Permission.READ));
 
-    private static final String ROLE_PREFIX = "ROLE_";
+    public static final String SCOPE_PREFIX = "SCOPE_";
     public final String role;
     public final String authority;
     public final Set<Permission> permissions;
 
     Role(String role, Set<Permission> permissions) {
         this.role = role;
-        this.authority = ROLE_PREFIX.concat(role);
+        this.authority = SCOPE_PREFIX.concat(role);
         this.permissions = permissions;
     }
 
