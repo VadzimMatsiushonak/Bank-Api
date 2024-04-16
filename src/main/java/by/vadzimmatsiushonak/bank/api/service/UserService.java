@@ -12,7 +12,7 @@ public interface UserService {
 
     Optional<User> findById(@NotNull Long id);
 
-    Optional<User> findByUsername(@NotNull String username);
+    Optional<User> findByLogin(@NotNull String login);
 
     Optional<User> findByPhoneNumber(String phoneNumber);
 

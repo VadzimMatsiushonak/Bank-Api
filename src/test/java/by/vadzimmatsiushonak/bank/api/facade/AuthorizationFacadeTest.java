@@ -59,11 +59,11 @@ public class AuthorizationFacadeTest {
 
         @Test
         public void authenticateAbsentUser() {
-            when(userServices.findByUsername(USERNAME)).thenReturn(Optional.empty());
+            when(userServices.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.empty());
 
 
             assertThrows(UserNotFoundException.class,
-                    () -> facade.authenticate(USERNAME, PASSWORD));
+                    () -> facade.authenticate(LOGIN_USERNAME, PASSWORD));
         }
 
         @Test
@@ -72,29 +72,29 @@ public class AuthorizationFacadeTest {
             user.setPassword(PASSWORD);
 
 
-            when(userServices.findByUsername(USERNAME)).thenReturn(Optional.of(user));
+            when(userServices.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(WRONG_PASSWORD, PASSWORD)).thenReturn(false);
 
 
             assertThrows(InvalidCredentialsException.class,
-                    () -> facade.authenticate(USERNAME, WRONG_PASSWORD));
+                    () -> facade.authenticate(LOGIN_USERNAME, WRONG_PASSWORD));
         }
 
         @Test
         public void authenticate() {
             String expected = CODE;
             User user = new User();
-            user.setLogin(USERNAME);
+            user.setLogin(LOGIN_USERNAME);
             user.setPassword(PASSWORD);
 
 
-            when(userServices.findByUsername(USERNAME)).thenReturn(Optional.of(user));
+            when(userServices.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(PASSWORD, PASSWORD)).thenReturn(true);
             when(confirmationService.generateCode(Map.of(LOGIN, user.getLogin()), LOGIN_KEY)).thenReturn(expected);
 
             System.out.println(expected);
 
-            String actual = facade.authenticate(USERNAME, PASSWORD);
+            String actual = facade.authenticate(LOGIN_USERNAME, PASSWORD);
             assertEquals(expected, actual);
         }
 
@@ -106,17 +106,17 @@ public class AuthorizationFacadeTest {
 
         @Test
         public void getToken() {
-            Confirmation verification = new Confirmation(CODE_INT, Map.of(LOGIN, USERNAME));
+            Confirmation verification = new Confirmation(CODE_INT, Map.of(LOGIN, LOGIN_USERNAME));
             org.springframework.security.core.userdetails.User userDetails =
-                    new org.springframework.security.core.userdetails.User(USERNAME, PASSWORD,
+                    new org.springframework.security.core.userdetails.User(LOGIN_USERNAME, PASSWORD,
                             Collections.emptyList());
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    new UserPrincipal(USERNAME), null, Collections.emptyList());
+                    new UserPrincipal(LOGIN_USERNAME), null, Collections.emptyList());
             Jwt jwt = mock(Jwt.class);
 
 
             doReturn(verification).when(confirmationService).confirmCode(KEY, CODE_INT);
-            when(userDetailsService.loadUserByUsername(USERNAME)).thenReturn(userDetails);
+            when(userDetailsService.loadUserByUsername(LOGIN_USERNAME)).thenReturn(userDetails);
             when(jwtTokenUtil.generateJwtToken(auth)).thenReturn(jwt);
             when(jwt.getTokenValue()).thenReturn(TOKEN);
 
@@ -124,7 +124,7 @@ public class AuthorizationFacadeTest {
             String actual = facade.getToken(KEY, CODE_INT);
 
             assertEquals(TOKEN, actual);
-            verify(userDetailsService).loadUserByUsername(USERNAME);
+            verify(userDetailsService).loadUserByUsername(LOGIN_USERNAME);
             verify(jwtTokenUtil).generateJwtToken(auth);
             verify(tokenService).save(jwt);
         }
@@ -221,7 +221,7 @@ public class AuthorizationFacadeTest {
 
         @Test
         public void verifyRegistrationAbsentUser() {
-            Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG, LOGIN, USERNAME));
+            Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG, LOGIN, LOGIN_USERNAME));
 
 
             doReturn(confirmation).when(confirmationService).confirmCode(KEY, CODE_INT);

@@ -40,10 +40,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        log.info("UserServiceImpl findByUsername {}", username);
+    public Optional<User> findByLogin(String login) {
+        log.info("UserServiceImpl findByUsername {}", login);
 
-        return repository.findByLogin(username);
+        return repository.findByLogin(login);
     }
 
     @Override

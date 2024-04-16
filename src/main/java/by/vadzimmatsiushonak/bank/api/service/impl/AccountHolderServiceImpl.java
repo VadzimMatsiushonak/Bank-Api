@@ -37,6 +37,20 @@ public class AccountHolderServiceImpl implements AccountHolderService {
     }
 
     @Override
+    public Optional<AccountHolder> findByUserId(Long id) {
+        log.info("AccountHolderServiceImpl findByUserId {}", id);
+
+        return repository.findByUserId(id);
+    }
+
+    @Override
+    public Optional<AccountHolder> findByUserLogin(@NotNull String login) {
+        log.info("AccountHolderServiceImpl findByUserLogin {}", login);
+
+        return repository.findByUserLogin(login);
+    }
+
+    @Override
     public List<AccountHolder> findAll() {
         log.info("AccountHolderServiceImpl findAll");
 
