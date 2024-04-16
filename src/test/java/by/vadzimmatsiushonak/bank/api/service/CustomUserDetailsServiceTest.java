@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static utils.TestConstants.PASSWORD;
-import static utils.TestConstants.USERNAME;
+import static utils.TestConstants.LOGIN_USERNAME;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomUserDetailsServiceTest {
@@ -40,7 +40,7 @@ public class CustomUserDetailsServiceTest {
         @Test
         public void loadUserByUsername() {
             User user = new User();
-            user.setLogin(USERNAME);
+            user.setLogin(LOGIN_USERNAME);
             user.setPassword(PASSWORD);
             user.setStatus(ModelStatus.ACTIVE);
             user.setRole(Role.ADMIN);
@@ -50,22 +50,22 @@ public class CustomUserDetailsServiceTest {
                     Collections.singleton(new SimpleGrantedAuthority(user.getRole().authority)));
 
 
-            when(repository.findByLogin(USERNAME)).thenReturn(Optional.of(user));
+            when(repository.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.of(user));
 
 
-            UserDetails actual = service.loadUserByUsername(USERNAME);
+            UserDetails actual = service.loadUserByUsername(LOGIN_USERNAME);
             assertEquals(expected, actual);
-            verify(repository).findByLogin(USERNAME);
+            verify(repository).findByLogin(LOGIN_USERNAME);
         }
 
         @Test
         public void loadUserByUsernameUserNotFound() {
-            when(repository.findByLogin(USERNAME)).thenReturn(Optional.empty());
+            when(repository.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.empty());
 
             assertThrows(UsernameNotFoundException.class,
-                    () -> service.loadUserByUsername(USERNAME));
+                    () -> service.loadUserByUsername(LOGIN_USERNAME));
 
-            verify(repository).findByLogin(USERNAME);
+            verify(repository).findByLogin(LOGIN_USERNAME);
         }
 
         @Test
@@ -73,12 +73,12 @@ public class CustomUserDetailsServiceTest {
             User user = new User();
             user.setStatus(ModelStatus.INACTIVE);
 
-            when(repository.findByLogin(USERNAME)).thenReturn(Optional.of(user));
+            when(repository.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.of(user));
 
             assertThrows(InactiveUserException.class,
-                    () -> service.loadUserByUsername(USERNAME));
+                    () -> service.loadUserByUsername(LOGIN_USERNAME));
 
-            verify(repository).findByLogin(USERNAME);
+            verify(repository).findByLogin(LOGIN_USERNAME);
         }
     }
 }

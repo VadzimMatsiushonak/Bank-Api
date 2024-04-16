@@ -28,9 +28,9 @@ public class AccountCrudController {
     private final AccountService accountService;
     private final AccountMapper accountMapper;
 
-    @ApiOperation("Get Account by id")
+    @ApiOperation("Get Account by iban")
     @ResponseStatus(OK)
-    @GetMapping("/{id}")
+    @GetMapping("/{iban}")
     public ResponseEntity<AccountResponse> findByIban(@PathVariable String iban) {
         return ResponseEntity.status(OK)
                 .body(accountMapper.toResponse(accountService.findByIban(iban).orElse(null)));
@@ -46,7 +46,7 @@ public class AccountCrudController {
 
     @ApiOperation("Get Account by id with account relations")
     @ResponseStatus(OK)
-    @GetMapping("/{id}/relations")
+    @GetMapping("/{iban}/relations")
     public ResponseEntity<AccountRelationsResponse> findByIbanWithRelations(@PathVariable String iban) {
         return ResponseEntity.status(OK)
                 .body(accountMapper.toResponseRelations(accountService.findByIban(iban).orElse(null)));
@@ -70,7 +70,7 @@ public class AccountCrudController {
 
     @ApiOperation("Update all Account properties in database")
     @ResponseStatus(OK)
-    @PutMapping("/{id}")
+    @PutMapping("/{iban}")
     public ResponseEntity<AccountResponse> update(@PathVariable String iban, @Valid @RequestBody AccountRequest request) {
         Account entity = accountMapper.toEntity(request);
         entity.setIban(iban);

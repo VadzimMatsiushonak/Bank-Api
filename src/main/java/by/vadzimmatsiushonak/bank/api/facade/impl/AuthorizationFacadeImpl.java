@@ -58,21 +58,21 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     private final Oauth2TokenStore tokenService;
 
     /**
-     * Authenticates a user by their username and password.
+     * Authenticates a user by their login and password.
      * <p>
      * Provides key and sends code after confirmation
      * provided parameters are equals to the database entity
      *
-     * @param username The username of the user to authenticate.
+     * @param login The login of the user to authenticate.
      * @param password The password of the user to authenticate.
      * @return the String response containing the UUID key for the token retrieval request
-     * @throws UserNotFoundException       If the user cannot be found using the provided username.
+     * @throws UserNotFoundException       If the user cannot be found using the provided login.
      * @throws InvalidCredentialsException If the provided credentials are invalid.
      */
     @Override
-    public String authenticate(@NotBlank String username, @NotBlank String password) {
-        User user = userServices.findByUsername(username)
-                .orElseThrow(() -> new_UserNotFoundException(username));
+    public String authenticate(@NotBlank String login, @NotBlank String password) {
+        User user = userServices.findByLogin(login)
+                .orElseThrow(() -> new_UserNotFoundException(login));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new_InvalidCredentialsException();
