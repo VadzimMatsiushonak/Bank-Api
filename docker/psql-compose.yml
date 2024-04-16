@@ -1,0 +1,11 @@
+version: '3'
+services:
+  psqlserver:
+    container_name: psqlserver
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: bank-api-liquibase
+    ports:
+      - '5432:5432'
+    image: 'postgres:13.1-alpine'
