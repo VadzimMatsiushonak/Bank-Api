@@ -30,6 +30,8 @@ public class Bank extends IdEntity {
     @Column(nullable = false)
     private Currency mainCurrency;
 
+    private BigDecimal chargeFee;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BankType type;

@@ -7,6 +7,8 @@ import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionCategory;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionStatus;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionType;
 
+import java.math.BigDecimal;
+
 import static utils.TestConstants.*;
 
 public class TransactionBuilder {
@@ -20,6 +22,8 @@ public class TransactionBuilder {
         Transaction payment = new Transaction();
         payment.setAmount(AMOUNT_BD);
         payment.setCurrency(CURRENCY);
+        payment.setFeePercent(BigDecimal.ZERO);
+        payment.setFeeAmount(BigDecimal.ZERO);
         payment.setSender(sender);
         payment.setRecipient(recipient);
         payment.setType(TransactionType.DEBIT);

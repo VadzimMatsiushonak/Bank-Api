@@ -39,7 +39,7 @@ public class UserCrudController {
 
     @ApiOperation("Get Users List")
     @ResponseStatus(OK)
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<UserResponse>> findAll() {
         return ResponseEntity.status(OK)
                 .body(userMapper.toListResponse(userService.findAll()));

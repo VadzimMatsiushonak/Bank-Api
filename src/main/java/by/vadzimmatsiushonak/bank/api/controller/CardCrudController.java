@@ -38,7 +38,7 @@ public class CardCrudController {
 
     @ApiOperation("Get Cards List")
     @ResponseStatus(OK)
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<CardResponse>> findAll() {
         return ResponseEntity.status(OK)
                 .body(cardMapper.toListResponse(cardService.findAll()));

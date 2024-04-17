@@ -38,7 +38,7 @@ public class BankCrudController {
 
     @ApiOperation("Get Banks List")
     @ResponseStatus(OK)
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<BankResponse>> findAll() {
         return ResponseEntity.status(OK)
                 .body(bankMapper.toListResponse(bankService.findAll()));
