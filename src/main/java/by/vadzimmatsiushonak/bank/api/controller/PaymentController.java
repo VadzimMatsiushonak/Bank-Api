@@ -40,7 +40,7 @@ public class PaymentController {
             @ApiResponse(code = HTTP_CREATED, message = "Provides created Payment from database"),
             @ApiResponse(code = HTTP_BAD_REQUEST, message = "Invalid arguments provided")})
     @ResponseStatus(CREATED)
-    @PostMapping("/initiatePayment")
+    @PostMapping("/initiatePayment") // TODO maybe it's better to call in transfer instead of payment
     public ResponseEntity<InitiatedTransactionResponse> initiatePayment(
             @Valid @RequestBody InitiateTransactionRequest initiateTransactionRequest) {
         String confirmationKey = paymentFacade.initiatePayment(getAuthLogin(), initiateTransactionRequest);

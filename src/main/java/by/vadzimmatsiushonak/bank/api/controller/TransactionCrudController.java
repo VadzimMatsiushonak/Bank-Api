@@ -38,7 +38,7 @@ public class TransactionCrudController {
 
     @ApiOperation("Get Transactions List")
     @ResponseStatus(OK)
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<TransactionResponse>> findAll() {
         return ResponseEntity.status(OK)
                 .body(transactionMapper.toListResponse(transactionService.findAll()));

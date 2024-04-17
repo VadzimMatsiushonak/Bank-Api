@@ -40,7 +40,7 @@ public class AccountHolderCrudController {
 
     @ApiOperation("Get AccountHolders List")
     @ResponseStatus(OK)
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<AccountHolderResponse>> findAll() {
         return ResponseEntity.status(OK)
                 .body(accountHolderMapper.toListResponse(accountHolderService.findAll()));

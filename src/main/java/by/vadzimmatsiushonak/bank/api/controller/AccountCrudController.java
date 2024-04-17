@@ -38,7 +38,7 @@ public class AccountCrudController {
 
     @ApiOperation("Get Accounts List")
     @ResponseStatus(OK)
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<AccountResponse>> findAll() {
         return ResponseEntity.status(OK)
                 .body(accountMapper.toListResponse(accountService.findAll()));

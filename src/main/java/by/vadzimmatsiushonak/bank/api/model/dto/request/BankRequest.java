@@ -29,6 +29,9 @@ public class BankRequest {
     @NotNull
     public Currency mainCurrency;
 
+    @ApiModelProperty(example = "10.00")
+    public BigDecimal chargeFee;
+
     @ApiModelProperty(example = "BUSINESS", required = true)
     @NotNull
     public BankType type;

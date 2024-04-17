@@ -19,12 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
@@ -52,8 +53,8 @@ public class PaymentFacadeImpl implements PaymentFacade {
      * and their account is identified using the provided sender IBAN.
      * The recipient account is identified using the provided recipient IBAN.
      *
-     * @param login initiator login
-     * @param request     InitiatePaymentRequest containing all information payment the payment
+     * @param login   initiator login
+     * @param request InitiatePaymentRequest containing all information payment the payment
      * @return the String response containing the UUID key for the confirmation request.
      * @throws DuplicateException         If the sender and recipient have the same IBAN.
      * @throws UserNotFoundException      If the user cannot be found using the provided login.
@@ -61,6 +62,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
      * @throws InsufficientFundsException If the sender account does not have sufficient funds to complete the payment.
      */
     @Override
+    @Transactional
     public String initiatePayment(@NotBlank String login, @NotNull InitiateTransactionRequest request) {
         if (request.senderIban.equals(request.recipientIban)) {
             throw new_DuplicateException(request.senderIban);
@@ -88,15 +90,30 @@ public class PaymentFacadeImpl implements PaymentFacade {
         BigDecimal senderAmount = sender.getAmount();
         BigDecimal recipientAmount = recipient.getAmount();
 
-        if (senderAmount.compareTo(request.amount) >= 0) {
-            sender.setAmount(senderAmount.subtract(request.amount));
-            recipient.setAmount(recipientAmount.add(request.amount));
+        BigDecimal sentAmount = request.amount;
+        BigDecimal receivedAmount = request.amount;
+        BigDecimal fee = BigDecimal.ZERO;
+        BigDecimal feePercent = BigDecimal.ZERO;
+        if (senderAmount.compareTo(sentAmount) >= 0) {
+            Bank senderBank = sender.getBank();
+            BigDecimal chargeFee = senderBank.getChargeFee();
+
+            if (chargeFee != null && chargeFee.compareTo(BigDecimal.ZERO) > 0 ) {
+                feePercent = chargeFee.divide(new BigDecimal(100), 2, RoundingMode.UP);
+                fee = sentAmount.multiply(feePercent);
+                receivedAmount = sentAmount.subtract(fee);
+            }
+
+            sender.setAmount(senderAmount.subtract(sentAmount));
+            recipient.setAmount(recipientAmount.add(receivedAmount));
 
             accountService.update(sender);
             accountService.update(recipient);
 
             Transaction payment = new Transaction();
-            payment.setAmount(request.amount);
+            payment.setAmount(sentAmount);
+            payment.setFeePercent(feePercent);
+            payment.setFeeAmount(fee);
             payment.setCurrency(request.currency);
             payment.setSender(sender);
             payment.setRecipient(recipient);
@@ -125,7 +142,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
     @Override
     @Transactional
     public Long confirmPayment(@NotBlank String key,
-                                           @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
+                               @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
         Confirmation confirmation = confirmationService.confirmCode(key, code);
 
         Long confirmTransactionId = (Long) confirmation.getMetaData().get(ID);

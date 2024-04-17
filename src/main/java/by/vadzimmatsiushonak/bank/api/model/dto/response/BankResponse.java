@@ -16,6 +16,7 @@ public class BankResponse extends BaseIdResponse {
     public String description;
     public BigDecimal amount;
     public Currency mainCurrency;
+    public BigDecimal chargeFee;
     public BankType type;
     public BankTier tier;
     public ModelStatus status;
