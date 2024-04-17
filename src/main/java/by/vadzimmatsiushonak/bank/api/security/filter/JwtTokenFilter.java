@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
@@ -43,6 +44,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             log.trace("Sending to authentication entry point since failed to resolve bearer token",
                     invalid);
 //            this.authenticationEntryPoint.commence(request, response, invalid);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            String error = "Unauthorized";
+            String jsonError = "{\"error\": \"" + error + "\",\"message\": \"" + invalid.getMessage() + "\"}";
+            response.getWriter().write(jsonError);
             return;
         }
         if (token == null) {
@@ -55,9 +61,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         try {
             authenticationResult = authenticate(token);
-        } catch (OAuth2AuthenticationException invalid) {
-            log.trace("Sending to authentication entry point since failed to find token in store");
-//            this.authenticationEntryPoint.commence(request, response, invalid);
+        } catch (InvalidBearerTokenException invalid) {
+            log.trace("Invalid token provided or Failed to find token in store");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            String error = "Unauthorized";
+            String jsonError = "{\"error\": \"" + error + "\",\"message\": \"" + invalid.getMessage() + "\"}";
+            response.getWriter().write(jsonError);
             return;
         }
 
@@ -73,7 +83,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         Jwt jwt = jwtTokenUtil.getJwt(token);
 
         if (!tokenService.containsToken(jwt.getId())) {
-            throw new OAuth2AuthenticationException("Unable to find the token in store");
+            throw new InvalidBearerTokenException("Unable to find the token in store or token expired");
         }
 
         AbstractAuthenticationToken authenticationToken = this.jwtAuthenticationConverter.convert(
