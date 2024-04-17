@@ -83,7 +83,7 @@ public class PaymentFacadeImpl implements PaymentFacade {
             updateBalancesAmount(sender, sentAmount, recipient, receivedAmount);
             updateAccounts(sender, recipient);
 
-            Transaction payment = buildTransaction(request, sentAmount, feePercent, fee, sender, recipient);
+            Transaction payment = buildTransaction(request, sentAmount, sender.getBank().getChargeFee(), fee, sender, recipient);
 
             payment = transactionService.save(payment);
             // TODO delete transaction after some time, if not confirmed
