@@ -30,7 +30,7 @@ public class BankRequest {
     public Currency mainCurrency;
 
     @ApiModelProperty(example = "10.00")
-    public BigDecimal chargeFee;
+    public BigDecimal chargeFeePercent;
 
     @ApiModelProperty(example = "BUSINESS", required = true)
     @NotNull

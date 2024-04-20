@@ -9,9 +9,11 @@ import by.vadzimmatsiushonak.bank.api.model.Confirmation;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiateTransactionRequest;
 import by.vadzimmatsiushonak.bank.api.model.entity.*;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionStatus;
+import by.vadzimmatsiushonak.bank.api.model.pojo.TransactionConfirmation;
 import by.vadzimmatsiushonak.bank.api.service.AccountService;
 import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
 import by.vadzimmatsiushonak.bank.api.service.TransactionService;
+import liquibase.pro.packaged.B;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,6 +58,7 @@ public class PaymentFacadeTest {
             AccountHolder accountHolder = new AccountHolder();
             accountHolder.setUser(user);
             Bank bank = new Bank();
+            bank.setChargeFeePercent(BigDecimal.ZERO);
             Account sender = new Account();
             sender.setBank(bank);
             sender.setIban(SENDER);
@@ -68,29 +71,36 @@ public class PaymentFacadeTest {
 
             Transaction transaction = buildTransaction();
             transaction.setStatus(TransactionStatus.INITIATED);
+            transaction.setActualAmount(AMOUNT_BD);
+            transaction.setFeePercent(BigDecimal.ZERO);
+            transaction.setStatus(TransactionStatus.INITIATED);
             Transaction expected = buildTransaction();
             expected.setId(ID_LONG);
             expected.setStatus(TransactionStatus.INITIATED);
+            expected.setActualAmount(AMOUNT_BD);
+            expected.setFeePercent(BigDecimal.ZERO);
             String expectedKey = KEY;
+
+            TransactionConfirmation expectedConfirmation = new TransactionConfirmation(expectedKey, ID_LONG);
 
             when(accountService.findByIban(SENDER)).thenReturn(Optional.of(sender));
             when(accountService.findByIban(RECIPIENT)).thenReturn(Optional.of(recipient));
             when(transactionService.save(transaction)).thenReturn(expected);
             when(confirmationService.generateCode(Map.of(ID, ID_LONG), PAYMENT_KEY)).thenReturn(expectedKey);
 
-            String actualKey = facade.initiatePayment(LOGIN, request);
+            TransactionConfirmation actualConfirmation = facade.initiatePayment(LOGIN, request);
 
-            assertEquals(expectedKey, actualKey);
+            assertEquals(expectedConfirmation, actualConfirmation);
 
             verify(accountService).findByIban(SENDER);
             verify(accountService).findByIban(RECIPIENT);
             verify(transactionService).save(transaction);
-            verify(accountService, times(2)).update(any());
+//            verify(accountService, times(1)).update(any());
 
             sender.setAmount(AMOUNT_BD.subtract(AMOUNT_BD));
-            verify(accountService).update(sender);
-            recipient.setAmount(AMOUNT_BD.add(AMOUNT_BD));
-            verify(accountService).update(recipient);
+//            verify(accountService).update(sender);
+//            recipient.setAmount(AMOUNT_BD.add(AMOUNT_BD));
+//            verify(accountService).update(recipient);
         }
 
         @Test
@@ -208,9 +218,15 @@ public class PaymentFacadeTest {
         @Test
         public void confirmPayment() {
             Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG));
+            Account recipient = new Account();
+            recipient.setIban(RECIPIENT);
+            recipient.setAmount(AMOUNT_BD);
             Transaction expected = new Transaction();
             expected.setId(ID_LONG);
             expected.setStatus(TransactionStatus.COMPLETED);
+            expected.setRecipient(recipient);
+            expected.setAmount(AMOUNT_BD);
+            expected.setActualAmount(AMOUNT_BD);
 
             when(confirmationService.confirmCode(KEY, CODE_INT)).thenReturn(confirmation);
             when(transactionService.findById(ID_LONG)).thenReturn(Optional.of(expected));

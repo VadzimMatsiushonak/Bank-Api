@@ -4,6 +4,7 @@ import by.vadzimmatsiushonak.bank.api.facade.PaymentFacade;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiateTransactionRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.ConfirmationResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.InitiatedTransactionResponse;
+import by.vadzimmatsiushonak.bank.api.model.pojo.TransactionConfirmation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -43,8 +44,8 @@ public class PaymentController {
     @PostMapping("/initiatePayment") // TODO maybe it's better to call in transfer instead of payment
     public ResponseEntity<InitiatedTransactionResponse> initiatePayment(
             @Valid @RequestBody InitiateTransactionRequest initiateTransactionRequest) {
-        String confirmationKey = paymentFacade.initiatePayment(getAuthLogin(), initiateTransactionRequest);
-        return ResponseEntity.status(CREATED).body(new InitiatedTransactionResponse(confirmationKey));
+        TransactionConfirmation confirmation = paymentFacade.initiatePayment(getAuthLogin(), initiateTransactionRequest);
+        return ResponseEntity.status(CREATED).body(new InitiatedTransactionResponse(confirmation.key, confirmation.transactionId));
     }
 
     @ApiOperation("Confirm the user's payment")
