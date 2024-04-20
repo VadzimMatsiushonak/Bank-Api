@@ -3,6 +3,7 @@ package by.vadzimmatsiushonak.bank.api.service.impl;
 import by.vadzimmatsiushonak.bank.api.model.entity.Card;
 import by.vadzimmatsiushonak.bank.api.repository.CardRepository;
 import by.vadzimmatsiushonak.bank.api.service.CardService;
+import by.vadzimmatsiushonak.bank.api.service.ReferenceService;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,11 +20,12 @@ import org.springframework.validation.annotation.Validated;
 public class CardServiceImpl implements CardService {
 
     private final CardRepository repository;
+    private final ReferenceService referenceService;
 
     @Override
     public Card save(@NotNull Card card) {
         log.info("CardServiceImpl create {}", card);
-        card.setCardNumber(null);
+        referenceService.setReferences(card);
 
         return repository.save(card);
     }

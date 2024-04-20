@@ -3,6 +3,7 @@ package by.vadzimmatsiushonak.bank.api.service.impl;
 import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
 import by.vadzimmatsiushonak.bank.api.repository.BankRepository;
 import by.vadzimmatsiushonak.bank.api.service.BankService;
+import by.vadzimmatsiushonak.bank.api.service.ReferenceService;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,11 +20,13 @@ import org.springframework.validation.annotation.Validated;
 public class BankServiceImpl implements BankService {
 
     private final BankRepository repository;
+    private final ReferenceService referenceService;
 
     @Override
     public Bank save(@NotNull Bank bank) {
         log.info("BankServiceImpl create {}", bank);
         bank.setId(null);
+        referenceService.setReferences(bank);
 
         return repository.save(bank);
     }

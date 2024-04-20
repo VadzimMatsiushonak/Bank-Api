@@ -2,6 +2,7 @@ package by.vadzimmatsiushonak.bank.api.service.impl;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.repository.UserRepository;
+import by.vadzimmatsiushonak.bank.api.service.ReferenceService;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import java.util.List;
 import java.util.Objects;
@@ -21,12 +22,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
     private final PasswordEncoder encoder;
+    private final ReferenceService referenceService;
 
     @Override
     public User save(@NotNull User user) {
         log.info("UserServiceImpl create {}", user);
         user.setId(null);
         user.setPassword(encoder.encode(user.getPassword()));
+        referenceService.setReferences(user);
 
         return repository.save(user);
     }

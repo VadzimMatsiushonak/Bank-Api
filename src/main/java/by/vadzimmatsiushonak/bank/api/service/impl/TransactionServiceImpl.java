@@ -2,6 +2,7 @@ package by.vadzimmatsiushonak.bank.api.service.impl;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.Transaction;
 import by.vadzimmatsiushonak.bank.api.repository.TransactionRepository;
+import by.vadzimmatsiushonak.bank.api.service.ReferenceService;
 import by.vadzimmatsiushonak.bank.api.service.TransactionService;
 import java.util.List;
 import java.util.Objects;
@@ -19,11 +20,13 @@ import org.springframework.validation.annotation.Validated;
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository repository;
+    private final ReferenceService referenceService;
 
     @Override
     public Transaction save(@NotNull Transaction transaction) {
         log.info("TransactionServiceImpl create {}", transaction);
         transaction.setId(null);
+        referenceService.setReferences(transaction);
 
         return repository.save(transaction);
     }
