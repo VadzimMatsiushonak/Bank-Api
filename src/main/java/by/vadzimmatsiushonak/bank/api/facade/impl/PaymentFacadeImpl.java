@@ -76,7 +76,6 @@ public class PaymentFacadeImpl implements PaymentFacade {
         verifySenderAccount(login, request.senderIban, sender);
 
         Account recipient = getAccount(request.recipientIban);
-//        Account recipient = accountService.getReferenceByIban(request.recipientIban);
 
         BigDecimal sentAmount = request.amount;
         if (hasSufficientFunds(sender, sentAmount)) {
