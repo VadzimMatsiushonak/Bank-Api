@@ -1,7 +1,6 @@
 package by.vadzimmatsiushonak.bank.api.model.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
-
 import javax.validation.constraints.NotNull;
 
 public class AuthRequest {

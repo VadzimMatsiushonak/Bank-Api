@@ -1,5 +1,10 @@
 package by.vadzimmatsiushonak.bank.api.controller;
 
+import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
+import static by.vadzimmatsiushonak.bank.api.util.SecurityUtils.getAuthLogin;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+
 import by.vadzimmatsiushonak.bank.api.mapper.UserMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.UserRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.UserResponse;
@@ -8,17 +13,18 @@ import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
-
-import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
-import static by.vadzimmatsiushonak.bank.api.util.SecurityUtils.getAuthLogin;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "User", description = EMPTY_DESCRIPTION)
 @RequiredArgsConstructor
@@ -34,7 +40,7 @@ public class UserCrudController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
         return ResponseEntity.status(OK)
-                .body(userMapper.toResponse(userService.findById(id).orElse(null)));
+            .body(userMapper.toResponse(userService.findById(id).orElse(null)));
     }
 
     @ApiOperation("Get Users List")
@@ -42,7 +48,7 @@ public class UserCrudController {
     @GetMapping
     public ResponseEntity<List<UserResponse>> findAll() {
         return ResponseEntity.status(OK)
-                .body(userMapper.toListResponse(userService.findAll()));
+            .body(userMapper.toListResponse(userService.findAll()));
     }
 
     @ApiOperation("Get User by id with user relations")
@@ -50,7 +56,7 @@ public class UserCrudController {
     @GetMapping("/{id}/relations")
     public ResponseEntity<UserRelationsResponse> findByIdWithRelations(@PathVariable Long id) {
         return ResponseEntity.status(OK)
-                .body(userMapper.toResponseRelations(userService.findById(id).orElse(null)));
+            .body(userMapper.toResponseRelations(userService.findById(id).orElse(null)));
     }
 
     @ApiOperation("Get Users List with user relations")
@@ -58,7 +64,7 @@ public class UserCrudController {
     @GetMapping("/relations")
     public ResponseEntity<List<UserRelationsResponse>> findAllWithRelations() {
         return ResponseEntity.status(OK)
-                .body(userMapper.toListResponseRelations(userService.findAll()));
+            .body(userMapper.toListResponseRelations(userService.findAll()));
     }
 
     @ApiOperation("Add User to database")
@@ -85,7 +91,7 @@ public class UserCrudController {
     @GetMapping("/info")
     public ResponseEntity<UserResponse> info() {
         return ResponseEntity.status(OK)
-                .body(userMapper.toResponse(userService.findByLogin(getAuthLogin()).orElse(null)));
+            .body(userMapper.toResponse(userService.findByLogin(getAuthLogin()).orElse(null)));
     }
 
 //    @ApiOperation("Update all User properties in database")

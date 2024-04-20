@@ -4,13 +4,19 @@ import by.vadzimmatsiushonak.bank.api.model.entity.auth.Permission;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.IdEntity;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter

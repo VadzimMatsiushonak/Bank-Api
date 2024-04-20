@@ -35,16 +35,16 @@ public class LoggingListener {
     private void proceedLog(LoggingPayload payload, String pattern, String partition) {
         switch (payload.getType()) {
             case INFO:
-                log.info(pattern, partition, payload.getType().toString(), payload.getMessage());
+                log.info(pattern, partition, payload.getType(), payload.getMessage());
                 break;
             case DEBUG:
-                log.debug(pattern, partition, payload.getType().toString(), payload.getMessage());
+                log.debug(pattern, partition, payload.getType(), payload.getMessage());
                 break;
             case ERROR:
-                log.error(pattern, partition, payload.getType().toString(), payload.getMessage());
+                log.error(pattern, partition, payload.getType(), payload.getMessage());
                 break;
             default:
-                log.info(pattern, partition, payload.getType().toString(), payload.getMessage());
+                log.info(pattern, partition, payload.getType(), payload.getMessage());
                 break;
         }
     }

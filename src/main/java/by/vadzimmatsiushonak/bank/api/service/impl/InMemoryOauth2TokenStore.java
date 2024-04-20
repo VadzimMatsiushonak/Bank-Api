@@ -1,16 +1,15 @@
 package by.vadzimmatsiushonak.bank.api.service.impl;
 
 import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
@@ -49,8 +48,8 @@ public class InMemoryOauth2TokenStore implements Oauth2TokenStore {
     @Override
     public Jwt findByToken(@NotBlank String token) {
         return this.store.values().stream()
-                .filter(j -> token.equals(j.getTokenValue())).findFirst()
-                .orElse(null);
+            .filter(j -> token.equals(j.getTokenValue())).findFirst()
+            .orElse(null);
     }
 
     @Override

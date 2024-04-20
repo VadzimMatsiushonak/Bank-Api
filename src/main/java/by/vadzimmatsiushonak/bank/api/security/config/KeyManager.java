@@ -1,13 +1,12 @@
 package by.vadzimmatsiushonak.bank.api.security.config;
 
 import com.nimbusds.jose.jwk.RSAKey;
-import org.springframework.stereotype.Component;
-
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import org.springframework.stereotype.Component;
 
 @Component
 public class KeyManager {
@@ -28,8 +27,8 @@ public class KeyManager {
             this.privateKey = (RSAPrivateKey) keyPair.getPrivate();
 
             this.key = new RSAKey.Builder(publicKey)
-                    .privateKey(privateKey)
-                    .build();
+                .privateKey(privateKey)
+                .build();
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }

@@ -5,7 +5,6 @@ import by.vadzimmatsiushonak.bank.api.model.entity.base.AccountType;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionType;
-
 import java.math.BigDecimal;
 
 public class AccountResponse extends BaseResponse {

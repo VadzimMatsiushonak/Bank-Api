@@ -1,16 +1,5 @@
 package by.vadzimmatsiushonak.bank.api.service;
 
-import by.vadzimmatsiushonak.bank.api.service.impl.InMemoryOauth2TokenStore;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.oauth2.jwt.Jwt;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,6 +9,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static utils.TestConstants.ID;
 import static utils.TestConstants.TOKEN;
+
+import by.vadzimmatsiushonak.bank.api.service.impl.InMemoryOauth2TokenStore;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 @ExtendWith(MockitoExtension.class)
 public class InMemoryOauth2TokenStoreTest {
@@ -35,6 +34,7 @@ public class InMemoryOauth2TokenStoreTest {
 
     @Nested
     public class InMemoryOauth2TokenStoreTestSave {
+
         @Test
         public void save() {
             Jwt jwt = mock(Jwt.class);
@@ -48,6 +48,7 @@ public class InMemoryOauth2TokenStoreTest {
 
     @Nested
     public class InMemoryOauth2TokenStoreTestRemoveById {
+
         @Test
         public void removeByIdExisting() {
             Jwt existing = mock(Jwt.class);
@@ -68,6 +69,7 @@ public class InMemoryOauth2TokenStoreTest {
 
     @Nested
     public class InMemoryOauth2TokenStoreTestRemoveByToken {
+
         @Test
         public void removeByToken() {
             tokenStore.removeByToken(TOKEN);
@@ -76,6 +78,7 @@ public class InMemoryOauth2TokenStoreTest {
 
     @Nested
     public class InMemoryOauth2TokenStoreTestFindById {
+
         @Test
         public void findById() {
             Jwt expected = mock(Jwt.class);
@@ -89,6 +92,7 @@ public class InMemoryOauth2TokenStoreTest {
 
     @Nested
     public class InMemoryOauth2TokenStoreTestFindByToken {
+
         @Test
         public void findByToken() {
             Jwt expected = mock(Jwt.class);
@@ -103,6 +107,7 @@ public class InMemoryOauth2TokenStoreTest {
 
     @Nested
     public class InMemoryOauth2TokenStoreTestContainsToken {
+
         @Test
         public void containsToken() {
             when(store.containsKey(ID)).thenReturn(true);

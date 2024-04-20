@@ -5,7 +5,6 @@ import by.vadzimmatsiushonak.bank.api.model.entity.UserDetails;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Permission;
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
-
 import java.util.Set;
 
 public class UserResponse extends BaseIdResponse {

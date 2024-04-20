@@ -6,7 +6,6 @@ import by.vadzimmatsiushonak.bank.api.model.entity.base.BankTier;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.BankType;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
-
 import java.math.BigDecimal;
 import java.util.List;
 

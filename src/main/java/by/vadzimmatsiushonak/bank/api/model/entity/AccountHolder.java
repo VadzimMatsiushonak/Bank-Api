@@ -1,13 +1,17 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.base.IdEntity;
+import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @Setter

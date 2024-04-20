@@ -1,10 +1,9 @@
 package by.vadzimmatsiushonak.bank.api.service;
 
-import org.springframework.lang.Nullable;
-import org.springframework.security.oauth2.jwt.Jwt;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import org.springframework.lang.Nullable;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 public interface Oauth2TokenStore {
 

@@ -22,7 +22,7 @@ public class AuthServerConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-            throws Exception {
+        throws Exception {
         return configuration.getAuthenticationManager();
     }
 

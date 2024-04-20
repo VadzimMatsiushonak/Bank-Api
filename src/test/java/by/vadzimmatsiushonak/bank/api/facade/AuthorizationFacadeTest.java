@@ -1,6 +1,32 @@
 package by.vadzimmatsiushonak.bank.api.facade;
 
-import by.vadzimmatsiushonak.bank.api.exception.*;
+import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
+import static by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl.LOGIN_KEY;
+import static by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl.REGISTRATION_KEY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static utils.TestConstants.CODE;
+import static utils.TestConstants.CODE_INT;
+import static utils.TestConstants.ID_LONG;
+import static utils.TestConstants.KEY;
+import static utils.TestConstants.LOGIN;
+import static utils.TestConstants.LOGIN_USERNAME;
+import static utils.TestConstants.PASSWORD;
+import static utils.TestConstants.TOKEN;
+import static utils.TestConstants.WRONG_PASSWORD;
+
+import by.vadzimmatsiushonak.bank.api.exception.BadRequestException;
+import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
+import by.vadzimmatsiushonak.bank.api.exception.InvalidCredentialsException;
+import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl;
 import by.vadzimmatsiushonak.bank.api.model.Confirmation;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
@@ -11,6 +37,9 @@ import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.service.UserService;
 import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
 import com.sun.security.auth.UserPrincipal;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,17 +51,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-
-import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
-import static by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl.LOGIN_KEY;
-import static by.vadzimmatsiushonak.bank.api.facade.impl.AuthorizationFacadeImpl.REGISTRATION_KEY;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static utils.TestConstants.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthorizationFacadeTest {
@@ -61,9 +79,8 @@ public class AuthorizationFacadeTest {
         public void authenticateAbsentUser() {
             when(userServices.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.empty());
 
-
             assertThrows(UserNotFoundException.class,
-                    () -> facade.authenticate(LOGIN_USERNAME, PASSWORD));
+                () -> facade.authenticate(LOGIN_USERNAME, PASSWORD));
         }
 
         @Test
@@ -71,13 +88,11 @@ public class AuthorizationFacadeTest {
             User user = new User();
             user.setPassword(PASSWORD);
 
-
             when(userServices.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(WRONG_PASSWORD, PASSWORD)).thenReturn(false);
 
-
             assertThrows(InvalidCredentialsException.class,
-                    () -> facade.authenticate(LOGIN_USERNAME, WRONG_PASSWORD));
+                () -> facade.authenticate(LOGIN_USERNAME, WRONG_PASSWORD));
         }
 
         @Test
@@ -86,7 +101,6 @@ public class AuthorizationFacadeTest {
             User user = new User();
             user.setLogin(LOGIN_USERNAME);
             user.setPassword(PASSWORD);
-
 
             when(userServices.findByLogin(LOGIN_USERNAME)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(PASSWORD, PASSWORD)).thenReturn(true);
@@ -108,18 +122,16 @@ public class AuthorizationFacadeTest {
         public void getToken() {
             Confirmation verification = new Confirmation(CODE_INT, Map.of(LOGIN, LOGIN_USERNAME));
             org.springframework.security.core.userdetails.User userDetails =
-                    new org.springframework.security.core.userdetails.User(LOGIN_USERNAME, PASSWORD,
-                            Collections.emptyList());
+                new org.springframework.security.core.userdetails.User(LOGIN_USERNAME, PASSWORD,
+                    Collections.emptyList());
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    new UserPrincipal(LOGIN_USERNAME), null, Collections.emptyList());
+                new UserPrincipal(LOGIN_USERNAME), null, Collections.emptyList());
             Jwt jwt = mock(Jwt.class);
-
 
             doReturn(verification).when(confirmationService).confirmCode(KEY, CODE_INT);
             when(userDetailsService.loadUserByUsername(LOGIN_USERNAME)).thenReturn(userDetails);
             when(jwtTokenUtil.generateJwtToken(auth)).thenReturn(jwt);
             when(jwt.getTokenValue()).thenReturn(TOKEN);
-
 
             String actual = facade.getToken(KEY, CODE_INT);
 
@@ -138,9 +150,8 @@ public class AuthorizationFacadeTest {
         public void revokeInvalidToken() {
             when(jwtTokenUtil.getJwt(TOKEN)).thenThrow(new RuntimeException());
 
-
             assertThrows(BadRequestException.class,
-                    () -> facade.revokeToken(TOKEN));
+                () -> facade.revokeToken(TOKEN));
             verify(jwtTokenUtil).getJwt(TOKEN);
             verify(tokenService, times(0)).removeById(any());
         }
@@ -149,11 +160,9 @@ public class AuthorizationFacadeTest {
         public void revokeExistingToken() {
             Jwt jwt = mock(Jwt.class);
 
-
             when(jwt.getId()).thenReturn(ID);
             when(jwtTokenUtil.getJwt(TOKEN)).thenReturn(jwt);
             when(tokenService.removeById(ID)).thenReturn(true);
-
 
             assertTrue(facade.revokeToken(TOKEN));
             verify(jwtTokenUtil).getJwt(TOKEN);
@@ -164,11 +173,9 @@ public class AuthorizationFacadeTest {
         public void revokeAbsentToken() {
             Jwt jwt = mock(Jwt.class);
 
-
             when(jwt.getId()).thenReturn(ID);
             when(jwtTokenUtil.getJwt(TOKEN)).thenReturn(jwt);
             when(tokenService.removeById(ID)).thenReturn(false);
-
 
             assertFalse(facade.revokeToken(TOKEN));
             verify(jwtTokenUtil).getJwt(TOKEN);
@@ -187,9 +194,7 @@ public class AuthorizationFacadeTest {
             user.setId(ID_LONG);
             user.setRole(Role.TECHNICAL_USER);
 
-
             doReturn(CODE).when(confirmationService).generateCode(Map.of(ID, user.getId()), REGISTRATION_KEY);
-
 
             String actual = facade.register(user);
             assertEquals(CODE, actual);
@@ -209,10 +214,8 @@ public class AuthorizationFacadeTest {
             user.setId(ID_LONG);
             user.setStatus(ModelStatus.INACTIVE);
 
-
             doReturn(confirmation).when(confirmationService).confirmCode(KEY, CODE_INT);
             when(userServices.findById(ID_LONG)).thenReturn(Optional.of(user));
-
 
             assertTrue(facade.confirmRegistration(KEY, CODE_INT));
             assertEquals(ModelStatus.ACTIVE, user.getStatus());
@@ -223,13 +226,11 @@ public class AuthorizationFacadeTest {
         public void verifyRegistrationAbsentUser() {
             Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG, LOGIN, LOGIN_USERNAME));
 
-
             doReturn(confirmation).when(confirmationService).confirmCode(KEY, CODE_INT);
             when(userServices.findById(ID_LONG)).thenReturn(Optional.empty());
 
-
             assertThrows(EntityNotFoundException.class,
-                    () -> facade.confirmRegistration(KEY, CODE_INT));
+                () -> facade.confirmRegistration(KEY, CODE_INT));
             verify(userServices).findById(ID_LONG);
         }
 

@@ -1,6 +1,11 @@
 package by.vadzimmatsiushonak.bank.api.controller;
 
 
+import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
+import static by.vadzimmatsiushonak.bank.api.util.SecurityUtils.getAuthLogin;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+
 import by.vadzimmatsiushonak.bank.api.mapper.AccountHolderMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.AccountHolderRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.AccountHolderResponse;
@@ -9,17 +14,18 @@ import by.vadzimmatsiushonak.bank.api.model.entity.AccountHolder;
 import by.vadzimmatsiushonak.bank.api.service.AccountHolderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
-
-import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
-import static by.vadzimmatsiushonak.bank.api.util.SecurityUtils.getAuthLogin;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "AccountHolder", description = EMPTY_DESCRIPTION)
 @RequiredArgsConstructor
@@ -35,7 +41,7 @@ public class AccountHolderCrudController {
     @GetMapping("/{id}")
     public ResponseEntity<AccountHolderResponse> findById(@PathVariable Long id) {
         return ResponseEntity.status(OK)
-                .body(accountHolderMapper.toResponse(accountHolderService.findById(id).orElse(null)));
+            .body(accountHolderMapper.toResponse(accountHolderService.findById(id).orElse(null)));
     }
 
     @ApiOperation("Get AccountHolders List")
@@ -43,7 +49,7 @@ public class AccountHolderCrudController {
     @GetMapping
     public ResponseEntity<List<AccountHolderResponse>> findAll() {
         return ResponseEntity.status(OK)
-                .body(accountHolderMapper.toListResponse(accountHolderService.findAll()));
+            .body(accountHolderMapper.toListResponse(accountHolderService.findAll()));
     }
 
     @ApiOperation("Get AccountHolder by id with accountHolder relations")
@@ -51,7 +57,7 @@ public class AccountHolderCrudController {
     @GetMapping("/{id}/relations")
     public ResponseEntity<AccountHolderRelationsResponse> findByIdWithRelations(@PathVariable Long id) {
         return ResponseEntity.status(OK)
-                .body(accountHolderMapper.toResponseRelations(accountHolderService.findById(id).orElse(null)));
+            .body(accountHolderMapper.toResponseRelations(accountHolderService.findById(id).orElse(null)));
     }
 
     @ApiOperation("Get AccountHolders List with accountHolder relations")
@@ -59,7 +65,7 @@ public class AccountHolderCrudController {
     @GetMapping("/relations")
     public ResponseEntity<List<AccountHolderRelationsResponse>> findAllWithRelations() {
         return ResponseEntity.status(OK)
-                .body(accountHolderMapper.toListResponseRelations(accountHolderService.findAll()));
+            .body(accountHolderMapper.toListResponseRelations(accountHolderService.findAll()));
     }
 
     @ApiOperation("Add AccountHolder to database")
@@ -73,19 +79,22 @@ public class AccountHolderCrudController {
     @ApiOperation("Update all AccountHolder properties in database")
     @ResponseStatus(OK)
     @PutMapping("/{id}")
-    public ResponseEntity<AccountHolderResponse> update(@PathVariable Long id, @Valid @RequestBody AccountHolderRequest request) {
+    public ResponseEntity<AccountHolderResponse> update(@PathVariable Long id,
+        @Valid @RequestBody AccountHolderRequest request) {
         AccountHolder entity = accountHolderMapper.toEntity(request);
         entity.setId(id);
 
         AccountHolder accountHolder = accountHolderService.update(entity);
         return ResponseEntity.status(OK).body(accountHolderMapper.toResponse(accountHolder));
     }
+
     @ApiOperation("Get current account holder information")
     @ResponseStatus(OK)
     @GetMapping("/info")
     public ResponseEntity<AccountHolderRelationsResponse> info() {
         return ResponseEntity.status(OK)
-                .body(accountHolderMapper.toResponseRelations(accountHolderService.findByUserLogin(getAuthLogin()).orElse(null)));
+            .body(accountHolderMapper.toResponseRelations(
+                accountHolderService.findByUserLogin(getAuthLogin()).orElse(null)));
     }
 
 //    @ApiOperation("Update all AccountHolder properties in database")

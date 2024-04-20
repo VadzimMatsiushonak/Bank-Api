@@ -6,11 +6,10 @@ import by.vadzimmatsiushonak.bank.api.model.entity.base.BankType;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 
 public class BankRequest {
 

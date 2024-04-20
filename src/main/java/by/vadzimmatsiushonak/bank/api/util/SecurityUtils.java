@@ -9,9 +9,11 @@ public class SecurityUtils {
 
     /**
      * Returns the login of the current authenticated user.
+     *
      * @return the login of the current authenticated user, as a String.
      * @throws NullPointerException if the current authentication context is null.
-     * @see by.vadzimmatsiushonak.bank.api.service.impl.CustomUserDetailsService#loadUserByUsername(String) The place where we set data in auth
+     * @see by.vadzimmatsiushonak.bank.api.service.impl.CustomUserDetailsService#loadUserByUsername(String) The place
+     * where we set data in auth
      */
     public static String getAuthLogin() {
         try {

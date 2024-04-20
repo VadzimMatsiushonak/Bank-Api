@@ -5,7 +5,6 @@ import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionCategory;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionStatus;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionType;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

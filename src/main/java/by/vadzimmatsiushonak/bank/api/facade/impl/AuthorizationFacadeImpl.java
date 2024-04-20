@@ -1,37 +1,5 @@
 package by.vadzimmatsiushonak.bank.api.facade.impl;
 
-import by.vadzimmatsiushonak.bank.api.exception.BadRequestException;
-import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
-import by.vadzimmatsiushonak.bank.api.exception.InvalidCredentialsException;
-import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
-import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
-import by.vadzimmatsiushonak.bank.api.model.Confirmation;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
-import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
-import by.vadzimmatsiushonak.bank.api.model.entity.User;
-import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
-import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
-import by.vadzimmatsiushonak.bank.api.service.UserService;
-import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
-import com.sun.security.auth.UserPrincipal;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-
-import org.springframework.transaction.annotation.Transactional;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import java.util.Map;
-
 import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.ID;
 import static by.vadzimmatsiushonak.bank.api.constant.MetadataConstants.LOGIN;
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_BadRequestException;
@@ -40,6 +8,36 @@ import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_InvalidCred
 import static by.vadzimmatsiushonak.bank.api.util.ExceptionUtils.new_UserNotFoundException;
 import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MAX_VALUE;
 import static by.vadzimmatsiushonak.bank.api.util.NumberUtils.CONFIRMATION_MIN_VALUE;
+
+import by.vadzimmatsiushonak.bank.api.exception.BadRequestException;
+import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
+import by.vadzimmatsiushonak.bank.api.exception.InvalidCredentialsException;
+import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
+import by.vadzimmatsiushonak.bank.api.facade.AuthorizationFacade;
+import by.vadzimmatsiushonak.bank.api.model.Confirmation;
+import by.vadzimmatsiushonak.bank.api.model.entity.User;
+import by.vadzimmatsiushonak.bank.api.model.entity.auth.Role;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
+import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
+import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
+import by.vadzimmatsiushonak.bank.api.service.UserService;
+import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
+import com.sun.security.auth.UserPrincipal;
+import java.util.Map;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @AllArgsConstructor
 @Validated
@@ -60,10 +58,9 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     /**
      * Authenticates a user by their login and password.
      * <p>
-     * Provides key and sends code after confirmation
-     * provided parameters are equals to the database entity
+     * Provides key and sends code after confirmation provided parameters are equals to the database entity
      *
-     * @param login The login of the user to authenticate.
+     * @param login    The login of the user to authenticate.
      * @param password The password of the user to authenticate.
      * @return the String response containing the UUID key for the token retrieval request
      * @throws UserNotFoundException       If the user cannot be found using the provided login.
@@ -72,7 +69,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Override
     public String authenticate(@NotBlank String login, @NotBlank String password) {
         User user = userServices.findByLogin(login)
-                .orElseThrow(() -> new_UserNotFoundException(login));
+            .orElseThrow(() -> new_UserNotFoundException(login));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new_InvalidCredentialsException();
@@ -82,8 +79,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     }
 
     /**
-     * Provides token after confirm
-     * provided parameters are equals to the cache value
+     * Provides token after confirm provided parameters are equals to the cache value
      *
      * @param key  the confirmation key
      * @param code the confirmation code
@@ -91,14 +87,14 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
      */
     @Override
     public String getToken(@NotBlank String key,
-                           @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
+        @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
         Confirmation confirmation = confirmationService.confirmCode(key, code);
 
         UserDetails user = userDetailsService.loadUserByUsername(
-                (String) confirmation.getMetaData().get(LOGIN));
+            (String) confirmation.getMetaData().get(LOGIN));
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                new UserPrincipal(user.getUsername()), null, user.getAuthorities());
+            new UserPrincipal(user.getUsername()), null, user.getAuthorities());
         Jwt jwt = jwtTokenUtil.generateJwtToken(auth);
 
         tokenService.save(jwt);
@@ -124,8 +120,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     }
 
     /**
-     * Provides key and sends code after saving inactive user entity
-     * with provided parameters to the database
+     * Provides key and sends code after saving inactive user entity with provided parameters to the database
      *
      * @param user the user entity
      * @return the String response containing the UUID key for the confirmation request
@@ -150,12 +145,12 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade {
     @Override
     @Transactional
     public Boolean confirmRegistration(@NotBlank String key,
-                                       @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
+        @Min(CONFIRMATION_MIN_VALUE) @Max(CONFIRMATION_MAX_VALUE) Integer code) {
         Confirmation confirmation = confirmationService.confirmCode(key, code);
         Long confirmUserId = (Long) confirmation.getMetaData().get(ID);
 
         User user = userServices.findById(confirmUserId)
-                .orElseThrow(() -> new_EntityNotFoundException("User", confirmUserId));
+            .orElseThrow(() -> new_EntityNotFoundException("User", confirmUserId));
 
         user.setStatus(ModelStatus.ACTIVE);
         log.info("User with key {} has been successfully confirmed", key);

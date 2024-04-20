@@ -3,6 +3,7 @@ package by.vadzimmatsiushonak.bank.api.config;
 import by.vadzimmatsiushonak.bank.api.BankApiApplication;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +28,8 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
             .useDefaultResponseMessages(false)
             .apiInfo(apiInfo())
-            .securityContexts(Arrays.asList(securityContext()))
-            .securitySchemes(Arrays.asList(apiKey()))
+            .securityContexts(List.of(securityContext()))
+            .securitySchemes(List.of(apiKey()))
             .select()
             .apis(RequestHandlerSelectors.basePackage(BankApiApplication.class.getPackageName()))
             .paths(PathSelectors.any())
@@ -62,7 +63,7 @@ public class SwaggerConfig {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
+        return List.of(new SecurityReference("JWT", authorizationScopes));
     }
 
 }
