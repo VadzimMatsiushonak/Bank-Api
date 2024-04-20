@@ -1,9 +1,8 @@
 package by.vadzimmatsiushonak.bank.api.util;
 
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 
 @AllArgsConstructor

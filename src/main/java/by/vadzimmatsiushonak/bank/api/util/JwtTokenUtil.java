@@ -1,5 +1,11 @@
 package by.vadzimmatsiushonak.bank.api.util;
 
+import static by.vadzimmatsiushonak.bank.api.model.entity.auth.Role.SCOPE_PREFIX;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -7,16 +13,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
-import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.jwt.BadJwtException;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static by.vadzimmatsiushonak.bank.api.model.entity.auth.Role.SCOPE_PREFIX;
 
 @Service
 @Slf4j
@@ -29,8 +35,8 @@ public class JwtTokenUtil {
     private final JwtDecoder decoder;
 
     public JwtTokenUtil(JwtEncoder encoder, JwtDecoder decoder,
-                        @Value("${bank-api.security.issuer}") String issuer,
-                        @Value("${bank-api.security.expiry-minutes}") Integer expiryMinutes) {
+        @Value("${bank-api.security.issuer}") String issuer,
+        @Value("${bank-api.security.expiry-minutes}") Integer expiryMinutes) {
         this.encoder = encoder;
         this.decoder = decoder;
         this.issuer = issuer;

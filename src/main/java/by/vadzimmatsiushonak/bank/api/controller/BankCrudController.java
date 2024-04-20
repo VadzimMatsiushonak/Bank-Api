@@ -1,5 +1,9 @@
 package by.vadzimmatsiushonak.bank.api.controller;
 
+import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+
 import by.vadzimmatsiushonak.bank.api.mapper.BankMapper;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.BankRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.BankResponse;
@@ -8,16 +12,18 @@ import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
 import by.vadzimmatsiushonak.bank.api.service.BankService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
-
-import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "Bank", description = EMPTY_DESCRIPTION)
 @RequiredArgsConstructor
@@ -33,7 +39,7 @@ public class BankCrudController {
     @GetMapping("/{id}")
     public ResponseEntity<BankResponse> findById(@PathVariable Long id) {
         return ResponseEntity.status(OK)
-                .body(bankMapper.toResponse(bankService.findById(id).orElse(null)));
+            .body(bankMapper.toResponse(bankService.findById(id).orElse(null)));
     }
 
     @ApiOperation("Get Banks List")
@@ -41,7 +47,7 @@ public class BankCrudController {
     @GetMapping
     public ResponseEntity<List<BankResponse>> findAll() {
         return ResponseEntity.status(OK)
-                .body(bankMapper.toListResponse(bankService.findAll()));
+            .body(bankMapper.toListResponse(bankService.findAll()));
     }
 
     @ApiOperation("Get Bank by id with bank relations")
@@ -49,7 +55,7 @@ public class BankCrudController {
     @GetMapping("/{id}/relations")
     public ResponseEntity<BankRelationsResponse> findByIdWithRelations(@PathVariable Long id) {
         return ResponseEntity.status(OK)
-                .body(bankMapper.toResponseRelations(bankService.findById(id).orElse(null)));
+            .body(bankMapper.toResponseRelations(bankService.findById(id).orElse(null)));
     }
 
     @ApiOperation("Get Banks List with bank relations")
@@ -57,7 +63,7 @@ public class BankCrudController {
     @GetMapping("/relations")
     public ResponseEntity<List<BankRelationsResponse>> findAllWithRelations() {
         return ResponseEntity.status(OK)
-                .body(bankMapper.toListResponseRelations(bankService.findAll()));
+            .body(bankMapper.toListResponseRelations(bankService.findAll()));
     }
 
     @ApiOperation("Add Bank to database")

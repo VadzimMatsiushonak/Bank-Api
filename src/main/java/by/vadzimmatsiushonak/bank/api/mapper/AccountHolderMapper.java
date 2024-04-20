@@ -7,12 +7,11 @@ import by.vadzimmatsiushonak.bank.api.model.entity.Account;
 import by.vadzimmatsiushonak.bank.api.model.entity.AccountHolder;
 import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
+import java.util.List;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface AccountHolderMapper {

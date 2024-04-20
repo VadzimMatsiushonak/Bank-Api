@@ -1,6 +1,9 @@
 package by.vadzimmatsiushonak.bank.api.security.config;
 
+import static by.vadzimmatsiushonak.bank.api.model.entity.auth.Role.ADMIN;
+
 import by.vadzimmatsiushonak.bank.api.security.filter.JwtTokenFilter;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-
-import java.util.List;
-
-import static by.vadzimmatsiushonak.bank.api.model.entity.auth.Role.ADMIN;
 
 @Configuration
 @AllArgsConstructor
@@ -69,14 +68,14 @@ public class WebSecurityConfig {
 
     public void protectApiEndpoints(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                // Authorization endpoints
-                .antMatchers(HttpMethod.POST, "/oauth2/**").permitAll()
-                // Protected API resources
-                .antMatchers(HttpMethod.GET, "/api/**").authenticated()
-                // Protected API modification endpoints
-                .antMatchers(HttpMethod.POST, "/api/**").hasAuthority(ADMIN.authority)
-                .antMatchers(HttpMethod.PUT, "/api/**").hasAuthority(ADMIN.authority)
-                .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ADMIN.authority);
+            // Authorization endpoints
+            .antMatchers(HttpMethod.POST, "/oauth2/**").permitAll()
+            // Protected API resources
+            .antMatchers(HttpMethod.GET, "/api/**").authenticated()
+            // Protected API modification endpoints
+            .antMatchers(HttpMethod.POST, "/api/**").hasAuthority(ADMIN.authority)
+            .antMatchers(HttpMethod.PUT, "/api/**").hasAuthority(ADMIN.authority)
+            .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ADMIN.authority);
 
         protectSwaggerEndpoints(http);
         protectH2ConsoleEndpoints(http);
@@ -87,8 +86,8 @@ public class WebSecurityConfig {
     public void protectH2ConsoleEndpoints(HttpSecurity http) throws Exception {
         // this may not be required, depends on your app configuration
         http.authorizeRequests()
-                // we need config just for console, nothing else
-                .antMatchers("/h2-console/**").hasAuthority(ADMIN.authority);
+            // we need config just for console, nothing else
+            .antMatchers("/h2-console/**").hasAuthority(ADMIN.authority);
         // this will ignore only h2-console csrf, spring security 4+
         http.csrf().ignoringAntMatchers("/h2-console/**");
         //this will allow frames with same origin which is much more safe
@@ -97,7 +96,7 @@ public class WebSecurityConfig {
 
     public void protectSwaggerEndpoints(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/swagger-ui/**").hasAuthority(ADMIN.authority)
-                .antMatchers("/v2/**").hasAuthority(ADMIN.authority);
+            .antMatchers("/v2/**").hasAuthority(ADMIN.authority);
     }
 
 }

@@ -4,11 +4,10 @@ import by.vadzimmatsiushonak.bank.api.model.dto.request.UserRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.UserResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.UserRelationsResponse;
 import by.vadzimmatsiushonak.bank.api.model.entity.User;
+import java.util.List;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

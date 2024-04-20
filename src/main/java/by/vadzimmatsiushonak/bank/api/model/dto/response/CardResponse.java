@@ -2,7 +2,6 @@ package by.vadzimmatsiushonak.bank.api.model.dto.response;
 
 import by.vadzimmatsiushonak.bank.api.model.dto.base.BaseResponse;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
-
 import java.time.LocalDate;
 
 public class CardResponse extends BaseResponse {

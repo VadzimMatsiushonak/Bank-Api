@@ -1,15 +1,26 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
 import by.vadzimmatsiushonak.bank.api.model.entity.auth.Permission;
-import by.vadzimmatsiushonak.bank.api.model.entity.base.*;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.BankTier;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.BankType;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.Currency;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.IdEntity;
+import by.vadzimmatsiushonak.bank.api.model.entity.base.ModelStatus;
+import java.math.BigDecimal;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.List;
 
 @Getter
 @Setter

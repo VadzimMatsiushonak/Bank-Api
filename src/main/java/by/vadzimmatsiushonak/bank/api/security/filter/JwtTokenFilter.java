@@ -2,6 +2,11 @@ package by.vadzimmatsiushonak.bank.api.security.filter;
 
 import by.vadzimmatsiushonak.bank.api.service.Oauth2TokenStore;
 import by.vadzimmatsiushonak.bank.api.util.JwtTokenUtil;
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
@@ -17,12 +22,6 @@ import org.springframework.security.oauth2.server.resource.web.DefaultBearerToke
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 @Component
 @Slf4j
 @AllArgsConstructor
@@ -36,13 +35,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+        FilterChain filterChain) throws ServletException, IOException {
         String token;
         try {
             token = this.bearerTokenResolver.resolve(request);
         } catch (OAuth2AuthenticationException invalid) {
             log.trace("Sending to authentication entry point since failed to resolve bearer token",
-                    invalid);
+                invalid);
 //            this.authenticationEntryPoint.commence(request, response, invalid);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
@@ -87,7 +86,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         AbstractAuthenticationToken authenticationToken = this.jwtAuthenticationConverter.convert(
-                jwt);
+            jwt);
         this.logger.debug("Authenticated token");
         return authenticationToken;
     }

@@ -6,12 +6,11 @@ import by.vadzimmatsiushonak.bank.api.model.dto.response.relations.TransactionRe
 import by.vadzimmatsiushonak.bank.api.model.entity.Account;
 import by.vadzimmatsiushonak.bank.api.model.entity.Card;
 import by.vadzimmatsiushonak.bank.api.model.entity.Transaction;
+import java.util.List;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface TransactionMapper {

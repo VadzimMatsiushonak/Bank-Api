@@ -1,13 +1,18 @@
 package by.vadzimmatsiushonak.bank.api.util;
 
-import by.vadzimmatsiushonak.bank.api.exception.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.experimental.UtilityClass;
-
+import by.vadzimmatsiushonak.bank.api.exception.BadRequestException;
+import by.vadzimmatsiushonak.bank.api.exception.ConfirmationNotFoundException;
+import by.vadzimmatsiushonak.bank.api.exception.DuplicateException;
+import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
+import by.vadzimmatsiushonak.bank.api.exception.InactiveUserException;
+import by.vadzimmatsiushonak.bank.api.exception.InsufficientFundsException;
+import by.vadzimmatsiushonak.bank.api.exception.InvalidConfirmationException;
+import by.vadzimmatsiushonak.bank.api.exception.InvalidCredentialsException;
+import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Properties;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ExceptionUtils {
@@ -16,7 +21,7 @@ public class ExceptionUtils {
 
     static {
         try (InputStream input = ExceptionUtils.class.getClassLoader()
-                .getResourceAsStream("exception.properties")) {
+            .getResourceAsStream("exception.properties")) {
             props.load(input);
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,7 +46,7 @@ public class ExceptionUtils {
     }
 
     public static ConfirmationNotFoundException new_ConfirmationNotFoundException(
-            Object... values) {
+        Object... values) {
         return new ConfirmationNotFoundException(format("ConfirmationNotFoundException", values));
     }
 

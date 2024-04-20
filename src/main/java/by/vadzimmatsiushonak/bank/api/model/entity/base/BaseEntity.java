@@ -1,15 +1,14 @@
 package by.vadzimmatsiushonak.bank.api.model.entity.base;
 
+import java.time.LocalDateTime;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

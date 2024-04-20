@@ -1,11 +1,10 @@
 package by.vadzimmatsiushonak.bank.api.model.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

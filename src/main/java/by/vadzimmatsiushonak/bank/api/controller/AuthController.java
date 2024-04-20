@@ -1,18 +1,22 @@
 package by.vadzimmatsiushonak.bank.api.controller;
 
+import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
+import static org.springframework.http.HttpStatus.OK;
+
 import by.vadzimmatsiushonak.bank.api.model.dto.request.v2.AuthRequest;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.v2.RegistrationRequest;
-import by.vadzimmatsiushonak.bank.api.model.dto.response.v2.ConfirmationResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.v2.TokenRequest;
+import by.vadzimmatsiushonak.bank.api.model.dto.response.v2.ConfirmationResponse;
 import by.vadzimmatsiushonak.bank.api.model.dto.response.v2.TokenResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import static by.vadzimmatsiushonak.bank.api.constant.SwaggerConstant.EMPTY_DESCRIPTION;
-import static org.springframework.http.HttpStatus.OK;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "Auth", description = EMPTY_DESCRIPTION)
 @AllArgsConstructor
