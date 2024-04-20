@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 public class AccountRequest {
 
-    @ApiModelProperty(notes = "IBAN structure: 2 Letter Country Code + Mobile Operator Code + First Letter Of Name + First Letter Of Surname + Mobile Number", example = "BY29VM1234567", required = true)
+    @ApiModelProperty(notes = "IBAN structure: 2 Letter Country Code + Mobile Operator Code + First Letter Of Name + First Letter Of Surname + Mobile Number", example = "BY44VM1234567", required = true)
     @NotNull
     public String iban;
 

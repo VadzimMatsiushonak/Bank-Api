@@ -3,6 +3,7 @@ package by.vadzimmatsiushonak.bank.api.service.impl;
 import by.vadzimmatsiushonak.bank.api.model.entity.AccountHolder;
 import by.vadzimmatsiushonak.bank.api.repository.AccountHolderRepository;
 import by.vadzimmatsiushonak.bank.api.service.AccountHolderService;
+import by.vadzimmatsiushonak.bank.api.service.ReferenceService;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,11 +20,13 @@ import org.springframework.validation.annotation.Validated;
 public class AccountHolderServiceImpl implements AccountHolderService {
 
     private final AccountHolderRepository repository;
+    private final ReferenceService referenceService;
 
     @Override
     public AccountHolder save(@NotNull AccountHolder accountHolder) {
         log.info("AccountHolderServiceImpl create {}", accountHolder);
         accountHolder.setId(null);
+        referenceService.setReferences(accountHolder);
 
         return repository.save(accountHolder);
     }
