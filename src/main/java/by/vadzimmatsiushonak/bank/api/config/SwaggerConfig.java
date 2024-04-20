@@ -28,7 +28,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
             .useDefaultResponseMessages(false)
             .apiInfo(apiInfo())
-            .securityContexts(Collections.singletonList(securityContext()))
+            .securityContexts(List.of(securityContext()))
             .securitySchemes(List.of(apiKey()))
             .select()
             .apis(RequestHandlerSelectors.basePackage(BankApiApplication.class.getPackageName()))
