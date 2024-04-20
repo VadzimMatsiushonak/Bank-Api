@@ -87,11 +87,9 @@ public class PaymentFacadeImpl implements PaymentFacade {
                 sender.getBank().getChargeFeePercent(), amountInfo.fee, sender, recipient);
 
             payment = transactionService.save(payment);
-            // TODO delete transaction after some time, if not confirmed
 
             String confirmationKey = generateConfirmationCode(payment);
             return new TransactionConfirmation(confirmationKey, payment.getId());
-            // TODO add payment id to metadata response to get transaction id after initiation
         } else {
             throw new_InsufficientFundsException(sender.getIban());
         }
