@@ -1,37 +1,51 @@
 package by.vadzimmatsiushonak.bank.api.facade;
 
+import static by.vadzimmatsiushonak.bank.api.facade.impl.PaymentFacadeImpl.PAYMENT_KEY;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static utils.TestConstants.AMOUNT_BD;
+import static utils.TestConstants.CODE_INT;
+import static utils.TestConstants.EMPTY_AMOUNT_BD;
+import static utils.TestConstants.ID;
+import static utils.TestConstants.ID_LONG;
+import static utils.TestConstants.KEY;
+import static utils.TestConstants.LOGIN;
+import static utils.TestConstants.RECIPIENT;
+import static utils.TestConstants.SENDER;
+import static utils.TestConstants.WRONG_LOGIN;
+import static utils.TransactionBuilder.buildInitiateTransactionRequest;
+import static utils.TransactionBuilder.buildTransaction;
+
 import by.vadzimmatsiushonak.bank.api.exception.DuplicateException;
 import by.vadzimmatsiushonak.bank.api.exception.EntityNotFoundException;
 import by.vadzimmatsiushonak.bank.api.exception.InsufficientFundsException;
-import by.vadzimmatsiushonak.bank.api.exception.UserNotFoundException;
 import by.vadzimmatsiushonak.bank.api.facade.impl.PaymentFacadeImpl;
 import by.vadzimmatsiushonak.bank.api.model.Confirmation;
 import by.vadzimmatsiushonak.bank.api.model.dto.request.InitiateTransactionRequest;
-import by.vadzimmatsiushonak.bank.api.model.entity.*;
+import by.vadzimmatsiushonak.bank.api.model.entity.Account;
+import by.vadzimmatsiushonak.bank.api.model.entity.AccountHolder;
+import by.vadzimmatsiushonak.bank.api.model.entity.Bank;
+import by.vadzimmatsiushonak.bank.api.model.entity.Transaction;
+import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionStatus;
 import by.vadzimmatsiushonak.bank.api.model.pojo.TransactionConfirmation;
 import by.vadzimmatsiushonak.bank.api.service.AccountService;
 import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
 import by.vadzimmatsiushonak.bank.api.service.TransactionService;
-import liquibase.pro.packaged.B;
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.util.Map;
-import java.util.Optional;
-
-import static by.vadzimmatsiushonak.bank.api.facade.impl.PaymentFacadeImpl.PAYMENT_KEY;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static utils.TestConstants.*;
-import static utils.TransactionBuilder.buildInitiateTransactionRequest;
-import static utils.TransactionBuilder.buildTransaction;
 
 @ExtendWith(MockitoExtension.class)
 public class PaymentFacadeTest {
@@ -95,12 +109,8 @@ public class PaymentFacadeTest {
             verify(accountService).findByIban(SENDER);
             verify(accountService).findByIban(RECIPIENT);
             verify(transactionService).save(transaction);
-//            verify(accountService, times(1)).update(any());
 
             sender.setAmount(AMOUNT_BD.subtract(AMOUNT_BD));
-//            verify(accountService).update(sender);
-//            recipient.setAmount(AMOUNT_BD.add(AMOUNT_BD));
-//            verify(accountService).update(recipient);
         }
 
         @Test
@@ -109,7 +119,7 @@ public class PaymentFacadeTest {
             request.recipientIban = request.senderIban;
 
             assertThrows(DuplicateException.class,
-                    () -> facade.initiatePayment(LOGIN, request));
+                () -> facade.initiatePayment(LOGIN, request));
 
             verify(accountService, times(0)).findByIban(any());
             verify(transactionService, times(0)).save(any());
@@ -123,7 +133,7 @@ public class PaymentFacadeTest {
             when(accountService.findByIban(any())).thenReturn(Optional.empty());
 
             assertThrows(EntityNotFoundException.class,
-                    () -> facade.initiatePayment(LOGIN, request));
+                () -> facade.initiatePayment(LOGIN, request));
 
             verify(accountService).findByIban(SENDER);
             verify(accountService, times(1)).findByIban(any());
@@ -134,7 +144,6 @@ public class PaymentFacadeTest {
         @Test
         public void initiatePaymentWrongLogin() {
             InitiateTransactionRequest request = buildInitiateTransactionRequest();
-
 
             User user = new User();
             user.setLogin(WRONG_LOGIN);
@@ -147,7 +156,7 @@ public class PaymentFacadeTest {
             when(accountService.findByIban(SENDER)).thenReturn(Optional.of(sender));
 
             assertThrows(EntityNotFoundException.class,
-                    () -> facade.initiatePayment(LOGIN, request));
+                () -> facade.initiatePayment(LOGIN, request));
 
             verify(accountService).findByIban(SENDER);
             verify(accountService, times(1)).findByIban(any());
@@ -171,7 +180,7 @@ public class PaymentFacadeTest {
             when(accountService.findByIban(RECIPIENT)).thenReturn(Optional.empty());
 
             assertThrows(EntityNotFoundException.class,
-                    () -> facade.initiatePayment(LOGIN, request));
+                () -> facade.initiatePayment(LOGIN, request));
 
             verify(accountService).findByIban(SENDER);
             verify(accountService).findByIban(RECIPIENT);
@@ -183,7 +192,6 @@ public class PaymentFacadeTest {
         @Test
         public void initiatePaymentInsufficientSenderFunds() {
             InitiateTransactionRequest request = buildInitiateTransactionRequest();
-
 
             User user = new User();
             user.setLogin(LOGIN);
@@ -200,9 +208,8 @@ public class PaymentFacadeTest {
             when(accountService.findByIban(SENDER)).thenReturn(Optional.of(sender));
             when(accountService.findByIban(RECIPIENT)).thenReturn(Optional.of(recipient));
 
-
             assertThrows(InsufficientFundsException.class,
-                    () -> facade.initiatePayment(LOGIN, request));
+                () -> facade.initiatePayment(LOGIN, request));
 
             verify(accountService).findByIban(SENDER);
             verify(accountService).findByIban(RECIPIENT);
@@ -215,6 +222,7 @@ public class PaymentFacadeTest {
 
     @Nested
     public class PaymentFacadeTestConfirmPayment {
+
         @Test
         public void confirmPayment() {
             Confirmation confirmation = new Confirmation(CODE_INT, Map.of(ID, ID_LONG));
@@ -234,8 +242,8 @@ public class PaymentFacadeTest {
             Long actualId = facade.confirmPayment(KEY, CODE_INT);
 
             assertAll(
-                    () -> assertEquals(TransactionStatus.COMPLETED, expected.getStatus()),
-                    () -> assertEquals(ID_LONG, actualId)
+                () -> assertEquals(TransactionStatus.COMPLETED, expected.getStatus()),
+                () -> assertEquals(ID_LONG, actualId)
             );
 
             verify(transactionService).findById(ID_LONG);
@@ -249,7 +257,7 @@ public class PaymentFacadeTest {
             when(transactionService.findById(ID_LONG)).thenReturn(Optional.empty());
 
             assertThrows(EntityNotFoundException.class,
-                    () -> facade.confirmPayment(KEY, CODE_INT));
+                () -> facade.confirmPayment(KEY, CODE_INT));
 
             verify(transactionService).findById(ID_LONG);
         }

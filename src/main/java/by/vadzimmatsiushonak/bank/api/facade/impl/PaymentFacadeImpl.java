@@ -68,7 +68,8 @@ public class PaymentFacadeImpl implements PaymentFacade {
      */
     @Override
     @Transactional
-    public TransactionConfirmation initiatePayment(@NotBlank String login, @NotNull InitiateTransactionRequest request) {
+    public TransactionConfirmation initiatePayment(@NotBlank String login,
+        @NotNull InitiateTransactionRequest request) {
         verifyRequestData(request);
 
         Account sender = getAccount(request.senderIban);
@@ -79,14 +80,11 @@ public class PaymentFacadeImpl implements PaymentFacade {
         BigDecimal sentAmount = request.amount;
         if (hasSufficientFunds(sender, sentAmount)) {
             AmountInfo amountInfo = calculateAmountInfo(sentAmount, sender.getBank().getChargeFeePercent());
-//            BigDecimal fee = calculateFee(sentAmount, sender.getBank().getChargeFeePercent());
 
             sender.setAmount(sender.getAmount().subtract(sentAmount));
-//            accountService.update(sender);
-//            decreaseBalanceAmount(sender, sentAmount);
-//            updateAccounts(sender, recipient);
 
-            Transaction payment = buildTransaction(request, sentAmount, amountInfo.receivedAmount, sender.getBank().getChargeFeePercent(), amountInfo.fee, sender, recipient);
+            Transaction payment = buildTransaction(request, sentAmount, amountInfo.receivedAmount,
+                sender.getBank().getChargeFeePercent(), amountInfo.fee, sender, recipient);
 
             payment = transactionService.save(payment);
             // TODO delete transaction after some time, if not confirmed
@@ -126,10 +124,6 @@ public class PaymentFacadeImpl implements PaymentFacade {
     protected boolean hasSufficientFunds(Account account, BigDecimal amount) {
         return account.getAmount().compareTo(amount) >= 0;
     }
-    protected BigDecimal calculateFee(BigDecimal sentAmount, BigDecimal chargeFee) {
-        BigDecimal feePercent = calculateChargeFeePercent(chargeFee);
-        return sentAmount.multiply(feePercent);
-    }
 
     protected AmountInfo calculateAmountInfo(BigDecimal sentAmount, BigDecimal chargeFee) {
         BigDecimal feePercent = calculateChargeFeePercent(chargeFee);
@@ -145,17 +139,8 @@ public class PaymentFacadeImpl implements PaymentFacade {
         return BigDecimal.ZERO;
     }
 
-    protected void decreaseBalanceAmount(Account account, BigDecimal amount) {
-        account.setAmount(account.getAmount().subtract(amount));
-        accountService.update(account);
-    }
-
-//    protected void updateAccounts(Account sender, Account recipient) {
-//        accountService.update(sender);
-//        accountService.update(recipient);
-//    }
-
-    protected Transaction buildTransaction(InitiateTransactionRequest request, BigDecimal sentAmount, BigDecimal receivedAmount,
+    protected Transaction buildTransaction(InitiateTransactionRequest request, BigDecimal sentAmount,
+        BigDecimal receivedAmount,
         BigDecimal feePercent, BigDecimal fee, Account sender, Account recipient) {
         Transaction payment = new Transaction();
         payment.setAmount(sentAmount);

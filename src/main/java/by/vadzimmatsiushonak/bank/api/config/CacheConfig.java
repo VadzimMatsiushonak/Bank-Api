@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 public class CacheConfig {
 
     public final static String CONFIRMATION_CODES = "CONFIRMATION_CODES";
-        public final static Long CACHE_TTL = 5L;
+    public final static Long CACHE_TTL = 5L;
 
     @Bean
     public Caffeine caffeineConfig(CaffeineEvictionListener evictionListener) {
