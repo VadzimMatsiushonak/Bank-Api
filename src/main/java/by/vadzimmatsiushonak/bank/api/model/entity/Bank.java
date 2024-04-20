@@ -30,7 +30,7 @@ public class Bank extends IdEntity {
     @Column(nullable = false)
     private Currency mainCurrency;
 
-    private BigDecimal chargeFee;
+    private BigDecimal chargeFeePercent;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

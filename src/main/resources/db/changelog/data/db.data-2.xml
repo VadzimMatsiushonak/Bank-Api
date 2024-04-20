@@ -5,7 +5,7 @@
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="Vadzim Matsiushonak" id="1">
         <update tableName="banks">
-            <column name="charge_fee" valueNumeric="10.00"/>
+            <column name="charge_fee_percent" valueNumeric="10.00"/>
             <where>id = 1</where>
         </update>
     </changeSet>

@@ -22,6 +22,8 @@ import by.vadzimmatsiushonak.bank.api.model.entity.User;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionCategory;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionStatus;
 import by.vadzimmatsiushonak.bank.api.model.entity.base.TransactionType;
+import by.vadzimmatsiushonak.bank.api.model.pojo.AmountInfo;
+import by.vadzimmatsiushonak.bank.api.model.pojo.TransactionConfirmation;
 import by.vadzimmatsiushonak.bank.api.service.AccountService;
 import by.vadzimmatsiushonak.bank.api.service.ConfirmationService;
 import by.vadzimmatsiushonak.bank.api.service.TransactionService;
@@ -66,7 +68,8 @@ public class PaymentFacadeImpl implements PaymentFacade {
      */
     @Override
     @Transactional
-    public String initiatePayment(@NotBlank String login, @NotNull InitiateTransactionRequest request) {
+    public TransactionConfirmation initiatePayment(@NotBlank String login,
+        @NotNull InitiateTransactionRequest request) {
         verifyRequestData(request);
 
         Account sender = getAccount(request.senderIban);
@@ -76,20 +79,17 @@ public class PaymentFacadeImpl implements PaymentFacade {
 
         BigDecimal sentAmount = request.amount;
         if (hasSufficientFunds(sender, sentAmount)) {
-            BigDecimal feePercent = calculateChargeFeePercent(sender.getBank().getChargeFee());
-            BigDecimal fee = sentAmount.multiply(feePercent);
-            BigDecimal receivedAmount = sentAmount.subtract(fee);
+            AmountInfo amountInfo = calculateAmountInfo(sentAmount, sender.getBank().getChargeFeePercent());
 
-            updateBalancesAmount(sender, sentAmount, recipient, receivedAmount);
-            updateAccounts(sender, recipient);
+            sender.setAmount(sender.getAmount().subtract(sentAmount));
 
-            Transaction payment = buildTransaction(request, sentAmount, sender.getBank().getChargeFee(), fee, sender, recipient);
+            Transaction payment = buildTransaction(request, sentAmount, amountInfo.receivedAmount,
+                sender.getBank().getChargeFeePercent(), amountInfo.fee, sender, recipient);
 
             payment = transactionService.save(payment);
-            // TODO delete transaction after some time, if not confirmed
 
-            return generateConfirmationCode(payment);
-            // TODO add payment id to metadata response to get transaction id after initiation
+            String confirmationKey = generateConfirmationCode(payment);
+            return new TransactionConfirmation(confirmationKey, payment.getId());
         } else {
             throw new_InsufficientFundsException(sender.getIban());
         }
@@ -123,6 +123,13 @@ public class PaymentFacadeImpl implements PaymentFacade {
         return account.getAmount().compareTo(amount) >= 0;
     }
 
+    protected AmountInfo calculateAmountInfo(BigDecimal sentAmount, BigDecimal chargeFee) {
+        BigDecimal feePercent = calculateChargeFeePercent(chargeFee);
+        BigDecimal fee = sentAmount.multiply(feePercent);
+        BigDecimal receivedAmount = sentAmount.subtract(fee);
+        return new AmountInfo(sentAmount, fee, receivedAmount);
+    }
+
     protected BigDecimal calculateChargeFeePercent(BigDecimal chargeFee) {
         if (chargeFee != null && chargeFee.compareTo(BigDecimal.ZERO) > 0) {
             return chargeFee.divide(new BigDecimal(100), 2, RoundingMode.UP);
@@ -130,21 +137,12 @@ public class PaymentFacadeImpl implements PaymentFacade {
         return BigDecimal.ZERO;
     }
 
-    protected void updateBalancesAmount(Account sender, BigDecimal sentAmount, Account recipient,
-        BigDecimal receivedAmount) {
-        sender.setAmount(sender.getAmount().subtract(sentAmount));
-        recipient.setAmount(recipient.getAmount().add(receivedAmount));
-    }
-
-    protected void updateAccounts(Account sender, Account recipient) {
-        accountService.update(sender);
-        accountService.update(recipient);
-    }
-
     protected Transaction buildTransaction(InitiateTransactionRequest request, BigDecimal sentAmount,
+        BigDecimal receivedAmount,
         BigDecimal feePercent, BigDecimal fee, Account sender, Account recipient) {
         Transaction payment = new Transaction();
         payment.setAmount(sentAmount);
+        payment.setActualAmount(receivedAmount);
         payment.setFeePercent(feePercent);
         payment.setFeeAmount(fee);
         payment.setCurrency(request.currency);
@@ -176,17 +174,30 @@ public class PaymentFacadeImpl implements PaymentFacade {
 
         Long confirmTransactionId = (Long) confirmation.getMetaData().get(ID);
 
-        completeTransaction(confirmTransactionId);
+        Transaction transaction = transactionService.findById(confirmTransactionId)
+            .orElseThrow(() -> new_EntityNotFoundException("Transaction", confirmTransactionId));
+
+        Account recipient = transaction.getRecipient();
+        recipient.setAmount(recipient.getAmount().add(transaction.getActualAmount()));
+
+        transaction.setStatus(TransactionStatus.COMPLETED);
 
         log.info("Payment with id '{}' and key {} successfully confirmed", confirmTransactionId, key);
 
         return confirmTransactionId;
     }
 
-    protected void completeTransaction(Long confirmTransactionId) {
-        Transaction transaction = transactionService.findById(confirmTransactionId)
-            .orElseThrow(() -> new_EntityNotFoundException("Transaction", confirmTransactionId));
+    @Override
+    @Transactional
+    public void withdrawUnconfirmedPayment(@NotNull Long transactionId) {
+        Transaction transaction = transactionService.findById(transactionId)
+            .orElseThrow(() -> new_EntityNotFoundException("Transaction", transactionId));
 
-        transaction.setStatus(TransactionStatus.COMPLETED);
+        Account sender = transaction.getSender();
+        sender.setAmount(sender.getAmount().add(transaction.getAmount()));
+
+        transaction.setStatus(TransactionStatus.FAILED);
+
+        log.info("Payment with id '{}' successfully withdrawn and marked as FAILED", transactionId);
     }
 }

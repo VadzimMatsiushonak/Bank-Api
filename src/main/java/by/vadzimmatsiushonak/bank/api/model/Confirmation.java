@@ -1,12 +1,13 @@
 package by.vadzimmatsiushonak.bank.api.model;
 
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.Map;
+import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
+@ToString
 public class Confirmation {
 
     private final Integer code;
