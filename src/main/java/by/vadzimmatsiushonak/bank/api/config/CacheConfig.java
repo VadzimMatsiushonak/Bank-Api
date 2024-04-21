@@ -26,7 +26,7 @@ public class CacheConfig {
     public Caffeine caffeineConfig(CaffeineEvictionListener evictionListener) {
         return Caffeine
             .newBuilder()
-            .expireAfterWrite(CACHE_TTL, TimeUnit.SECONDS)
+            .expireAfterWrite(CACHE_TTL, TimeUnit.MINUTES)
             .scheduler(Scheduler.systemScheduler()) // Enabled to allow cache 'refreshing' / 'check 'each ~1 second
             .evictionListener(evictionListener)
             .maximumSize(1000);
